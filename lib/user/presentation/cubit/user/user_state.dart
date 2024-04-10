@@ -8,3 +8,28 @@ final class UserInitial extends UserState {
   @override
   List<Object> get props => [];
 }
+
+final class UserCheckExist extends UserState {
+  final  bool isExist;
+  const UserCheckExist(this.isExist);
+  @override
+  List<Object> get props => [isExist];
+}
+
+final class UserError extends UserState {
+  @override
+  List<Object> get props => [];
+}
+final class UserLoading extends UserState {
+  @override
+  List<Object> get props => [];
+}
+
+final class UserSavaDataSuccess extends UserState {
+  @override
+  List<Object> get props => [];
+}
+final class UserSavaDataFail extends UserState {
+  @override
+  List<Object> get props => [];
+}

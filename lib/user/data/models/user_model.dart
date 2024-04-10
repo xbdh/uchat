@@ -7,7 +7,7 @@ import '../../domain/entities/user_entity.dart';
 class UserModel extends Equatable  {
   final String uid;
   final String name;
-  final String phoneNumber;
+  final String email;
   final String image;
   final String token;
   final String aboutMe;
@@ -22,7 +22,7 @@ class UserModel extends Equatable  {
   const UserModel({
     required this.uid,
     required this.name,
-    required this.phoneNumber,
+    required this.email,
     required this.image,
     required this.token,
     required this.aboutMe,
@@ -42,7 +42,7 @@ class UserModel extends Equatable  {
     return UserModel(
       uid: snap['uid'],
       name: snap['name'],
-      phoneNumber: snap['phoneNumber'],
+      email: snap['email'],
       image: snap['image'],
       token: snap['token'],
       aboutMe: snap['aboutMe'],
@@ -55,10 +55,10 @@ class UserModel extends Equatable  {
       sentFriendRequestsUIDs: List<String>.from(snap['sentFriendRequestsUIDs']),
     );
   }
-  Map<String, dynamic> toDocument() =>{
+  Map<String, dynamic> toMap() =>{
     'uid': uid,
     'name': name,
-    'phoneNumber': phoneNumber,
+    'email': email,
     'image': image,
     'token': token,
     'aboutMe': aboutMe,
@@ -71,11 +71,29 @@ class UserModel extends Equatable  {
     'sentFriendRequestsUIDs': sentFriendRequestsUIDs,
   };
 
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      uid: map['uid'],
+      name: map['name'],
+      email: map['email'],
+      image: map['image'],
+      token: map['token'],
+      aboutMe: map['aboutMe'],
+      status: map['status'],
+      lastSeen: map['lastSeen'],
+      createdAt: map['createdAt'],
+      isOnline: map['isOnline'],
+      friendsUIDs: List<String>.from(map['friendsUIDs']),
+      getFriendRequestsUIDs: List<String>.from(map['getFriendRequestsUIDs']),
+      sentFriendRequestsUIDs: List<String>.from(map['sentFriendRequestsUIDs']),
+    );
+  }
+
   @override
   List<Object?> get props => [
     uid,
     name,
-    phoneNumber,
+    email,
     image,
     token,
     aboutMe,
@@ -92,7 +110,7 @@ class UserModel extends Equatable  {
     return UserModel(
       uid: entity.uid,
       name: entity.name,
-      phoneNumber: entity.phoneNumber,
+      email: entity.email,
       image: entity.image,
       token: entity.token,
       aboutMe: entity.aboutMe,

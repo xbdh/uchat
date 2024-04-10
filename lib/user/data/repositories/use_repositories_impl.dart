@@ -1,4 +1,7 @@
 
+import 'dart:io';
+
+import 'package:uchat/user/data/data_sources/local/user_local_data_sources.dart';
 import 'package:uchat/user/data/models/user_model.dart';
 
 import 'package:uchat/user/data/data_sources/remote/user_remote_data_sources.dart';
@@ -7,9 +10,9 @@ import 'package:uchat/user/domain/repositories/user_repositories.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final UserRemoteDataSource remoteDataSource;
+  final UserLocalDataSource localDataSource;
 
-  UserRepositoryImpl({required this.remoteDataSource});
-
+  UserRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
   @override
   Future<void> createUser(UserEntity user) async {
     UserModel userModel=UserModel.fromEntity(user);
@@ -53,5 +56,58 @@ class UserRepositoryImpl implements UserRepository {
 
     @override
     Future<void> verifyPhoneNumber(String phoneNumber) async => remoteDataSource.verifyPhoneNumber(phoneNumber);
+
+  @override
+  Future<String> logInWithEmailandPassword(String email, String password) async {
+      return remoteDataSource.logInWithEmailandPassword(email, password);
   }
+
+  @override
+  Future<String> signupWithEmailandPassword(String email, String password) async {
+    return remoteDataSource.signupWithEmailandPassword(email, password);
+  }
+
+  @override
+  Future<bool> checkUserExists(String email) async {
+    return remoteDataSource.checkUserExists(email);
+  }
+
+  @override
+  Future<UserEntity?> getUserDataFromLocal()async {
+    UserModel? u=await localDataSource.getUserDataFromLocal();
+    if(u!=null){
+      return UserEntity.fromUserModel(u);
+    }
+    return null;
+  }
+
+  @override
+  Future<UserEntity?> getUserDataFromRemote(String uid) async{
+      UserModel? u=await remoteDataSource.getUserDataFromRemote(uid);
+      if(u!=null){
+        return UserEntity.fromUserModel(u);
+      }
+      return null;
+
+  }
+
+  @override
+  Future<void> saveUserDataToLocal(UserEntity user) async{
+    UserModel userModel=UserModel.fromEntity(user);
+    return localDataSource.savaUserDataToLocal(userModel);
+  }
+
+  @override
+  Future<void> saveUserDataToRemote(UserEntity user)async {
+    UserModel userModel=UserModel.fromEntity(user);
+    return remoteDataSource.saveUserDataToRemote(userModel);
+  }
+
+  @override
+  Future<String> storeFileToRemote(File file, String uid) async {
+    return remoteDataSource.storeFileToRemote(file, uid);
+  }
+
+
+}
 

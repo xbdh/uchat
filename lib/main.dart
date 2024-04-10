@@ -1,11 +1,13 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:uchat/app/routes/router.dart';
 import 'package:uchat/firebase_options.dart';
+import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
 import 'package:uchat/user/presentation/cubit/credential/credential_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'main_injection_container.dart' as di;
+import 'user/presentation/cubit/user/user_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +32,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => di.sl<CredentialCubit>(),
         ),
+        BlocProvider(
+          create: (context) => di.sl<AuthCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<UserCubit>(),
+        )
       ],
       child: AdaptiveTheme(
         light: ThemeData(

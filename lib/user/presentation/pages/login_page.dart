@@ -1,117 +1,80 @@
-import 'package:uchat/app/constants/asserts.dart';
-import 'package:uchat/user/presentation/cubit/credential/credential_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter_login/flutter_login.dart';
+import 'package:go_router/go_router.dart';
+import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
+import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 
-class LoginPage extends StatefulWidget {
+
+class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  @override
-  void dispose() {
-    _phoneController.dispose();
-    super.dispose();
-  }
-
-
-  final TextEditingController _phoneController = TextEditingController();
-  PhoneNumber number = PhoneNumber(isoCode: 'US');
-  // 新西兰, 中国, 美国
-  List<String> countries = ['US',"CN","NZ"];
-  String phoneNumber = '2512090497';
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Center(
-        child:Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 20,
-          ),
-          child: Column(
-            children: [
-               const SizedBox( height: 50),
-               SizedBox(
-                width: 200,
-                height: 200,
-                child: Lottie.asset(AssetsManager.chatBubble),
-              ),
-              Text(
-                'Chat XBDH',
-                style: GoogleFonts.openSans(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w500
-                ),
+    //final authProvider=BlocProvider.of<AuthCubit>(context);
+    return BlocConsumer<AuthCubit, AuthState>(
 
-              ),
-              const SizedBox(height: 20),
+      listener: (context, authBuilderState) {
+        if (authBuilderState is AuthSignUpSuccess) {
+          context.goNamed("Info");
 
-              Text(
-                'Add your phone number will send you a code to verify ',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.openSans(
-                  fontSize: 16,
-                ),
-              ),
-              const SizedBox(height: 30),
-              InternationalPhoneNumberInput(
-                countries: countries,
+        } else if (authBuilderState is AuthSignUpFail) {
+          debugPrint("Sign up failed");
+        } else if (authBuilderState is AuthLogInSuccess) {
+          context.goNamed("Home");
+        } else if (authBuilderState is AuthLogInFail) {
+          debugPrint("Sign up failed");
+        }else if (authBuilderState is AuthCheckUserExist) {
+          debugPrint("User exist");
+        }
+      },
+      builder: (context, authBuilderState) {
+        return FlutterLogin(
+              title: 'uchat',
+              logo: const AssetImage('assets/images/chat.png'),
+              onLogin: (data) async {
+                // BlocProvider.of<AuthCubit>(context).checkUserExists(data.name);
+                // if (authBuilderState is AuthCheckUserExist && !authBuilderState.isExist) {
+                //   return 'User does not exist';
+                // }else {
+                  BlocProvider.of<AuthCubit>(context).submitLogIn(
+                      email: data.name, password: data.password);
+                  if (authBuilderState is AuthLogInSuccess) {
+                    return null;
+                  } else {
+                    return 'Login failed';
+                  }
+                // }
+              },
+              onSignup: (data) async {
+                String email = data.name ?? '';
+                String password = data.password ?? '';
+                // BlocProvider.of<AuthCubit>(context).checkUserExists(email);
+                // if (authBuilderState is AuthCheckUserExist && authBuilderState.isExist) {
+                //   return 'User already exists';
+                // }else {
+                  BlocProvider.of<AuthCubit>(context).submitSignUp(
+                      email: email, password: password);
+                  if (authBuilderState is AuthSignUpSuccess) {
+                    return null;
+                  } else if (authBuilderState is AuthSignUpFail) {
+                    return 'Signup failed ';
+                  }
+                // }
 
-                onInputChanged: (PhoneNumber number) {
-                 setState(() {
-                   phoneNumber = number.phoneNumber!;
-                 });
-                  print("Phone Number: $phoneNumber");
-                },
-
-                selectorConfig: const SelectorConfig(
-                  selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                  useBottomSheetSafeArea: true,
-                ),
-                ignoreBlank: false,
-                autoValidateMode: AutovalidateMode.disabled,
-                selectorTextStyle: const TextStyle(color: Colors.black),
-                initialValue: number,
-                //textFieldController: _phoneController,
-                formatInput: true,
-                keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
-                inputBorder: const OutlineInputBorder(),
-                keyboardAction: TextInputAction.done,
-              ),
-
-              const SizedBox(height: 30),
-             // button 填充
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    print("++Phone Number: ${phoneNumber}");
-                    BlocProvider.of<CredentialCubit>(context).submitVerifyPhoneNumber(phoneNumber: phoneNumber);
-                    print("++Phone Number: ${phoneNumber}");
-
-                  },
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        )
-      ),
-    );
+              },
+              onRecoverPassword: (name) async {
+                BlocProvider.of<AuthCubit>(context).submitLogIn(
+                    email: name, password: '');
+                if (authBuilderState is AuthLogInSuccess) {
+                  return null;
+                } else if (authBuilderState is AuthLogInFail) {
+                  return 'Recover password failed';
+                }
+              },
+            );
+          },
+        );
   }
 }

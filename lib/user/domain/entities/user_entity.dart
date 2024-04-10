@@ -6,7 +6,7 @@ import '../../data/models/user_model.dart';
 class UserEntity extends Equatable {
   final String uid;
   final String name;
-  final String phoneNumber;
+  final String email;
   final String image;
   final String token;
   final String aboutMe;
@@ -21,7 +21,7 @@ class UserEntity extends Equatable {
   const UserEntity({
     required this.uid,
     required this.name,
-    required this.phoneNumber,
+    required this.email,
     required this.image,
     required this.token,
     required this.aboutMe,
@@ -38,7 +38,7 @@ class UserEntity extends Equatable {
   List<Object?> get props => [
     uid,
     name,
-    phoneNumber,
+    email,
     image,
     token,
     aboutMe,
@@ -55,7 +55,7 @@ class UserEntity extends Equatable {
     return UserEntity(
       uid: userModel.uid,
       name: userModel.name,
-      phoneNumber: userModel.phoneNumber,
+      email: userModel.email,
       image: userModel.image,
       token: userModel.token,
       aboutMe: userModel.aboutMe,
@@ -66,6 +66,38 @@ class UserEntity extends Equatable {
       friendsUIDs: userModel.friendsUIDs,
       getFriendRequestsUIDs: userModel.getFriendRequestsUIDs,
       sentFriendRequestsUIDs: userModel.sentFriendRequestsUIDs,
+    );
+  }
+
+  UserEntity copyWith({
+    String? uid,
+    String? name,
+    String? email,
+    String? image,
+    String? token,
+    String? aboutMe,
+    String? status,
+    String? lastSeen,
+    String? createdAt,
+    bool? isOnline,
+    List<String>? friendsUIDs,
+    List<String>? getFriendRequestsUIDs,
+    List<String>? sentFriendRequestsUIDs,
+  }) {
+    return UserEntity(
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      image: image ?? this.image,
+      token: token ?? this.token,
+      aboutMe: aboutMe ?? this.aboutMe,
+      status: status ?? this.status,
+      lastSeen: lastSeen ?? this.lastSeen,
+      createdAt: createdAt ?? this.createdAt,
+      isOnline: isOnline ?? this.isOnline,
+      friendsUIDs: friendsUIDs ?? this.friendsUIDs,
+      getFriendRequestsUIDs: getFriendRequestsUIDs ?? this.getFriendRequestsUIDs,
+      sentFriendRequestsUIDs: sentFriendRequestsUIDs ?? this.sentFriendRequestsUIDs,
     );
   }
 }

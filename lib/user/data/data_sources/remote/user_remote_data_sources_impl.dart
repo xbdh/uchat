@@ -1,7 +1,11 @@
 
 
 
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uchat/app/constants/firebase_collection.dart';
+import 'package:uchat/app/constants/store.dart';
 import 'package:uchat/user/data/data_sources/remote/user_remote_data_sources.dart';
 import 'package:uchat/user/data/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,10 +15,10 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   final FirebaseFirestore fireStore;
   final FirebaseAuth auth;
+  final FirebaseStorage storage;
 
-  UserRemoteDataSourceImpl({required this.fireStore, required this.auth});
+  UserRemoteDataSourceImpl({required this.fireStore, required this.auth,required this.storage});
 
-  String _verificationId = "";
 
 
   @override
@@ -28,7 +32,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     final newUser = UserModel(
       uid: uid,
       name: user.name,
-      phoneNumber: user.phoneNumber,
+      email: user.email,
       image: user.image,
       token: user.token,
       aboutMe: user.aboutMe,
@@ -39,7 +43,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       friendsUIDs: user.friendsUIDs,
       getFriendRequestsUIDs: user.getFriendRequestsUIDs,
       sentFriendRequestsUIDs: user.sentFriendRequestsUIDs,
-    ).toDocument();
+    ).toMap();
 
 
     try {
@@ -87,23 +91,23 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<void> signInWithPhoneNumber(String smsPinCode) async {
 
-    try {
-
-      final AuthCredential credential = PhoneAuthProvider.credential(
-          smsCode: smsPinCode, verificationId: _verificationId);
-
-      await auth.signInWithCredential(credential);
-
-
-    } on FirebaseAuthException catch(e) {
-      if(e.code == 'invalid-verification-code') {
-        // toast("Invalid Verification Code");
-      } else if (e.code == 'quota-exceeded') {
-        // toast("SMS quota-exceeded");
-      }
-    } catch (e) {
-      // toast("Unknown exception please try again");
-    }
+    // try {
+    //
+    //   final AuthCredential credential = PhoneAuthProvider.credential(
+    //       smsCode: smsPinCode, verificationId: _verificationId);
+    //
+    //   await auth.signInWithCredential(credential);
+    //
+    //
+    // } on FirebaseAuthException catch(e) {
+    //   if(e.code == 'invalid-verification-code') {
+    //     // toast("Invalid Verification Code");
+    //   } else if (e.code == 'quota-exceeded') {
+    //     // toast("SMS quota-exceeded");
+    //   }
+    // } catch (e) {
+    //   // toast("Unknown exception please try again");
+    // }
   }
 
   @override
@@ -131,38 +135,98 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
   @override
   Future<void> verifyPhoneNumber(String phoneNumber) async  {
-
-    phoneVerificationCompleted(PhoneAuthCredential authCredential) async {
-      print("phone verified : Token ${authCredential.token} ${authCredential.signInMethod}");
-
-      await auth.signInWithCredential(authCredential).then((value) async {
-        print("User : ${value.user!.uid}");
-      });
-    }
-
-    phoneVerificationFailed(FirebaseAuthException firebaseAuthException) {
-      print(
-        "phone failed : ${firebaseAuthException.message},${firebaseAuthException.code}",
-      );
-    }
-
-    phoneCodeAutoRetrievalTimeout(String verificationId) {
-      _verificationId = verificationId;
-      print("time out :$verificationId");
-    }
-
-    phoneCodeSent(String verificationId, int? forceResendingToken) {
-      _verificationId = verificationId;
-    }
-
-    await auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: phoneVerificationCompleted,
-      verificationFailed: phoneVerificationFailed,
-      timeout: const Duration(seconds: 60),
-      codeSent: phoneCodeSent,
-      codeAutoRetrievalTimeout: phoneCodeAutoRetrievalTimeout,
-    );
+    //
+    // phoneVerificationCompleted(PhoneAuthCredential authCredential) async {
+    //   print("phone verified : Token ${authCredential.token} ${authCredential.signInMethod}");
+    //
+    //   await auth.signInWithCredential(authCredential).then((value) async {
+    //     print("User : ${value.user!.uid}");
+    //   });
+    // }
+    //
+    // phoneVerificationFailed(FirebaseAuthException firebaseAuthException) {
+    //   print(
+    //     "phone failed : ${firebaseAuthException.message},${firebaseAuthException.code}",
+    //   );
+    // }
+    //
+    // phoneCodeAutoRetrievalTimeout(String verificationId) {
+    //   _verificationId = verificationId;
+    //   print("time out :$verificationId");
+    // }
+    //
+    // phoneCodeSent(String verificationId, int? forceResendingToken) {
+    //   _verificationId = verificationId;
+    // }
+    //
+    // await auth.verifyPhoneNumber(
+    //   phoneNumber: phoneNumber,
+    //   verificationCompleted: phoneVerificationCompleted,
+    //   verificationFailed: phoneVerificationFailed,
+    //   timeout: const Duration(seconds: 60),
+    //   codeSent: phoneCodeSent,
+    //   codeAutoRetrievalTimeout: phoneCodeAutoRetrievalTimeout,
+    // );
   }
 
+  @override
+  Future<String> logInWithEmailandPassword(String email, String password) async {
+    try {
+     final c= await auth.signInWithEmailAndPassword(email: email, password: password);
+     return c.user!.uid;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        // toast("No user found for that email.");
+      } else if (e.code == 'wrong-password') {
+        // toast("Wrong password provided for that user.");
+      }
+    }
+    return "";
+  }
+
+  @override
+  Future<String> signupWithEmailandPassword(String email, String password) async {
+    try {
+     final UserCredential= await auth.createUserWithEmailAndPassword(email: email, password: password);
+     return UserCredential.user!.uid;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        // toast("The password provided is too weak.");
+      } else if (e.code == 'email-already-in-use') {
+        // toast("The account already exists for that email.");
+      }
+    } catch (e) {
+      // toast("Unknown exception please try again");
+    }
+    return "";
+  }
+
+  @override
+  Future<bool> checkUserExists(String emial) async {
+    // TODO: implement checkUserExist
+
+   // check if user exists with email
+    final userCollection =await fireStore.collection(FirebaseCollectionManager.users).where("email", isEqualTo: emial).get();
+    final user = userCollection.docs.first;
+    return user.exists;
+  }
+
+  @override
+  Future<void> saveUserDataToRemote(UserModel user) async {
+    await fireStore.collection(FirebaseCollectionManager.users).doc(user.uid).set(user.toMap());
+  }
+
+  @override
+  Future<UserModel> getUserDataFromRemote(String uid)async {
+    DocumentSnapshot userDoc =await  fireStore.collection(FirebaseCollectionManager.users).doc(uid).get() as DocumentSnapshot;
+    return UserModel.fromSnapshot(userDoc);
+  }
+
+  @override
+  Future<String> storeFileToRemote(File file, String uid) {
+    String reference ="${StoreKeyManager.userAvatar}/$uid";
+    UploadTask task = storage.ref(reference).putFile(file);
+
+    return task.snapshot.ref.getDownloadURL();
+  }
 }
