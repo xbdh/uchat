@@ -33,3 +33,14 @@ final class UserSavaDataFail extends UserState {
   @override
   List<Object> get props => [];
 }
+
+final class UserGetDataLocalSuccess extends UserState {
+  UserEntity userEntity;
+  UserGetDataLocalSuccess(this.userEntity);
+  @override
+  List<Object> get props => [];
+}
+final class UserGetDataLocalFail extends UserState {
+  @override
+  List<Object> get props => [];
+}

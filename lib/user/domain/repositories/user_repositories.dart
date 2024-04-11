@@ -21,10 +21,11 @@ abstract class UserRepository {
 
   Future<String> storeFileToRemote(File file, String uid);
 
+  Future<String> getCurrentUID();
 
   Future<bool> isSignIn();
   Future<void> signOut();
-  Future<String> getCurrentUID();
+
   Future<void> createUser(UserEntity user);
   Future<void> updateUser(UserEntity user);
   Stream<List<UserEntity>> getAllUsers();

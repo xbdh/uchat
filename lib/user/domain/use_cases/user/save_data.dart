@@ -9,7 +9,7 @@ class SavaDataUseCase {
 
   SavaDataUseCase({required this.userRepository});
 
-  Future<void> call(UserEntity user,File? fileAvatar) async {
+  Future<UserEntity> call(UserEntity user,File? fileAvatar) async {
     late String imageUrl;
     final uid=user.uid;
     if(fileAvatar!=null){
@@ -20,7 +20,10 @@ class SavaDataUseCase {
     String createdAt=DateTime.now().microsecondsSinceEpoch.toString();
     UserEntity u=user.copyWith(image: imageUrl,lastSeen: lastSeen,createdAt: createdAt);
 
+
     await userRepository.saveUserDataToRemote(u);
+
     await userRepository.saveUserDataToLocal(u);
+    return u;
   }
 }

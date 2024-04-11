@@ -3,33 +3,45 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
+import 'package:uchat/user/presentation/cubit/credential/credential_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+
   const LoginPage({super.key});
+ 
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
 
+class _LoginPageState extends State<LoginPage> {
+  String email = '';
+  String uid = '';
   @override
   Widget build(BuildContext context) {
     //final authProvider=BlocProvider.of<AuthCubit>(context);
-    return BlocConsumer<AuthCubit, AuthState>(
+    return BlocConsumer<CredentialCubit, CredentialState>(
 
-      listener: (context, authBuilderState) {
-        if (authBuilderState is AuthSignUpSuccess) {
-          context.goNamed("Info");
+      listener: (context, credentialState) {
 
-        } else if (authBuilderState is AuthSignUpFail) {
+        if (credentialState is CredentialSignupSuccess) {
+          setState(() {
+            uid = credentialState.uid;
+          });
+
+          context.goNamed("Info", pathParameters: {'uid': uid,"email": email});
+        } else if (credentialState is CredentialFailure) {
           debugPrint("Sign up failed");
-        } else if (authBuilderState is AuthLogInSuccess) {
+        } else if (credentialState is CredentialLoginSuccess) {
+
           context.goNamed("Home");
-        } else if (authBuilderState is AuthLogInFail) {
+        } else if (credentialState is CredentialFailure) {
           debugPrint("Sign up failed");
-        }else if (authBuilderState is AuthCheckUserExist) {
-          debugPrint("User exist");
         }
       },
-      builder: (context, authBuilderState) {
+      builder: (context, credentialState) {
         return FlutterLogin(
               title: 'uchat',
               logo: const AssetImage('assets/images/chat.png'),
@@ -38,9 +50,9 @@ class LoginPage extends StatelessWidget {
                 // if (authBuilderState is AuthCheckUserExist && !authBuilderState.isExist) {
                 //   return 'User does not exist';
                 // }else {
-                  BlocProvider.of<AuthCubit>(context).submitLogIn(
+                  BlocProvider.of<CredentialCubit>(context).submitLogIn(
                       email: data.name, password: data.password);
-                  if (authBuilderState is AuthLogInSuccess) {
+                  if (credentialState is CredentialSignupSuccess) {
                     return null;
                   } else {
                     return 'Login failed';
@@ -48,30 +60,27 @@ class LoginPage extends StatelessWidget {
                 // }
               },
               onSignup: (data) async {
-                String email = data.name ?? '';
-                String password = data.password ?? '';
+                String signupEmail = data.name!;
+                String signupPassword = data.password!;
+                setState(() {
+                  email = signupEmail;
+                });
                 // BlocProvider.of<AuthCubit>(context).checkUserExists(email);
                 // if (authBuilderState is AuthCheckUserExist && authBuilderState.isExist) {
                 //   return 'User already exists';
                 // }else {
-                  BlocProvider.of<AuthCubit>(context).submitSignUp(
-                      email: email, password: password);
-                  if (authBuilderState is AuthSignUpSuccess) {
+                  BlocProvider.of<CredentialCubit>(context).submitSignUp(
+                      email: signupEmail, password: signupPassword);
+                  if (credentialState is CredentialSignupSuccess) {
                     return null;
-                  } else if (authBuilderState is AuthSignUpFail) {
+                  } else if (credentialState is CredentialFailure) {
                     return 'Signup failed ';
                   }
                 // }
 
               },
               onRecoverPassword: (name) async {
-                BlocProvider.of<AuthCubit>(context).submitLogIn(
-                    email: name, password: '');
-                if (authBuilderState is AuthLogInSuccess) {
-                  return null;
-                } else if (authBuilderState is AuthLogInFail) {
-                  return 'Recover password failed';
-                }
+                 return null;
               },
             );
           },

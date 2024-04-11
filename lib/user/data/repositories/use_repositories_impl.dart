@@ -75,8 +75,12 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<UserEntity?> getUserDataFromLocal()async {
     UserModel? u=await localDataSource.getUserDataFromLocal();
+    // print("===============$u");
     if(u!=null){
-      return UserEntity.fromUserModel(u);
+
+      UserEntity uu= UserEntity.fromUserModel(u);
+      // print("===============$uu");
+      return uu;
     }
     return null;
   }
@@ -85,7 +89,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<UserEntity?> getUserDataFromRemote(String uid) async{
       UserModel? u=await remoteDataSource.getUserDataFromRemote(uid);
       if(u!=null){
-        return UserEntity.fromUserModel(u);
+
       }
       return null;
 

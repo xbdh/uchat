@@ -13,17 +13,21 @@ class CredentialLoading extends CredentialState {
   List<Object> get props => [];
 }
 
-class CredentialPhoneAuthSmsCodeReceived extends CredentialState {
+
+
+class CredentialSignupSuccess extends CredentialState {
+  String uid;
+  CredentialSignupSuccess({required this.uid});
   @override
   List<Object> get props => [];
 }
 
-class CredentialSuccess extends CredentialState {
+class CredentialLoginSuccess extends CredentialState {
   @override
   List<Object> get props => [];
 }
 
-class CredentialPhoneAuthProfileInfo extends CredentialState {
+class CredentialInfoSuccess extends CredentialState {
   @override
   List<Object> get props => [];
 }

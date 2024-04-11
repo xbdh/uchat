@@ -14,11 +14,11 @@ abstract class UserRemoteDataSource {
   Future<void> saveUserDataToRemote(UserModel user);
   Future<UserModel> getUserDataFromRemote(String uid);
   Future<String> storeFileToRemote(File file, String uid);
-
+  Future<String> getCurrentUID();
 
   Future<bool> isSignIn();
   Future<void> signOut();
-  Future<String> getCurrentUID();
+
   Future<void> createUser(UserModel user);
   Future<void> updateUser(UserModel user);
   Stream<List<UserModel>> getAllUsers();

@@ -1,6 +1,8 @@
 import 'package:uchat/main_injection_container.dart';
 import 'package:uchat/user/data/data_sources/local/user_local_data_sources.dart';
-import 'package:uchat/user/domain/use_cases/user/sava_data.dart';
+import 'package:uchat/user/domain/use_cases/credential/is_signin_usecase.dart';
+import 'package:uchat/user/domain/use_cases/credential/signout_usecase.dart';
+import 'package:uchat/user/domain/use_cases/user/save_data.dart';
 import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
 import 'package:uchat/user/presentation/cubit/credential/credential_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
@@ -10,10 +12,13 @@ import 'data/data_sources/remote/user_remote_data_sources.dart';
 import 'data/data_sources/remote/user_remote_data_sources_impl.dart';
 import 'data/repositories/use_repositories_impl.dart';
 import 'domain/repositories/user_repositories.dart';
-import 'domain/use_cases/auth/login_usecase.dart';
-import 'domain/use_cases/auth/signup_usecase.dart';
-import 'domain/use_cases/credential/verify_phone_number_usecase.dart';
-import 'domain/use_cases/auth/check_user_exists_usecase.dart';
+import 'domain/use_cases/credential/get_current_uid.dart';
+import 'domain/use_cases/credential/login_usecase.dart';
+import 'domain/use_cases/credential/signup_usecase.dart';
+import 'domain/use_cases/credential/check_user_exists_usecase.dart';
+import 'domain/use_cases/user/get_data_local_usecase.dart';
+import 'domain/use_cases/user/get_data_remote_usecase.dart';
+import 'domain/use_cases/user/save_data_local_usecase.dart';
 
 Future<void> userInjectionContainer() async {
   // * CUBITS INJECTION
@@ -21,27 +26,32 @@ Future<void> userInjectionContainer() async {
 
   sl.registerFactory<CredentialCubit>(() =>
       CredentialCubit(
-        verifyPhoneNumberUseCase: sl(),
+
+        logInUseCase: sl(),
+        signUpUseCase: sl(),
+        saveUserUseCase: sl(),
+
       ));
   sl.registerFactory<AuthCubit>(() =>
       AuthCubit(
-        logInUseCase: sl(),
-        signUpUseCase: sl(),
-        userCheckExistUseCase: sl(),
+        getCurrentUidUseCase: sl(),
+        isSignInUseCase: sl(),
+        signOutUseCase: sl(),
+        saveDataLocalUseCase: sl(),
+        getDataRemoteUseCase: sl(),
       ));
 
   sl.registerFactory<UserCubit>(() =>
       UserCubit(
         savaDataUseCase: sl(),
         userCheckExistUseCase: sl(),
+        getDataLocalUseCase: sl(),
       ));
 
 
   // * USE CASES INJECTION
 
 
-  sl.registerLazySingleton<VerifyPhoneNumberUseCase>(
-          () => VerifyPhoneNumberUseCase(repository: sl.call()));
 
   sl.registerLazySingleton<LogInUseCase>(
           () => LogInUseCase(repository: sl.call()));
@@ -51,8 +61,28 @@ Future<void> userInjectionContainer() async {
 
   sl.registerLazySingleton<CheckUserExistsUseCase>(
           () => CheckUserExistsUseCase(repository: sl.call()));
+
  sl.registerLazySingleton<SavaDataUseCase>(
           () => SavaDataUseCase(userRepository: sl.call()));
+
+  sl.registerLazySingleton<GetCurrentUidUseCase>(
+          () => GetCurrentUidUseCase(repository: sl.call()));
+  sl.registerLazySingleton<SignOutUseCase>(
+          () => SignOutUseCase(repository: sl.call()));
+
+
+  sl.registerLazySingleton<IsSignInUseCase>(
+          () => IsSignInUseCase(repository: sl.call()));
+
+  sl.registerLazySingleton<SaveDataLocalUseCase >(
+
+          () => SaveDataLocalUseCase(userRepository: sl.call()));
+  sl.registerLazySingleton<GetDataRemoteUseCase>(
+          () => GetDataRemoteUseCase(userRepository: sl.call()));
+// GetDataLocalUseCase
+  sl.registerLazySingleton<GetDataLocalUseCase>(
+          () => GetDataLocalUseCase(repository: sl.call()));
+
 
   // * REPOSITORY & DATA SOURCES INJECTION
 

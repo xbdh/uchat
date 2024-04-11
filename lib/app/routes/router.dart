@@ -15,8 +15,10 @@ final chatRouter = GoRouter(
     ),
     GoRoute(
       name: "Home",
-      path: '/home',
-      builder: (context, state) => const HomePage(),
+      path: '/home/:uid',
+      builder: (context, state) => HomePage(
+        uid: state.pathParameters['uid']!,
+      ),
     ),
 
     GoRoute(
@@ -27,8 +29,11 @@ final chatRouter = GoRouter(
 
     GoRoute(
       name: "Info",
-      path: '/info',
-      builder: (context, state) => const InfoPage(),
+      path: '/info/:uid/:email',
+      builder: (context, state) => InfoPage(
+        email: state.pathParameters['email']!,
+        uid: state.pathParameters['uid']!,
+      ),
     )
   ],
 );

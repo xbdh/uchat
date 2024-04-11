@@ -13,7 +13,9 @@ import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 
 class InfoPage extends StatefulWidget {
-  const InfoPage({super.key});
+   final String email;
+   final String uid;
+   const InfoPage({super.key, required this.email, required this.uid});
 
   @override
   State<InfoPage> createState() => _InfoPAgeState();
@@ -99,10 +101,19 @@ class _InfoPAgeState extends State<InfoPage> {
   }
 
   void savaDataRemote(File? finalImage) {
+    // String? id= BlocProvider.of<AuthCubit>(context).uid;
+    // print("id+++++++++++"  );
+    // print(id);
+    //  Map p = GoRouterState.of(context).pathParameters as Map<String, dynamic>;
+    //  String email = p['email'] as String;
+    //  String uid = p['uid'] as String;
+
     UserEntity user = UserEntity(
-        uid: BlocProvider.of<AuthCubit>(context).uid!,
+        uid: widget.uid,
         name: _nameController.text.trim(),
-        email: '',
+        // get email from route
+
+        email: widget.email,
         image: '',
         token: '',
         aboutMe: 'hey there! I am using uchat.',

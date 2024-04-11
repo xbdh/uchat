@@ -173,6 +173,9 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   Future<String> logInWithEmailandPassword(String email, String password) async {
     try {
      final c= await auth.signInWithEmailAndPassword(email: email, password: password);
+    print("+++++++++++");
+     print(c.user!.uid);
+     print(c);
      return c.user!.uid;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -188,6 +191,9 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   Future<String> signupWithEmailandPassword(String email, String password) async {
     try {
      final UserCredential= await auth.createUserWithEmailAndPassword(email: email, password: password);
+     print("+++++++++++");
+     print(UserCredential);
+      print(UserCredential.user!.uid);
      return UserCredential.user!.uid;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -223,10 +229,12 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   }
 
   @override
-  Future<String> storeFileToRemote(File file, String uid) {
+  Future<String> storeFileToRemote(File file, String uid) async {
     String reference ="${StoreKeyManager.userAvatar}/$uid";
-    UploadTask task = storage.ref(reference).putFile(file);
-
-    return task.snapshot.ref.getDownloadURL();
+    UploadTask task = storage.ref().child(reference).putFile(file);
+    TaskSnapshot snapshot = await task.whenComplete(() => null);
+    String downloadUrl= await snapshot.ref.getDownloadURL();
+   //copilot kengwo
+    return downloadUrl;
   }
 }
