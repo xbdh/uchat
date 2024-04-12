@@ -132,9 +132,8 @@ class _InfoPAgeState extends State<InfoPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<UserCubit, UserState>(
       listener: (context, userState) {
-        final u = BlocProvider.of<UserCubit>(context).userEntity;
         if (userState is UserSavaDataSuccess) {
-          context.goNamed("Home");
+          context.goNamed("Home", pathParameters: {'uid': widget.uid});
         }
         if (userState is UserSavaDataFail) {
           showSnackBar(context: context, message: "Failed to save data ");

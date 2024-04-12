@@ -21,3 +21,12 @@ class UnAuthenticated extends AuthState {
   @override
   List<Object> get props => [];
 }
+class AuthLogOutSuccess extends AuthState {
+  @override
+  List<Object> get props => [];
+}
+
+class AuthLogOutFail extends AuthState {
+  @override
+  List<Object> get props => [];
+}

@@ -23,6 +23,8 @@ class CredentialSignupSuccess extends CredentialState {
 }
 
 class CredentialLoginSuccess extends CredentialState {
+  String uid;
+  CredentialLoginSuccess({required this.uid});
   @override
   List<Object> get props => [];
 }

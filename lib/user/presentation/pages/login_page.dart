@@ -33,12 +33,14 @@ class _LoginPageState extends State<LoginPage> {
 
           context.goNamed("Info", pathParameters: {'uid': uid,"email": email});
         } else if (credentialState is CredentialFailure) {
-          debugPrint("Sign up failed");
+          debugPrint("sign up or login  failed");
         } else if (credentialState is CredentialLoginSuccess) {
+          setState(() {
+            uid = credentialState.uid;
+          });
 
-          context.goNamed("Home");
-        } else if (credentialState is CredentialFailure) {
-          debugPrint("Sign up failed");
+          context.goNamed("Home",pathParameters: {'uid': uid});
+          //context.goNamed("Info", pathParameters: {'uid': uid,"email": email});
         }
       },
       builder: (context, credentialState) {
@@ -52,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                 // }else {
                   BlocProvider.of<CredentialCubit>(context).submitLogIn(
                       email: data.name, password: data.password);
-                  if (credentialState is CredentialSignupSuccess) {
+                  if (credentialState is CredentialLoginSuccess) {
                     return null;
                   } else {
                     return 'Login failed';

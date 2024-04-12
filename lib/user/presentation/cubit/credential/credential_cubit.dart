@@ -35,7 +35,9 @@ class CredentialCubit extends Cubit<CredentialState> {
     try {
       String uid=await logInUseCase.call(email, password);
 
-      emit(CredentialLoginSuccess());
+      emit(CredentialLoginSuccess(
+        uid: uid
+      ));
     } catch (_) {
       emit(CredentialFailure());
     }

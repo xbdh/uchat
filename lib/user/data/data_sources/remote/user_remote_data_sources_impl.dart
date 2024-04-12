@@ -79,10 +79,10 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
 
   @override
-  Stream<List<UserModel>> getSingleUser(String uid) {
-    final userCollection =
-    fireStore.collection(FirebaseCollectionManager.users).where("uid", isEqualTo: uid);
-    return userCollection.snapshots().map((querySnapshot) => querySnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList());
+  Stream<UserModel> getSingleUser(String uid) {
+    final documentSnapshot = fireStore.collection(FirebaseCollectionManager.users).doc(uid);
+    return documentSnapshot.snapshots().map((event) => UserModel.fromSnapshot(event));
+    // return userCollection.snapshots().map((querySnapshot) => querySnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList());
   }
 
   @override
@@ -111,7 +111,9 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   }
 
   @override
-  Future<void> signOut() async => auth.signOut();
+  Future<void> signOut() async{
+    await auth.signOut();
+  }
 
   @override
   Future<void> updateUser(UserModel user) async {

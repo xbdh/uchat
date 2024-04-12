@@ -47,7 +47,7 @@ class UserCubit extends Cubit<UserState> {
       emit(UserSavaDataFail());
     }
   }
-  Future<UserEntity?> getDataLocal() async {
+  Future<void> getDataLocal() async {
    try {
 
       final user = await getDataLocalUseCase.call();

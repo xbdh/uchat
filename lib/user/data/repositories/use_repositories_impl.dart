@@ -34,10 +34,13 @@ class UserRepositoryImpl implements UserRepository {
 
 
   @override
-  Stream<List<UserEntity>> getSingleUser(String uid) {
-    Stream<List<UserModel>> userModel=remoteDataSource.getSingleUser(uid);
-    Stream<List<UserEntity>> userEntity=userModel.map((event) => event.map((e) => UserEntity.fromUserModel(e)).toList());
+  Stream<UserEntity> getSingleUser(String uid) {
+    Stream<UserModel> userModel=remoteDataSource.getSingleUser(uid);
+    // convert stream of user model to stream of user entity
+    final Stream<UserEntity> userEntity=userModel.map((event) => UserEntity.fromUserModel(event));
     return userEntity;
+    // Stream<UserEntity> userEntity=userModel.map((event) => event.map((e) => UserEntity.fromUserModel(e)).toList());
+    // return userEntity;
   }
     @override
     Future<bool> isSignIn() async => remoteDataSource.isSignIn();

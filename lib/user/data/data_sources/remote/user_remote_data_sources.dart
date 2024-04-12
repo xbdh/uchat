@@ -22,7 +22,7 @@ abstract class UserRemoteDataSource {
   Future<void> createUser(UserModel user);
   Future<void> updateUser(UserModel user);
   Stream<List<UserModel>> getAllUsers();
-  Stream<List<UserModel>> getSingleUser(String uid);
+  Stream<UserModel> getSingleUser(String uid);
 
   // Future<List<ContactEntity>> getDeviceNumber();
 }

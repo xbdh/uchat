@@ -29,6 +29,6 @@ abstract class UserRepository {
   Future<void> createUser(UserEntity user);
   Future<void> updateUser(UserEntity user);
   Stream<List<UserEntity>> getAllUsers();
-  Stream<List<UserEntity>> getSingleUser(String uid);
+  Stream<UserEntity> getSingleUser(String uid);
 
 }
