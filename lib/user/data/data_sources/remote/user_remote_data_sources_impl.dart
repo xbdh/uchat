@@ -41,8 +41,8 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       createdAt: user.createdAt,
       isOnline: user.isOnline,
       friendsUIDs: user.friendsUIDs,
-      getFriendRequestsUIDs: user.getFriendRequestsUIDs,
-      sentFriendRequestsUIDs: user.sentFriendRequestsUIDs,
+      friendRequestsFromUIDs: user.friendRequestsFromUIDs,
+      sentFriendRequestsToUIDs: user.sentFriendRequestsToUIDs,
     ).toMap();
 
 
@@ -66,10 +66,17 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   }
 
   @override
-  Stream<List<UserModel>> getAllUsers() {
-    final userCollection =
-    fireStore.collection(FirebaseCollectionManager.users);
-    return userCollection.snapshots().map((querySnapshot) => querySnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList());
+  Stream<List<UserModel>> getAllUsers(bool includeMe) {
+    if (includeMe) {
+      final userCollection =
+      fireStore.collection(FirebaseCollectionManager.users);
+      return userCollection.snapshots().map((querySnapshot) => querySnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList());
+    }else {
+      final currentUID = auth.currentUser!.uid;
+      final querySnapshot =
+      fireStore.collection(FirebaseCollectionManager.users).where("uid", isNotEqualTo: currentUID).snapshots();
+      return querySnapshot.map((querySnapshot) => querySnapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList());
+    }
 
   }
 
@@ -238,5 +245,42 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     String downloadUrl= await snapshot.ref.getDownloadURL();
    //copilot kengwo
     return downloadUrl;
+  }
+
+  @override
+  Future<void> acceptFriendRequest(String friendUID, String myUID) {
+    // TODO: implement acceptFriendRequest
+    throw UnimplementedError();
+
+  }
+
+  @override
+  Future<void> cancelFriendRequest(String friendUID, String myUID) {
+    // TODO: implement cancelFriendRequest
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<UserModel>> getFriendRequests(String uid) {
+    // TODO: implement getFriendRequests
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<UserModel>> getFriends(String uid) {
+    // TODO: implement getFriends
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> removeFriend(String friendUID, String myUID) {
+    // TODO: implement removeFriend
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> sendFriendRequest(String friendUID, String myUID) {
+    // TODO: implement sendFriendRequest
+    throw UnimplementedError();
   }
 }

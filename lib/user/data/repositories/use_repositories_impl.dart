@@ -21,9 +21,9 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Stream<List<UserEntity>> getAllUsers() {
+  Stream<List<UserEntity>> getAllUsers(bool includeMe) {
 
-    Stream<List<UserModel>> userModel=remoteDataSource.getAllUsers();
+    Stream<List<UserModel>> userModel=remoteDataSource.getAllUsers(includeMe);
     Stream<List<UserEntity>> userEntity=userModel.map((event) => event.map((e) => UserEntity.fromUserModel(e)).toList());
 
     return userEntity;
@@ -113,6 +113,42 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<String> storeFileToRemote(File file, String uid) async {
     return remoteDataSource.storeFileToRemote(file, uid);
+  }
+
+  @override
+  Future<void> acceptFriendRequest(String friendUID, String myUID) async {
+    await remoteDataSource.acceptFriendRequest(friendUID, myUID);
+
+  }
+
+  @override
+  Future<void> cancelFriendRequest(String friendUID, String myUID) async {
+    await remoteDataSource.cancelFriendRequest(friendUID, myUID);
+  }
+
+  @override
+  Future<List<UserEntity>> getFriendRequests(String uid) async  {
+    List<UserModel> userModel=await remoteDataSource.getFriendRequests(uid);
+    List<UserEntity> userEntity=userModel.map((e) => UserEntity.fromUserModel(e)).toList();
+    return userEntity;
+  }
+
+  @override
+  Future<List<UserEntity>> getFriends(String uid)  async {
+    List<UserModel> userModel=await remoteDataSource.getFriends(uid);
+    List<UserEntity> userEntity=userModel.map((e) => UserEntity.fromUserModel(e)).toList();
+    return userEntity;
+
+  }
+
+  @override
+  Future<void> removeFriend(String friendUID, String myUID) async {
+    await remoteDataSource.removeFriend(friendUID, myUID);
+  }
+
+  @override
+  Future<void> sendFriendRequest(String friendUID, String myUID) async {
+    await remoteDataSource.sendFriendRequest(friendUID, myUID);
   }
 
 

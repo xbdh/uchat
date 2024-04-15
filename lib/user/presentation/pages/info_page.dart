@@ -122,8 +122,8 @@ class _InfoPAgeState extends State<InfoPage> {
         createdAt: '',
         isOnline: true,
         friendsUIDs: [],
-        getFriendRequestsUIDs: [],
-        sentFriendRequestsUIDs: [],
+        friendRequestsFromUIDs: [],
+        sentFriendRequestsToUIDs: [],
         );
     BlocProvider.of<UserCubit>(context).saveData(user, finalImage);
   }

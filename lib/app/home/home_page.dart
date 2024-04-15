@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uchat/app/widgets/user_avatar.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
+import 'package:uchat/user/presentation/pages/people_page.dart';
 
 import '../../main.dart';
 
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> pages = [
     const Chat(),
     const Group(),
-    const People(),
+    const PeoplePage()
   ];
 
   @override
@@ -58,7 +59,10 @@ class _HomePageState extends State<HomePage> {
                             : '',
                         onPressed: () {
                           context.pushNamed("Profile",
-                              pathParameters: {'uid': widget.uid});
+                              pathParameters: {
+                            'uid': widget.uid,
+                            'loginUid': widget.uid
+                          });
                         },
                         radius: 20,
                       ),

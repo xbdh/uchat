@@ -21,8 +21,17 @@ abstract class UserRemoteDataSource {
 
   Future<void> createUser(UserModel user);
   Future<void> updateUser(UserModel user);
-  Stream<List<UserModel>> getAllUsers();
+  Stream<List<UserModel>> getAllUsers(bool includeMe);
   Stream<UserModel> getSingleUser(String uid);
 
+  Future<void> sendFriendRequest(String friendUID, String myUID);
+  Future<void> acceptFriendRequest(String friendUID, String myUID);
+  Future<void> cancelFriendRequest(String friendUID, String myUID);
+  Future<void> removeFriend(String friendUID, String myUID);
+
+  // get friends
+  Future<List<UserModel>> getFriends(String uid);
+  // get friend requests
+  Future<List<UserModel>> getFriendRequests(String uid);
   // Future<List<ContactEntity>> getDeviceNumber();
 }

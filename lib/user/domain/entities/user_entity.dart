@@ -15,8 +15,8 @@ class UserEntity extends Equatable {
   final String createdAt;
   final bool isOnline;
   final List<String> friendsUIDs;
-  final List<String> getFriendRequestsUIDs;
-  final List<String> sentFriendRequestsUIDs;
+  final List<String> friendRequestsFromUIDs;
+  final List<String> sentFriendRequestsToUIDs;
 
   const UserEntity({
     required this.uid,
@@ -30,8 +30,8 @@ class UserEntity extends Equatable {
     required this.createdAt,
     required this.isOnline,
     required this.friendsUIDs,
-    required this.getFriendRequestsUIDs,
-    required this.sentFriendRequestsUIDs,
+    required this.friendRequestsFromUIDs,
+    required this.sentFriendRequestsToUIDs,
   });
 
   @override
@@ -47,8 +47,8 @@ class UserEntity extends Equatable {
     createdAt,
     isOnline,
     friendsUIDs,
-    getFriendRequestsUIDs,
-    sentFriendRequestsUIDs,
+    friendRequestsFromUIDs,
+    sentFriendRequestsToUIDs,
   ];
 
   factory UserEntity.fromUserModel(UserModel userModel) {
@@ -64,8 +64,8 @@ class UserEntity extends Equatable {
       createdAt: userModel.createdAt,
       isOnline: userModel.isOnline,
       friendsUIDs: userModel.friendsUIDs,
-      getFriendRequestsUIDs: userModel.getFriendRequestsUIDs,
-      sentFriendRequestsUIDs: userModel.sentFriendRequestsUIDs,
+      friendRequestsFromUIDs: userModel.friendRequestsFromUIDs,
+      sentFriendRequestsToUIDs: userModel.sentFriendRequestsToUIDs,
     );
   }
 
@@ -81,8 +81,8 @@ class UserEntity extends Equatable {
     String? createdAt,
     bool? isOnline,
     List<String>? friendsUIDs,
-    List<String>? getFriendRequestsUIDs,
-    List<String>? sentFriendRequestsUIDs,
+    List<String>? friendRequestsFromUIDs,
+    List<String>? sentFriendRequestsToUIDs,
   }) {
     return UserEntity(
       uid: uid ?? this.uid,
@@ -96,8 +96,8 @@ class UserEntity extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       isOnline: isOnline ?? this.isOnline,
       friendsUIDs: friendsUIDs ?? this.friendsUIDs,
-      getFriendRequestsUIDs: getFriendRequestsUIDs ?? this.getFriendRequestsUIDs,
-      sentFriendRequestsUIDs: sentFriendRequestsUIDs ?? this.sentFriendRequestsUIDs,
+      friendRequestsFromUIDs: friendRequestsFromUIDs ?? this.friendRequestsFromUIDs,
+      sentFriendRequestsToUIDs: sentFriendRequestsToUIDs ?? this.sentFriendRequestsToUIDs,
     );
   }
 }

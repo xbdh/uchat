@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:uchat/app/constants/asserts.dart';
 class DisplayUserAvatar extends StatelessWidget {
  const DisplayUserAvatar({
     super.key,
@@ -20,7 +21,7 @@ class DisplayUserAvatar extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: radius,
-          backgroundImage: const AssetImage('assets/images/chat.png'),
+          backgroundImage: const AssetImage(AssetsManager.userAvtar),
         ),
         Positioned(
           bottom: 0,

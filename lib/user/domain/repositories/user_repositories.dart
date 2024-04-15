@@ -28,7 +28,20 @@ abstract class UserRepository {
 
   Future<void> createUser(UserEntity user);
   Future<void> updateUser(UserEntity user);
-  Stream<List<UserEntity>> getAllUsers();
+
+
+  Stream<List<UserEntity>> getAllUsers(bool includeMe);
   Stream<UserEntity> getSingleUser(String uid);
+
+
+  Future<void> sendFriendRequest(String friendUID, String myUID);
+  Future<void> acceptFriendRequest(String friendUID, String myUID);
+  Future<void> cancelFriendRequest(String friendUID, String myUID);
+  Future<void> removeFriend(String friendUID, String myUID);
+
+  // get friends
+  Future<List<UserEntity>> getFriends(String uid);
+  // get friend requests
+  Future<List<UserEntity>> getFriendRequests(String uid);
 
 }

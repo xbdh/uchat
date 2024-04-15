@@ -39,8 +39,9 @@ final chatRouter = GoRouter(
     ),
     GoRoute(
       name: "Profile",
-      path: '/profile/:uid',
+      path: '/profile/:uid/:loginUid',
       builder: (context, state) =>  ProfilePage(
+        loginUid: state.pathParameters['loginUid']!,
         uid: state.pathParameters['uid']!,
       ),
     ),

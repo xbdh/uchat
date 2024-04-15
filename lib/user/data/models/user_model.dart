@@ -16,8 +16,8 @@ class UserModel extends Equatable  {
   final String createdAt;
   final bool isOnline;
   final List<String> friendsUIDs;
-  final List<String> getFriendRequestsUIDs;
-  final List<String> sentFriendRequestsUIDs;
+  final List<String> friendRequestsFromUIDs;
+  final List<String> sentFriendRequestsToUIDs;
 
   const UserModel({
     required this.uid,
@@ -31,8 +31,8 @@ class UserModel extends Equatable  {
     required this.createdAt,
     required this.isOnline,
     required this.friendsUIDs,
-    required this.getFriendRequestsUIDs,
-    required this.sentFriendRequestsUIDs,
+    required this.friendRequestsFromUIDs,
+    required this.sentFriendRequestsToUIDs,
   });
 
   factory UserModel.fromSnapshot(DocumentSnapshot snapshot) {
@@ -51,8 +51,8 @@ class UserModel extends Equatable  {
       createdAt: snap['createdAt'],
       isOnline: snap['isOnline'],
       friendsUIDs: List<String>.from(snap['friendsUIDs']),
-      getFriendRequestsUIDs: List<String>.from(snap['getFriendRequestsUIDs']),
-      sentFriendRequestsUIDs: List<String>.from(snap['sentFriendRequestsUIDs']),
+      friendRequestsFromUIDs: List<String>.from(snap['friendRequestsFromUIDs']),
+      sentFriendRequestsToUIDs: List<String>.from(snap['sentFriendRequestsToUIDs']),
     );
   }
   Map<String, dynamic> toMap() =>{
@@ -67,8 +67,8 @@ class UserModel extends Equatable  {
     'createdAt': createdAt,
     'isOnline': isOnline,
     'friendsUIDs': friendsUIDs,
-    'getFriendRequestsUIDs': getFriendRequestsUIDs,
-    'sentFriendRequestsUIDs': sentFriendRequestsUIDs,
+    'friendRequestsFromUIDs': friendRequestsFromUIDs,
+    'sentFriendRequestsToUIDs': sentFriendRequestsToUIDs,
   };
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -84,8 +84,8 @@ class UserModel extends Equatable  {
       createdAt: map['createdAt'],
       isOnline: map['isOnline'],
       friendsUIDs: List<String>.from(map['friendsUIDs']),
-      getFriendRequestsUIDs: List<String>.from(map['getFriendRequestsUIDs']),
-      sentFriendRequestsUIDs: List<String>.from(map['sentFriendRequestsUIDs']),
+      friendRequestsFromUIDs: List<String>.from(map['friendRequestsFromUIDs']),
+      sentFriendRequestsToUIDs: List<String>.from(map['sentFriendRequestsToUIDs']),
     );
   }
 
@@ -102,8 +102,8 @@ class UserModel extends Equatable  {
     createdAt,
     isOnline,
     friendsUIDs,
-    getFriendRequestsUIDs,
-    sentFriendRequestsUIDs,
+    friendRequestsFromUIDs,
+    sentFriendRequestsToUIDs,
   ];
 
    factory UserModel.fromEntity(UserEntity entity) {
@@ -119,8 +119,8 @@ class UserModel extends Equatable  {
       createdAt: entity.createdAt,
       isOnline: entity.isOnline,
       friendsUIDs: entity.friendsUIDs,
-      getFriendRequestsUIDs: entity.getFriendRequestsUIDs,
-      sentFriendRequestsUIDs: entity.sentFriendRequestsUIDs,
+      friendRequestsFromUIDs: entity.friendRequestsFromUIDs,
+      sentFriendRequestsToUIDs: entity.sentFriendRequestsToUIDs,
     );
   }
 

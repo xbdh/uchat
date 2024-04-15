@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
+import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 
 import '../constants/asserts.dart';
@@ -18,9 +19,10 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   void initState() {
+    // Future.delayed(const Duration(seconds: 2), () {
+    // });
+    BlocProvider.of<AuthCubit>(context).appStarted();
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-    });
   }
 
   @override
@@ -30,6 +32,7 @@ class _LandingPageState extends State<LandingPage> {
         if (state is Authenticated) {
            String uid = state.uid;
            BlocProvider.of<UserCubit>(context).getDataLocal();
+           BlocProvider.of<UidCubit>(context).setUid(uid);
           context.goNamed("Home", pathParameters: {"uid": uid});
         } else if (state is UnAuthenticated) {
           context.goNamed("Login");
