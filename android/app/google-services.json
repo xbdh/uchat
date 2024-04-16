@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "994033363468",
-    "project_id": "rain-911c9",
-    "storage_bucket": "rain-911c9.appspot.com"
+    "project_number": "265502539065",
+    "project_id": "rain-bfbbf",
+    "storage_bucket": "rain-bfbbf.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:994033363468:android:40247c32783c3346475c29",
+        "mobilesdk_app_id": "1:265502539065:android:641e55ec968214e10afce8",
         "android_client_info": {
           "package_name": "xyz.jicyu.uchat"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBLK3TBbPYtUIcSIL5VN9t2vUc-n9MxIUM"
+          "current_key": "AIzaSyBZri8a7WVg7vHs6HDgOz8CzJyaptPkjQw"
         }
       ],
       "services": {

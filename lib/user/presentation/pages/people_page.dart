@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uchat/app/widgets/user_avatar.dart';
-import 'package:uchat/user/presentation/cubit/get_user/get_user_cubit.dart';
 import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
+import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 
 class PeoplePage extends StatefulWidget {
   // final String uid;
@@ -18,8 +18,12 @@ class PeoplePage extends StatefulWidget {
 class _PeoplePageState extends State<PeoplePage> {
   @override
   void initState() {
-    BlocProvider.of<GetUserCubit>(context).getAllUser(false);
+    BlocProvider.of<UserCubit>(context).getAllUser(false);
     super.initState();
+  }
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -38,7 +42,7 @@ class _PeoplePageState extends State<PeoplePage> {
                 ),
               ),
               Expanded(
-                child: BlocBuilder<GetUserCubit, GetUserState>(
+                child: BlocBuilder<UserCubit, UserState>(
                     builder: (context, getUserState) {
                   if (getUserState is GetUsersExpectMeLoaded) {
                     final users = getUserState.allUser;
@@ -70,10 +74,10 @@ class _PeoplePageState extends State<PeoplePage> {
                             onTap: () {
 
                               context.pushNamed(
-                                "Profile",
-                                pathParameters: {
-                                  'uid': users[index].uid,
-                                  'loginUid': uid
+                                "OtherProfile",
+                                 queryParameters: {
+                                  "uid": users[index].uid,
+                                  "loginUid": uid,
                                 },
                               );
                             },
@@ -81,12 +85,14 @@ class _PeoplePageState extends State<PeoplePage> {
                         },
                       );
                     }
-                  } else if (getUserState is GetUserLoading) {
+                  } else if (getUserState is UserLoading) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  }else{
-                    return const SizedBox.shrink();
+                  }else if (getUserState is UserGetAllUsersFail) {
+                    return const Text("people page fuck");
+                  }else {
+                    return const Text("people page fuck2");
                   }
 
                 }),

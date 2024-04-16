@@ -182,9 +182,9 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   Future<String> logInWithEmailandPassword(String email, String password) async {
     try {
      final c= await auth.signInWithEmailAndPassword(email: email, password: password);
-    print("+++++++++++");
-     print(c.user!.uid);
-     print(c);
+    // print("+++++++++++");
+    //  print(c.user!.uid);
+    //  print(c);
      return c.user!.uid;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -199,11 +199,11 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   @override
   Future<String> signupWithEmailandPassword(String email, String password) async {
     try {
-     final UserCredential= await auth.createUserWithEmailAndPassword(email: email, password: password);
-     print("+++++++++++");
-     print(UserCredential);
-      print(UserCredential.user!.uid);
-     return UserCredential.user!.uid;
+     final userCredential= await auth.createUserWithEmailAndPassword(email: email, password: password);
+     // print("+++++++++++");
+     // print(UserCredential);
+     //  print(UserCredential.user!.uid);
+     return userCredential.user!.uid;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         // toast("The password provided is too weak.");
@@ -248,39 +248,105 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   }
 
   @override
-  Future<void> acceptFriendRequest(String friendUID, String myUID) {
-    // TODO: implement acceptFriendRequest
-    throw UnimplementedError();
-
+  Future<void> acceptFriendRequest(String friendUID, String myUID) async{
+    try {
+      final userCollection = fireStore.collection(FirebaseCollectionManager.users);
+      userCollection.doc(myUID).update({
+        "friendRequestsFromUIDs": FieldValue.arrayRemove([friendUID]),
+        "friendsUIDs": FieldValue.arrayUnion([friendUID])
+      });
+      userCollection.doc(friendUID).update({
+        "sentFriendRequestsToUIDs": FieldValue.arrayRemove([myUID]),
+        "friendsUIDs": FieldValue.arrayUnion([myUID])
+      });
+    } catch (e) {
+      throw Exception("Error occur while accepting friend request");
+    }
   }
 
   @override
-  Future<void> cancelFriendRequest(String friendUID, String myUID) {
-    // TODO: implement cancelFriendRequest
-    throw UnimplementedError();
+  Future<void> cancelFriendRequest(String friendUID, String myUID)async {
+    try {
+      final userCollection = fireStore.collection(FirebaseCollectionManager.users);
+      userCollection.doc(myUID).update({
+        "sentFriendRequestsToUIDs": FieldValue.arrayRemove([friendUID])
+      });
+      userCollection.doc(friendUID).update({
+        "friendRequestsFromUIDs": FieldValue.arrayRemove([myUID])
+      });
+    } catch (e) {
+      throw Exception("Error occur while canceling friend request");
+    }
   }
 
   @override
-  Future<List<UserModel>> getFriendRequests(String uid) {
-    // TODO: implement getFriendRequests
-    throw UnimplementedError();
+  Future<List<UserModel>> getFriendRequests(String uid) async {
+    List<UserModel> friendRequests = [];
+    try {
+      final userCollection = fireStore.collection(FirebaseCollectionManager.users);
+      final userDoc = await userCollection.doc(uid).get();
+
+
+      final friendRequestsUIDs = userDoc.get("friendRequestsFromUIDs");
+      for (String friendRequestUID in friendRequestsUIDs) {
+        final friendRequestDoc = await userCollection.doc(friendRequestUID).get();
+        friendRequests.add(UserModel.fromSnapshot(friendRequestDoc));
+      }
+      return friendRequests;
+    } catch (e) {
+      throw Exception("Error occur while getting friend requests");
+    }
   }
 
   @override
-  Future<List<UserModel>> getFriends(String uid) {
-    // TODO: implement getFriends
-    throw UnimplementedError();
+  Future<List<UserModel>> getFriends(String uid) async {
+    List<UserModel> friends = [];
+    try {
+      final userCollection = fireStore.collection(FirebaseCollectionManager.users);
+      final userDoc = await userCollection.doc(uid).get();
+
+      //print("userDoc+++++= $userDoc");
+
+      final friendsUIDs = userDoc.get("friendsUIDs");
+      for (String friendUID in friendsUIDs) {
+        final friendDoc = await userCollection.doc(friendUID).get();
+        friends.add(UserModel.fromSnapshot(friendDoc));
+      }
+
+      //print("friends+++++= $friends");
+      return friends;
+    } catch (e) {
+      throw Exception("Error occur while getting friends");
+    }
   }
 
   @override
-  Future<void> removeFriend(String friendUID, String myUID) {
-    // TODO: implement removeFriend
-    throw UnimplementedError();
+  Future<void> removeFriend(String friendUID, String myUID) async {
+    try {
+      final userCollection = fireStore.collection(FirebaseCollectionManager.users);
+      userCollection.doc(myUID).update({
+        "friendsUIDs": FieldValue.arrayRemove([friendUID])
+      });
+      userCollection.doc(friendUID).update({
+        "friendsUIDs": FieldValue.arrayRemove([myUID])
+      });
+    } catch (e) {
+      throw Exception("Error occur while removing friend");
+    }
   }
 
   @override
-  Future<void> sendFriendRequest(String friendUID, String myUID) {
-    // TODO: implement sendFriendRequest
-    throw UnimplementedError();
+  Future<void> sendFriendRequest(String friendUID, String myUID) async{
+    try {
+      final userCollection = fireStore.collection(FirebaseCollectionManager.users);
+      userCollection.doc(myUID).update({
+        "sentFriendRequestsToUIDs": FieldValue.arrayUnion([friendUID])
+      });
+      userCollection.doc(friendUID).update({
+        "friendRequestsFromUIDs": FieldValue.arrayUnion([myUID])
+      });
+    } catch (e) {
+      throw Exception("Error occur while sending friend request");
+    }
   }
 }

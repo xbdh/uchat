@@ -18,7 +18,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String email = '';
-  String uid = '';
+
   @override
   Widget build(BuildContext context) {
     //final authProvider=BlocProvider.of<AuthCubit>(context);
@@ -27,17 +27,17 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, credentialState) {
 
         if (credentialState is CredentialSignupSuccess) {
-          setState(() {
-            uid = credentialState.uid;
-          });
+
+           final  uid = credentialState.uid;
+
 
           context.goNamed("Info", pathParameters: {'uid': uid,"email": email});
         } else if (credentialState is CredentialFailure) {
           debugPrint("sign up or login  failed");
         } else if (credentialState is CredentialLoginSuccess) {
-          setState(() {
-            uid = credentialState.uid;
-          });
+
+            final uid = credentialState.uid;
+
 
           context.goNamed("Home",pathParameters: {'uid': uid});
           //context.goNamed("Info", pathParameters: {'uid': uid,"email": email});

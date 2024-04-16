@@ -7,7 +7,8 @@ import 'package:uchat/user/presentation/cubit/credential/credential_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uchat/user/presentation/cubit/get_user/get_user_cubit.dart';
+import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubit.dart';
+import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
 import 'main_injection_container.dart' as di;
 import 'user/presentation/cubit/user/user_cubit.dart';
@@ -44,10 +45,13 @@ class MyApp extends StatelessWidget {
           create: (context) => di.sl<UserCubit>(),
         ),
         BlocProvider(
-          create: (context) => di.sl<GetUserCubit>(),
+          create: (context) => di.sl<GetSingleUserCubit>(),
         ),
         BlocProvider(
           create: (context) => di.sl<UidCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<FriendRequestCubit>(),
         ),
       ],
       child: AdaptiveTheme(

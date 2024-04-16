@@ -6,12 +6,12 @@ import 'package:uchat/user/domain/entities/user_entity.dart';
 import 'package:uchat/user/presentation/pages/profile_page.dart';
 
 class UserInfoDetailsCard extends StatelessWidget {
-  final String currentUid;
+  final String loginUid;
   final UserEntity userEntity;
 
   const UserInfoDetailsCard({
     super.key,
-    required this.currentUid,
+    required this.loginUid,
     required this.userEntity,
   });
 
@@ -37,31 +37,26 @@ class UserInfoDetailsCard extends StatelessWidget {
                   radius: 50,
                   onPressed: () {},
                 ),
-                const SizedBox(width: 10),
+                //const SizedBox(width: 2),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       userName,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    currentUid == userUid
-                        ? Text(
+                    const SizedBox(width: 5),
+                     Text(
                       userEmail,
                       style: GoogleFonts.openSans(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.w500,
                       )
                     )
-                        :const SizedBox.shrink(),
 
-                    const SizedBox(height: 5,),
-                    ProfileStatus(currentUid: currentUid, userEntity: userEntity),
-
-                    const SizedBox(height: 10,)
 
                   ],
                 ),
@@ -72,7 +67,7 @@ class UserInfoDetailsCard extends StatelessWidget {
               color: Colors.grey,
             ),
             Text(
-              'About me',
+              loginUid == userUid ?'About Me': 'About Her/Him',
               style: GoogleFonts.openSans(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

@@ -129,15 +129,15 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<List<UserEntity>> getFriendRequests(String uid) async  {
     List<UserModel> userModel=await remoteDataSource.getFriendRequests(uid);
-    List<UserEntity> userEntity=userModel.map((e) => UserEntity.fromUserModel(e)).toList();
-    return userEntity;
+    List<UserEntity> userEntitys=userModel.map((e) => UserEntity.fromUserModel(e)).toList();
+    return userEntitys;
   }
 
   @override
   Future<List<UserEntity>> getFriends(String uid)  async {
     List<UserModel> userModel=await remoteDataSource.getFriends(uid);
-    List<UserEntity> userEntity=userModel.map((e) => UserEntity.fromUserModel(e)).toList();
-    return userEntity;
+    List<UserEntity> userEntitys=userModel.map((e) => UserEntity.fromUserModel(e)).toList();
+    return userEntitys;
 
   }
 

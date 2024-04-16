@@ -6,8 +6,10 @@ import 'package:uchat/user/domain/use_cases/user/get_all_user_usecase.dart';
 import 'package:uchat/user/domain/use_cases/user/save_data.dart';
 import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
 import 'package:uchat/user/presentation/cubit/credential/credential_cubit.dart';
+import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubit.dart';
+import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 
-import 'package:uchat/user/presentation/cubit/get_user/get_user_cubit.dart';
+
 import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 
@@ -20,6 +22,12 @@ import 'domain/use_cases/credential/get_current_uid.dart';
 import 'domain/use_cases/credential/login_usecase.dart';
 import 'domain/use_cases/credential/signup_usecase.dart';
 import 'domain/use_cases/credential/check_user_exists_usecase.dart';
+import 'domain/use_cases/friend/accept_friend_request_usecase.dart';
+import 'domain/use_cases/friend/cancle_friend_request_usecase.dart';
+import 'domain/use_cases/friend/get_friend_list_usecase.dart';
+import 'domain/use_cases/friend/get_friend_requests_list_usecase.dart';
+import 'domain/use_cases/friend/remove_friend_usecase.dart';
+import 'domain/use_cases/friend/send_friend_request_usecase.dart';
 import 'domain/use_cases/user/get_data_local_usecase.dart';
 import 'domain/use_cases/user/get_data_remote_usecase.dart';
 import 'domain/use_cases/user/get_single_user_usecase.dart';
@@ -51,17 +59,26 @@ Future<void> userInjectionContainer() async {
         savaDataUseCase: sl(),
         userCheckExistUseCase: sl(),
         getDataLocalUseCase: sl(),
-      ));
-
-  sl.registerFactory<GetUserCubit>(() =>
-      GetUserCubit(
-        getSingleUserUseCase: sl(),
         getAllUsersUseCase: sl(),
       ));
 
+
   sl.registerFactory<UidCubit>(() =>
       UidCubit(
+      ));
+  sl.registerFactory(() =>
+      FriendRequestCubit(
+          acceptFriendRequestUseCase: sl(),
+          cancleFriendRequestUseCase: sl(),
+          getFriendRequestListUseCase: sl(),
+          getFriendListUseCase: sl(),
+          sendFriendRequestUseCase: sl(),
+          removeFriendUseCase:  sl(),
+      ));
 
+  sl.registerFactory(() =>
+      GetSingleUserCubit(
+          getSingleUserUseCase: sl(),
       ));
 
 
@@ -105,6 +122,22 @@ Future<void> userInjectionContainer() async {
 
   sl.registerLazySingleton<GetAllUsersUseCase>(
           () => GetAllUsersUseCase(repository: sl.call()));
+
+
+  sl.registerLazySingleton<AcceptFriendRequestUseCase>(
+          () => AcceptFriendRequestUseCase(repository: sl.call()));
+  sl.registerLazySingleton<CancleFriendRequestUseCase>(
+          () => CancleFriendRequestUseCase(repository: sl.call()));
+  sl.registerLazySingleton<GetFriendRequestListUseCase>(
+          () => GetFriendRequestListUseCase(repository: sl.call()));
+  sl.registerLazySingleton<GetFriendListUseCase>(
+          () => GetFriendListUseCase(repository: sl.call()));
+  sl.registerLazySingleton<SendFriendRequestUseCase>(
+          () => SendFriendRequestUseCase(repository: sl.call()));
+  sl.registerLazySingleton<RemoveFriendUseCase>(
+          () => RemoveFriendUseCase(repository: sl.call()));
+
+
   // * REPOSITORY & DATA SOURCES INJECTION
 
   sl.registerLazySingleton<UserRepository>(

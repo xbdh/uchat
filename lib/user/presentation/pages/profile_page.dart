@@ -4,10 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uchat/app/utils/methods.dart';
-import 'package:uchat/app/widgets/user_info_details_card.dart';
+import 'package:uchat/user/presentation/widgets/user_info_details_card.dart';
 import 'package:uchat/user/domain/entities/user_entity.dart';
 import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
-import 'package:uchat/user/presentation/cubit/get_user/get_user_cubit.dart';
+import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
+
 import 'package:uchat/user/presentation/widgets/setting_list_title.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -43,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    BlocProvider.of<GetUserCubit>(context).getSingleUser(uid: widget.uid);
+    BlocProvider.of<GetSingleUserCubit>(context).getSingleUser(uid: widget.uid);
     super.initState();
     // get the saved theme mode
     // get the single user
@@ -59,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
         centerTitle: true,
         title: const Text("Profile"),
       ),
-      body: BlocBuilder<GetUserCubit, GetUserState>(
+      body: BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
         builder: (context, getSingleUserState) {
           if (getSingleUserState is GetSingleUserLoaded) {
             userEntity = getSingleUserState.singleUser;
@@ -89,6 +90,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget singleChildScrollView(UserEntity userEntity){
+    final friendNumber = userEntity.friendsUIDs.length;
+    final requestNumber = userEntity.friendRequestsFromUIDs.length;
 
     return  SingleChildScrollView(
       child: Padding(
@@ -103,9 +106,46 @@ class _ProfilePageState extends State<ProfilePage> {
             //   userModel: userModel,
             // ),
             UserInfoDetailsCard(
-                currentUid: widget.uid,
+                loginUid: widget.uid,
                 userEntity: userEntity),
 
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(
+                'Status',
+                style: GoogleFonts.openSans(
+                    fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Card(
+              child: Column(
+                children: [
+                  SettingsAndStatusListTile(
+                    title: 'Friends',
+                    icon: Icons.people_alt_outlined,
+                    iconContainerColor: Colors.deepPurple,
+                    number: friendNumber,
+                    onTap: () {
+                        context.pushNamed(
+                          "Friends",
+                        );
+                    },
+                  ),
+                  SettingsAndStatusListTile(
+                    title: 'Requests',
+                    icon: Icons.person_add_alt_1_outlined,
+                    iconContainerColor: Colors.blue,
+                    number: requestNumber,
+                    onTap: () {
+                      context.pushNamed(
+                        "FriendRequests",
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
 
             const SizedBox(height: 10),
             Padding(
@@ -120,7 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Card(
               child: Column(
                 children: [
-                  SettingsListTile(
+                  SettingsAndStatusListTile(
                     title: 'Account',
                     icon: Icons.person,
                     iconContainerColor: Colors.deepPurple,
@@ -128,7 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       // navigate to account settings
                     },
                   ),
-                  SettingsListTile(
+                  SettingsAndStatusListTile(
                     title: 'My Media',
                     icon: Icons.image,
                     iconContainerColor: Colors.green,
@@ -136,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       // navigate to account settings
                     },
                   ),
-                  SettingsListTile(
+                  SettingsAndStatusListTile(
                     title: 'Notifications',
                     icon: Icons.notifications,
                     iconContainerColor: Colors.red,
@@ -151,7 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Card(
               child: Column(
                 children: [
-                  SettingsListTile(
+                  SettingsAndStatusListTile(
                     title: 'Help',
                     icon: Icons.help,
                     iconContainerColor: Colors.yellow,
@@ -159,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       // navigate to account settings
                     },
                   ),
-                  SettingsListTile(
+                  SettingsAndStatusListTile(
                     title: 'Share',
                     icon: Icons.share,
                     iconContainerColor: Colors.blue,
@@ -212,7 +252,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Card(
               child: Column(
                 children: [
-                  SettingsListTile(
+                  SettingsAndStatusListTile(
                     title: 'Logout',
                     icon: Icons.logout_outlined,
                     iconContainerColor: Colors.red,

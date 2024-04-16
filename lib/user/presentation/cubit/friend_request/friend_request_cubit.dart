@@ -11,20 +11,15 @@ import 'package:uchat/user/domain/use_cases/friend/send_friend_request_usecase.d
 part 'friend_request_state.dart';
 
 class FriendRequestCubit extends Cubit<FriendRequestState> {
-   final AcceptFriendRequestUseCase acceptFriendRequestUseCase;
-    final CancleFriendRequestUseCase cancleFriendRequestUseCase;
-    final GetFriendRequestListUseCase getFriendRequestListUseCase;
-    final GetFriendListUseCase getFriendListUseCase;
-    final SendFriendRequestUseCase sendFriendRequestUseCase;
-    final RemoveFriendUseCase removeFriendUseCase;
+  final AcceptFriendRequestUseCase acceptFriendRequestUseCase;
+  final CancleFriendRequestUseCase cancleFriendRequestUseCase;
+  final GetFriendRequestListUseCase getFriendRequestListUseCase;
+  final GetFriendListUseCase getFriendListUseCase;
+  final SendFriendRequestUseCase sendFriendRequestUseCase;
+  final RemoveFriendUseCase removeFriendUseCase;
 
-    late List<UserEntity> _friendRequestList;
-    late List<UserEntity> _friendList;
-    // get
-    List<UserEntity> get friendRequestList => _friendRequestList;
-    List<UserEntity> get friendList => _friendList;
 
-   FriendRequestCubit({
+  FriendRequestCubit({
     required this.acceptFriendRequestUseCase,
     required this.cancleFriendRequestUseCase,
     required this.getFriendRequestListUseCase,
@@ -33,42 +28,74 @@ class FriendRequestCubit extends Cubit<FriendRequestState> {
     required this.removeFriendUseCase,
   }) : super(FriendRequestInitial());
 
-   Future<void> acceptFriendRequest({required String friendUID,required String myUID}) async {
+  Future<void> acceptFriendRequest(
+      {required String friendUID, required String myUID}) async {
 
+    try {
       await acceptFriendRequestUseCase.call(friendUID, myUID);
-
+      emit(FriendRequestAccepted());
+    } catch (e) {
+     emit(FriendRequestFailed());
     }
+  }
 
-    Future<void> cancleFriendRequest({required String friendUID,required String myUID}) async {
+  Future<void> cancleFriendRequest(
+      {required String friendUID, required String myUID}) async {
 
-        await cancleFriendRequestUseCase.call(friendUID, myUID);
-
-   }
-
-   Future<void> getFriendRequestList({required String myUID}) async {
-
-       final friendRequestList = await getFriendRequestListUseCase.call(myUID);
-       _friendRequestList = friendRequestList;
-
-   }
-   Future<void> getFriendList({required String myUID}) async {
-
-       final friendList = await getFriendListUseCase.call(myUID);
-        _friendList = friendList;
-
-   }
-
-   Future<void> sendFriendRequest({required String friendUID,required String myUID}) async {
-
-       await sendFriendRequestUseCase.call(friendUID, myUID);
-
-   }
-
-    Future<void> removeFriend({required String friendUID,required String myUID}) async {
-
-        await removeFriendUseCase.call(friendUID, myUID);
-
+    try {
+      await cancleFriendRequestUseCase.call(friendUID, myUID);
+      emit(FriendRequestCancled());
+    } catch (e) {
+      emit(FriendRequestFailed());
     }
+  }
+
+  Future<void> getFriendRequestList({required String myUID}) async {
+
+    try {
+      final friendRequestList = await getFriendRequestListUseCase.call(myUID);
+      emit(FriendRequestList(
+        friendRequestList
+
+      ));
+    } catch (e) {
+      emit(FriendRequestFailed());
+    }
+  }
+
+  Future<void> getFriendList({required String myUID}) async {
 
 
+    try {
+      final friendList = await getFriendListUseCase.call(myUID);
+      //print("friendList++++++++++: $friendList  ");
+      emit(FriendList(
+        friendList
+      ));
+    } catch (e) {
+      emit(FriendRequestFailed());
+    }
+  }
+
+  Future<void> sendFriendRequest(
+      {required String friendUID, required String myUID}) async {
+
+    try {
+      await sendFriendRequestUseCase.call(friendUID, myUID);
+      emit(FriendRequestSent());
+    } catch (e) {
+      emit(FriendRequestFailed());
+    }
+  }
+
+  Future<void> removeFriend(
+      {required String friendUID, required String myUID}) async {
+
+    try {
+      await removeFriendUseCase.call(friendUID, myUID);
+      emit(FriendRemoved());
+    } catch (e) {
+      emit(FriendRequestFailed());
+    }
+  }
 }

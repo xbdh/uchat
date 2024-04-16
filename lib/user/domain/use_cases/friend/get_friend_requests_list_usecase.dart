@@ -7,6 +7,7 @@ class GetFriendRequestListUseCase {
   GetFriendRequestListUseCase({required this.repository});
 
   Future<List<UserEntity>> call(String uid) async {
-    return await repository.getFriendRequests(uid);
+    List<UserEntity> ll=await repository.getFriendRequests(uid);
+    return ll;
   }
 }

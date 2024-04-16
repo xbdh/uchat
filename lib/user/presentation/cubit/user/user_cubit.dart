@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:uchat/main.dart';
 import 'package:uchat/user/domain/entities/user_entity.dart';
 import 'package:uchat/user/domain/use_cases/credential/check_user_exists_usecase.dart';
+import 'package:uchat/user/domain/use_cases/user/get_all_user_usecase.dart';
 import 'package:uchat/user/domain/use_cases/user/get_data_local_usecase.dart';
 
 import 'package:uchat/user/domain/use_cases/user/save_data.dart';
@@ -15,6 +16,7 @@ class UserCubit extends Cubit<UserState> {
   final CheckUserExistsUseCase userCheckExistUseCase;
   final SavaDataUseCase savaDataUseCase;
   final GetDataLocalUseCase getDataLocalUseCase;
+  final GetAllUsersUseCase getAllUsersUseCase;
 
   UserEntity? userEntity;
 
@@ -22,6 +24,7 @@ class UserCubit extends Cubit<UserState> {
     required this.userCheckExistUseCase,
     required this.savaDataUseCase,
     required this.getDataLocalUseCase,
+    required this.getAllUsersUseCase,
   }) : super(UserInitial());
   Future<void> checkUserExist(String id) async {
     try {
@@ -59,6 +62,23 @@ class UserCubit extends Cubit<UserState> {
       // print('userEntity: $userEntity');
     } catch (_) {
       emit(UserGetDataLocalFail());
+    }
+  }
+
+  Future<void> getAllUser(bool includeMe) async {
+    try {
+      emit(UserLoading());
+      final streamResponse = getAllUsersUseCase.call(includeMe);
+      streamResponse.listen((users) {
+        if (includeMe) {
+          emit(GetAllUserLoaded(allUser: users));
+
+        }else{
+          emit(GetUsersExpectMeLoaded(allUser: users));
+        }
+      });
+    } on Exception catch (e) {
+      emit(UserGetAllUsersFail());
     }
   }
 }
