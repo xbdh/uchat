@@ -6,6 +6,7 @@ import 'package:uchat/user/domain/use_cases/user/get_all_user_usecase.dart';
 import 'package:uchat/user/domain/use_cases/user/save_data.dart';
 import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
 import 'package:uchat/user/presentation/cubit/credential/credential_cubit.dart';
+import 'package:uchat/user/presentation/cubit/friend_list/friend_list_cubit.dart';
 import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubit.dart';
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 
@@ -70,10 +71,15 @@ Future<void> userInjectionContainer() async {
       FriendRequestCubit(
           acceptFriendRequestUseCase: sl(),
           cancleFriendRequestUseCase: sl(),
-          getFriendRequestListUseCase: sl(),
-          getFriendListUseCase: sl(),
+
           sendFriendRequestUseCase: sl(),
           removeFriendUseCase:  sl(),
+      ));
+
+  sl.registerFactory(() =>
+      FriendListCubit(
+          getFriendRequestListUseCase: sl(),
+          getFriendListUseCase: sl(),
       ));
 
   sl.registerFactory(() =>

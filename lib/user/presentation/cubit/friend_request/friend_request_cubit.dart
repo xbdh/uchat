@@ -13,8 +13,7 @@ part 'friend_request_state.dart';
 class FriendRequestCubit extends Cubit<FriendRequestState> {
   final AcceptFriendRequestUseCase acceptFriendRequestUseCase;
   final CancleFriendRequestUseCase cancleFriendRequestUseCase;
-  final GetFriendRequestListUseCase getFriendRequestListUseCase;
-  final GetFriendListUseCase getFriendListUseCase;
+
   final SendFriendRequestUseCase sendFriendRequestUseCase;
   final RemoveFriendUseCase removeFriendUseCase;
 
@@ -22,8 +21,6 @@ class FriendRequestCubit extends Cubit<FriendRequestState> {
   FriendRequestCubit({
     required this.acceptFriendRequestUseCase,
     required this.cancleFriendRequestUseCase,
-    required this.getFriendRequestListUseCase,
-    required this.getFriendListUseCase,
     required this.sendFriendRequestUseCase,
     required this.removeFriendUseCase,
   }) : super(FriendRequestInitial());
@@ -50,32 +47,7 @@ class FriendRequestCubit extends Cubit<FriendRequestState> {
     }
   }
 
-  Future<void> getFriendRequestList({required String myUID}) async {
 
-    try {
-      final friendRequestList = await getFriendRequestListUseCase.call(myUID);
-      emit(FriendRequestList(
-        friendRequestList
-
-      ));
-    } catch (e) {
-      emit(FriendRequestFailed());
-    }
-  }
-
-  Future<void> getFriendList({required String myUID}) async {
-
-
-    try {
-      final friendList = await getFriendListUseCase.call(myUID);
-      //print("friendList++++++++++: $friendList  ");
-      emit(FriendList(
-        friendList
-      ));
-    } catch (e) {
-      emit(FriendRequestFailed());
-    }
-  }
 
   Future<void> sendFriendRequest(
       {required String friendUID, required String myUID}) async {

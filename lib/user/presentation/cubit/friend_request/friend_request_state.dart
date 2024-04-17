@@ -30,19 +30,7 @@ final class FriendRemoved extends FriendRequestState {
   List<Object> get props => [];
 }
 
-final class FriendList extends FriendRequestState {
-  final List<UserEntity> friends;
-   const FriendList(this.friends);
-  @override
-  List<Object> get props => [friends];
-}
 
-final class FriendRequestList extends FriendRequestState {
-  final List<UserEntity> requestFriends;
-   const FriendRequestList(this.requestFriends);
-  @override
-  List<Object> get props => [requestFriends];
-}
 
 final class FriendRequestFailed extends FriendRequestState {
   @override

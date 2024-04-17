@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uchat/app/enums/enums.dart';
 import 'package:uchat/user/domain/entities/user_entity.dart';
+import 'package:uchat/user/presentation/cubit/friend_list/friend_list_cubit.dart';
 import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubit.dart';
 import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
@@ -14,23 +15,23 @@ class FriendsList extends StatelessWidget {
   final String uid;
   final FriendViewType viewType;
 
-  FriendsList({super.key, required this.uid, required this.viewType});
+  const FriendsList({super.key, required this.uid, required this.viewType});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context){
         if(viewType == FriendViewType.friends){
-          return di.sl<FriendRequestCubit>()..getFriendList( myUID: uid);
+          return di.sl<FriendListCubit>()..getFriendList( myUID: uid);
         }else{
-          return di.sl<FriendRequestCubit>()..getFriendRequestList(myUID: uid );
+          return di.sl<FriendListCubit>()..getFriendRequestList(myUID: uid );
         }
       },
 
-      child: BlocBuilder<FriendRequestCubit, FriendRequestState>(
+      child: BlocBuilder<FriendListCubit, FriendListState>(
         builder: (context, friendRequestState) {
           if (viewType == FriendViewType.friends) {
-            if (friendRequestState is FriendList) {
+            if (friendRequestState is FriendListLoaded) {
               final friends = friendRequestState.friends;
               if (friends.isEmpty) {
                 return const Center(
@@ -57,8 +58,8 @@ class FriendsList extends StatelessWidget {
               );
             }
           } else {
-            if (friendRequestState is FriendRequestList) {
-              final friendRequests = friendRequestState.requestFriends;
+            if (friendRequestState is FriendListLoaded) {
+              final friendRequests = friendRequestState.friends;
               if (friendRequests.isEmpty) {
                 return const Center(
                   child: Text(
@@ -70,8 +71,7 @@ class FriendsList extends StatelessWidget {
                 return ListView.builder(
                   itemCount: friendRequests.length,
                   itemBuilder: (context, index) {
-                    final friendRequest = friendRequestState
-                        .requestFriends[index];
+                    final friendRequest =friendRequests[index];
                     return FriendListTitle(
                       viewType: viewType,
                       friend: friendRequest,
