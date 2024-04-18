@@ -18,6 +18,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String email = '';
+  String errorMesssage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +33,10 @@ class _LoginPageState extends State<LoginPage> {
 
 
           context.goNamed("Info", pathParameters: {'uid': uid,"email": email});
-        } else if (credentialState is CredentialFailure) {
-          debugPrint("sign up or login  failed");
+        // } else if (credentialState is CredentialFailure) {
+        //  setState(() {
+        //     errorMesssage = credentialState.errorMessage;
+        //  });
         } else if (credentialState is CredentialLoginSuccess) {
 
             final uid = credentialState.uid;
@@ -42,24 +45,22 @@ class _LoginPageState extends State<LoginPage> {
           context.goNamed("Home",pathParameters: {'uid': uid});
           //context.goNamed("Info", pathParameters: {'uid': uid,"email": email});
         }
+
       },
       builder: (context, credentialState) {
         return FlutterLogin(
               title: 'uchat',
               logo: const AssetImage('assets/images/chat.png'),
               onLogin: (data) async {
-                // BlocProvider.of<AuthCubit>(context).checkUserExists(data.name);
-                // if (authBuilderState is AuthCheckUserExist && !authBuilderState.isExist) {
-                //   return 'User does not exist';
-                // }else {
+
                   BlocProvider.of<CredentialCubit>(context).submitLogIn(
                       email: data.name, password: data.password);
-                  if (credentialState is CredentialLoginSuccess) {
-                    return null;
+                  if (credentialState is CredentialFailure) {
+                    return credentialState.errorMessage;
                   } else {
-                    return 'Login failed';
+                    return null;
                   }
-                // }
+
               },
               onSignup: (data) async {
                 String signupEmail = data.name!;
@@ -67,18 +68,16 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {
                   email = signupEmail;
                 });
-                // BlocProvider.of<AuthCubit>(context).checkUserExists(email);
-                // if (authBuilderState is AuthCheckUserExist && authBuilderState.isExist) {
-                //   return 'User already exists';
-                // }else {
+
                   BlocProvider.of<CredentialCubit>(context).submitSignUp(
                       email: signupEmail, password: signupPassword);
-                  if (credentialState is CredentialSignupSuccess) {
+                  if (credentialState is CredentialFailure) {
+                    return credentialState.errorMessage;
+                  } else {
                     return null;
-                  } else if (credentialState is CredentialFailure) {
-                    return 'Signup failed ';
+
                   }
-                // }
+
 
               },
               onRecoverPassword: (name) async {

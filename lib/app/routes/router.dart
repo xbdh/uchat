@@ -1,5 +1,6 @@
 import 'package:uchat/app/home/home_page.dart';
 import 'package:uchat/app/landing/landing_page.dart';
+import 'package:uchat/chat/presentation/pages/chat_page.dart';
 import 'package:uchat/user/presentation/pages/friend_requests_page.dart';
 import 'package:uchat/user/presentation/pages/friends_page.dart';
 import 'package:uchat/user/presentation/pages/info_page.dart';
@@ -72,6 +73,16 @@ final chatRouter = GoRouter(
       name: "FriendRequests",
       path: '/friend_requests',
       builder: (context, state) => const FriendRequestsPage(),
+    ),
+
+    GoRoute(
+      name: "Chat",
+      path: '/chat',
+      builder: (context, state) => ChatPage(
+        friendUid: state.uri.queryParameters['friendUid']!,
+        friendName: state.uri.queryParameters['friendName']!,
+        friendImage: state.uri.queryParameters['friendImage']!,
+      ),
     ),
   ],
 );

@@ -24,22 +24,38 @@ class CredentialCubit extends Cubit<CredentialState> {
   Future<void> submitSignUp({required String email, required String password}) async {
     try {
       String uid=await signUpUseCase(email, password);
+      // if uid start with *
+      if(uid.startsWith('*')){
+        emit(CredentialFailure(
+          errorMessage: uid
+        ));
+        return;
+      }
       emit(CredentialSignupSuccess(
         uid: uid
       ));
     } catch (_) {
-      emit(CredentialFailure());
+      emit(const CredentialFailure(
+        errorMessage: 'Sign up failed'
+      ));
     }
   }
   Future<void> submitLogIn({required String email, required String password}) async {
     try {
       String uid=await logInUseCase.call(email, password);
-
+      if (uid.startsWith('*')) {
+        emit(CredentialFailure(
+          errorMessage: uid
+        ));
+        return;
+      }
       emit(CredentialLoginSuccess(
         uid: uid
       ));
     } catch (_) {
-      emit(CredentialFailure());
+      emit(const CredentialFailure(
+        errorMessage: 'Log in failed'
+      ));
     }
   }
 
@@ -48,9 +64,13 @@ class CredentialCubit extends Cubit<CredentialState> {
       await saveUserUseCase(user,avatarFile);
       emit(CredentialInfoSuccess());
     } on SocketException catch (_) {
-      emit(CredentialFailure());
+      emit(const CredentialFailure(
+        errorMessage: 'No internet connection'
+      ));
     } catch (_) {
-      emit(CredentialFailure());
+      emit(const CredentialFailure(
+        errorMessage: 'Save user failed'
+      ));
     }
   }
 }

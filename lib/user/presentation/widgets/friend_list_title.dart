@@ -77,6 +77,13 @@ class _FriendListTitleState extends State<FriendListTitle> {
               //   OtherProfilePage.routeName,
               //   arguments: friend.uid,
               // );
+              context.pushNamed(
+                  "Chat",
+                  queryParameters: {
+                    'friendUid': widget.friend.uid,
+                    'friendName': widget.friend.name,
+                    'friendImage': widget.friend.image
+                  });
             }
           }),
     );

@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 
+import 'chat/chat_injection_container.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -21,7 +23,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => storage);
 
   await userInjectionContainer();
-  // await chatInjectionContainer();
+  await chatInjectionContainer();
   // await statusInjectionContainer();
   // await callInjectionContainer();
 

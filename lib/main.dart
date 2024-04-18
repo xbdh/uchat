@@ -10,7 +10,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uchat/user/presentation/cubit/friend_list/friend_list_cubit.dart';
 import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubit.dart';
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
+import 'package:uchat/user/presentation/cubit/my_entity/my_entity_cubit.dart';
 import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
+import 'chat/presentation/cubit/message_reply/message_reply_cubit.dart';
+import 'chat/presentation/cubit/send_text_message/send_text_message_cubit.dart';
 import 'main_injection_container.dart' as di;
 import 'user/presentation/cubit/user/user_cubit.dart';
 
@@ -36,6 +39,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         // Add more cubit here
+        // user cubit
         BlocProvider(
           create: (context) => di.sl<CredentialCubit>(),
         ),
@@ -58,6 +62,19 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => di.sl<FriendListCubit>(),
         ),
+        BlocProvider(
+          create: (context) => di.sl<MyEntityCubit>(),
+        ),
+        // chat cubit
+        BlocProvider(
+          create: (context) => di.sl< MessageReplyCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<SendTextMessageCubit>(),
+        ),
+
+
+
       ],
       child: AdaptiveTheme(
         light: ThemeData(

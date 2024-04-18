@@ -9,6 +9,7 @@ import 'package:uchat/user/presentation/cubit/credential/credential_cubit.dart';
 import 'package:uchat/user/presentation/cubit/friend_list/friend_list_cubit.dart';
 import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubit.dart';
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
+import 'package:uchat/user/presentation/cubit/my_entity/my_entity_cubit.dart';
 
 
 import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
@@ -86,6 +87,12 @@ Future<void> userInjectionContainer() async {
       GetSingleUserCubit(
           getSingleUserUseCase: sl(),
       ));
+
+  sl.registerFactory(() =>
+      MyEntityCubit(
+
+      ));
+
 
 
 

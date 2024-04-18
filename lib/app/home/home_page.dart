@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:uchat/app/widgets/user_avatar.dart';
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
+import 'package:uchat/user/presentation/cubit/my_entity/my_entity_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 import 'package:uchat/user/presentation/pages/people_page.dart';
 
@@ -44,65 +45,75 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
-      builder: (context, getSingleUserstate) {
-        return Scaffold(
-            appBar: AppBar(
-              title: Text(widget.uid),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: UserAvatar(
-                    imageUrl: getSingleUserstate is GetSingleUserLoaded
-                        ? getSingleUserstate.singleUser.image
-                        : '',
-                    onPressed: () {
-                      context.pushNamed("Profile",
-                          pathParameters: {
-                            'uid': widget.uid,
-                            'loginUid': widget.uid
-                          });
-                    },
-                    radius: 20,
-                  ),
-                )
-              ],
-            ),
-            body: PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  currentIndex = index;
-                });
-              },
-              children: pages,
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.chat_bubble_2_fill),
-                  label: 'Chats',
+    return BlocConsumer<GetSingleUserCubit, GetSingleUserState>(
+      listener: (context, state) {
+        if (state is GetSingleUserLoaded) {
+          final myEntity = state.singleUser;
+          BlocProvider.of<MyEntityCubit>(context).setUser(myEntity);
+        }
+      },
+      builder: (context, state) {
+        return BlocBuilder<GetSingleUserCubit, GetSingleUserState>(
+          builder: (context, getSingleUserstate) {
+            return Scaffold(
+                appBar: AppBar(
+                  title: Text(widget.uid),
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: UserAvatar(
+                        imageUrl: getSingleUserstate is GetSingleUserLoaded
+                            ? getSingleUserstate.singleUser.image
+                            : '',
+                        onPressed: () {
+                          context.pushNamed("Profile",
+                              pathParameters: {
+                                'uid': widget.uid,
+                                'loginUid': widget.uid
+                              });
+                        },
+                        radius: 20,
+                      ),
+                    )
+                  ],
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.group),
-                  label: 'Groups',
+                body: PageView(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  },
+                  children: pages,
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.globe),
-                  label: 'People',
-                ),
-              ],
-              currentIndex: currentIndex,
-              onTap: (index) {
-                _pageController.animateToPage(index,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeIn);
-                setState(() {
-                  currentIndex = index;
-                });
-                //print("Current Index: $index");
-              },
-            ));
+                bottomNavigationBar: BottomNavigationBar(
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(CupertinoIcons.chat_bubble_2_fill),
+                      label: 'Chats',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(CupertinoIcons.group),
+                      label: 'Groups',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(CupertinoIcons.globe),
+                      label: 'People',
+                    ),
+                  ],
+                  currentIndex: currentIndex,
+                  onTap: (index) {
+                    _pageController.animateToPage(index,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeIn);
+                    setState(() {
+                      currentIndex = index;
+                    });
+                    //print("Current Index: $index");
+                  },
+                ));
+          },
+        );
       },
     );
   }

@@ -35,6 +35,8 @@ class CredentialInfoSuccess extends CredentialState {
 }
 
 class CredentialFailure extends CredentialState {
+  final String errorMessage;
+  const CredentialFailure({required this.errorMessage });
   @override
   List<Object> get props => [];
 }
