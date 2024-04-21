@@ -33,5 +33,7 @@ abstract class UserRemoteDataSource {
   Future<List<UserModel>> getFriends(String uid);
   // get friend requests
   Future<List<UserModel>> getFriendRequests(String uid);
+
+  Future<void> setUserOnlineStatus(bool isOnline);
   // Future<List<ContactEntity>> getDeviceNumber();
 }

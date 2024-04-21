@@ -8,16 +8,16 @@ import 'package:uchat/main_injection_container.dart' as di;
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
 
-class ChatBar extends StatefulWidget {
+class ChatMessageBar extends StatefulWidget {
   final String friendUid;
 
-  const ChatBar({super.key, required this.friendUid});
+  const ChatMessageBar({super.key, required this.friendUid});
 
   @override
-  State<ChatBar> createState() => _ChatBarState();
+  State<ChatMessageBar> createState() => _ChatMessageBarState();
 }
 
-class _ChatBarState extends State<ChatBar> {
+class _ChatMessageBarState extends State<ChatMessageBar> {
   @override
   Widget build(BuildContext context) {
     final uid = context.watch<UidCubit>().state;
@@ -29,6 +29,7 @@ class _ChatBarState extends State<ChatBar> {
             final friend = state.singleUser;
 
             DateTime lastSeen =DateTime.fromMillisecondsSinceEpoch(int.parse(friend.lastSeen));
+           // print('lastSeen: $lastSeen');
             return Row(
                 children: [
                   UserAvatar(

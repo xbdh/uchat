@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uchat/app/constants/firebase_collection.dart';
@@ -21,15 +23,29 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
 
 
   @override
-  Stream<List<LastMessageModel>> getChatListStream() {
-    // TODO: implement getChatListStream
-    throw UnimplementedError();
+  Stream<List<MessageModel>> getMessageListStream({
+    required String senderUID,
+    required String recipientUID,}){
+
+    return fireStore.
+          collection(FirebaseCollectionManager.users).
+          doc(senderUID).
+          collection(FirebaseCollectionManager.chats).
+          doc(recipientUID).
+          collection(FirebaseCollectionManager.messages).
+          snapshots().map((snapshot) => snapshot.docs.map((e)=> MessageModel.fromSnapshot(e)).toList()  );
+
   }
 
   @override
-  Stream<List<MessageModel>> getMessageStream() {
-    // TODO: implement getMessageStream
-    throw UnimplementedError();
+  Stream<List<LastMessageModel>> getChatListStream({required String uid}){
+    print('getChatListStream+++++++++++$uid');
+    return fireStore.
+          collection(FirebaseCollectionManager.users).
+          doc(uid).
+          collection(FirebaseCollectionManager.chats).
+        //orderBy('timestamp', descending: true).
+          snapshots().map((snapshot) => snapshot.docs.map((e)=> LastMessageModel.fromSnapshot(e)).toList()  );
   }
 
   @override
@@ -85,6 +101,63 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
           doc(messageID).
           set(messageModel.toMap());
 
+  }
+
+  @override
+  Future<void> setMessageStatus({
+    required String senderUID,
+    required String recipientUID,
+    required String messageID})  async {
+     // update sender message status as seen
+    await  fireStore.
+          collection(FirebaseCollectionManager.users).
+          doc(senderUID).
+          collection(FirebaseCollectionManager.chats).
+          doc(recipientUID).
+          collection(FirebaseCollectionManager.messages).
+          doc(messageID).
+          update({'isSeen': true});
+
+    // update recipient message status as seen
+    await  fireStore.
+          collection(FirebaseCollectionManager.users).
+          doc(recipientUID).
+          collection(FirebaseCollectionManager.chats).
+          doc(senderUID).
+          collection(FirebaseCollectionManager.messages).
+          doc(messageID).
+          update({'isSeen': true});
+
+  }
+
+  @override
+  Future<void> setLastMessageStatus({
+    required String senderUID,
+    required String recipientUID})  async {
+   // update sender message status as seen
+    await  fireStore.
+          collection(FirebaseCollectionManager.users).
+          doc(senderUID).
+          collection(FirebaseCollectionManager.chats).
+          doc(recipientUID).
+          update({'isSeen': true});
+
+    // update recipient message status as seen
+    await  fireStore.
+          collection(FirebaseCollectionManager.users).
+          doc(recipientUID).
+          collection(FirebaseCollectionManager.chats).
+          doc(senderUID).
+          update({'isSeen': true});
+  }
+
+  @override
+  Future<String> storeFile({required File file, required String filePath}) async {
+    UploadTask task = storage.ref().child(filePath).putFile(file);
+    TaskSnapshot snapshot = await task.whenComplete(() => null);
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    //copilot kengwo
+    return downloadUrl;
   }
 
 

@@ -151,6 +151,11 @@ class UserRepositoryImpl implements UserRepository {
     await remoteDataSource.sendFriendRequest(friendUID, myUID);
   }
 
+  @override
+  Future<void> setUserOnlineStatus(bool isOnline) async  {
+    await remoteDataSource.setUserOnlineStatus(isOnline);
+  }
+
 
 }
 

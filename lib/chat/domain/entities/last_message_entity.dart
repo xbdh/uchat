@@ -39,7 +39,7 @@ class LastMessageEntity  extends Equatable {
     isSeen,
   ];
 
-  factory LastMessageEntity.fromChatModel(LastMessageModel chatModel) {
+  factory LastMessageEntity.fromLastMessageModel(LastMessageModel chatModel) {
     return LastMessageEntity(
       senderUID: chatModel.senderUID,
       recipientUID: chatModel.recipientUID,

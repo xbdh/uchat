@@ -34,6 +34,7 @@ import 'domain/use_cases/user/get_data_local_usecase.dart';
 import 'domain/use_cases/user/get_data_remote_usecase.dart';
 import 'domain/use_cases/user/get_single_user_usecase.dart';
 import 'domain/use_cases/user/save_data_local_usecase.dart';
+import 'domain/use_cases/user/set_user_online_status_usecase.dart';
 
 Future<void> userInjectionContainer() async {
   // * CUBITS INJECTION
@@ -62,6 +63,7 @@ Future<void> userInjectionContainer() async {
         userCheckExistUseCase: sl(),
         getDataLocalUseCase: sl(),
         getAllUsersUseCase: sl(),
+        setUserOnlineStatusUseCase: sl(),
       ));
 
 
@@ -150,6 +152,8 @@ Future<void> userInjectionContainer() async {
   sl.registerLazySingleton<RemoveFriendUseCase>(
           () => RemoveFriendUseCase(repository: sl.call()));
 
+  sl.registerLazySingleton<SetUserOnlineStatusUseCase>(
+          () => SetUserOnlineStatusUseCase(repository: sl.call()));
 
   // * REPOSITORY & DATA SOURCES INJECTION
 

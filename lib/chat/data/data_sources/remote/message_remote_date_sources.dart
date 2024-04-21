@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:uchat/app/enums/enums.dart';
 import 'package:uchat/chat/data/models/last_message_model.dart';
 import 'package:uchat/chat/data/models/message_model.dart';
@@ -15,9 +17,12 @@ abstract class MessageRemoteDataSource {
 
   Future<void> sendFileMessage(MessageModel message);
 
-  Stream<List<MessageModel>> getMessageStream();
+  Stream<List<MessageModel>> getMessageListStream({
+    required String senderUID,
+    required String recipientUID,});
 
-  Stream<List<LastMessageModel>> getChatListStream();
+
+  Stream<List<LastMessageModel>> getChatListStream({required String uid});
 
   Future<void> sendMessage({
     required String senderUID,
@@ -30,5 +35,21 @@ abstract class MessageRemoteDataSource {
     required String senderUID,
     required String recipientUID,
     required LastMessageModel lastMessageModel,
+  });
+  Future<void> setMessageStatus({
+    required String senderUID,
+    required String recipientUID,
+    required String messageID,
+  });
+
+  Future<void> setLastMessageStatus({
+    required String senderUID,
+    required String recipientUID,
+    //required String messageID,
+  });
+
+  Future<String> storeFile({
+    required File file,
+    required String filePath,
   });
 }

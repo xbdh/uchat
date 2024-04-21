@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uchat/app/widgets/user_avatar.dart';
+import 'package:uchat/chat/presentation/pages/chat_list_page.dart';
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 import 'package:uchat/user/presentation/cubit/my_entity/my_entity_cubit.dart';
@@ -11,7 +12,7 @@ import 'package:uchat/user/presentation/pages/people_page.dart';
 
 import '../../main.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatefulWidget  {
   final String uid;
 
   const HomePage({super.key, required this.uid});
@@ -20,13 +21,13 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver, TickerProviderStateMixin{
   String ImageUrl = '';
 
   final PageController _pageController = PageController(initialPage: 0);
   int currentIndex = 0;
   List<Widget> pages = [
-    const Chat(),
+    ChatListPage(),
     const Group(),
     PeoplePage()
   ];
@@ -34,13 +35,45 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     BlocProvider.of<GetSingleUserCubit>(context).getSingleUser(uid: widget.uid);
+    WidgetsBinding.instance!.addObserver(this);
     super.initState();
   }
 
   @override
   void dispose() {
     _pageController.dispose(); // 记得释放资源
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
+  }
+ // did change App lifecycle state
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // if (state == AppLifecycleState.resumed) {
+    //   BlocProvider.of<UserCubit>(context).setUserOnlineStatus(true);
+    // } else {
+    //   BlocProvider.of<UserCubit>(context).setUserOnlineStatus(false);
+    // }
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+      // user comes back to the app
+      // update user status to online
+        BlocProvider.of<UserCubit>(context).setUserOnlineStatus(true);
+        // 应该还要更新一下用户的lastSeen
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+      // app is inactive, paused, detached or hidden
+      // update user status to offline
+      BlocProvider.of<UserCubit>(context).setUserOnlineStatus(false);
+        break;
+      default:
+      // handle other states
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   @override

@@ -9,6 +9,7 @@ import 'package:uchat/user/domain/use_cases/user/get_all_user_usecase.dart';
 import 'package:uchat/user/domain/use_cases/user/get_data_local_usecase.dart';
 
 import 'package:uchat/user/domain/use_cases/user/save_data.dart';
+import 'package:uchat/user/domain/use_cases/user/set_user_online_status_usecase.dart';
 
 part 'user_state.dart';
 
@@ -17,14 +18,16 @@ class UserCubit extends Cubit<UserState> {
   final SavaDataUseCase savaDataUseCase;
   final GetDataLocalUseCase getDataLocalUseCase;
   final GetAllUsersUseCase getAllUsersUseCase;
+  final SetUserOnlineStatusUseCase setUserOnlineStatusUseCase;
 
   UserEntity? userEntity;
 
-  UserCubit({
+  UserCubit( {
     required this.userCheckExistUseCase,
     required this.savaDataUseCase,
     required this.getDataLocalUseCase,
     required this.getAllUsersUseCase,
+    required this.setUserOnlineStatusUseCase,
   }) : super(UserInitial());
   Future<void> checkUserExist(String id) async {
     try {
@@ -80,5 +83,11 @@ class UserCubit extends Cubit<UserState> {
     } on Exception catch (e) {
       emit(UserGetAllUsersFail());
     }
+  }
+
+  Future<void> setUserOnlineStatus(bool isOnline) async {
+
+      await setUserOnlineStatusUseCase.call(isOnline);
+
   }
 }

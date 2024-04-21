@@ -372,4 +372,12 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       throw Exception("Error occur while sending friend request");
     }
   }
+
+  @override
+  Future<void> setUserOnlineStatus(bool isOnline) async  {
+    final userCollection =
+        fireStore.collection(FirebaseCollectionManager.users);
+    final uid = auth.currentUser!.uid;
+    userCollection.doc(uid).update({"isOnline": isOnline});
+  }
 }

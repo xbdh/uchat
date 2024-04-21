@@ -12,6 +12,8 @@ import 'package:uchat/user/domain/entities/user_entity.dart';
 import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 
+import '../cubit/uid/uid_cubit.dart';
+
 class InfoPage extends StatefulWidget {
    final String email;
    final String uid;
@@ -133,6 +135,7 @@ class _InfoPAgeState extends State<InfoPage> {
     return BlocConsumer<UserCubit, UserState>(
       listener: (context, userState) {
         if (userState is UserSavaDataSuccess) {
+          BlocProvider.of<UidCubit>(context).setUid(widget.uid);
           context.goNamed("Home", pathParameters: {'uid': widget.uid});
         }
         if (userState is UserSavaDataFail) {

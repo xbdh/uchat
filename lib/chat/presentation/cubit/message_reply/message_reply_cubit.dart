@@ -8,4 +8,5 @@ class MessageReplyCubit extends Cubit<MessageReplyEntity?> {
   MessageReplyCubit() : super(null);
 
   void setMessageReply(MessageReplyEntity reply) => emit(reply);
+  void clearMessageReply() => emit(null);
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:uchat/app/enums/enums.dart';
 import 'package:uchat/chat/data/data_sources/remote/message_remote_date_sources.dart';
 import 'package:uchat/chat/domain/entities/last_message_entity.dart';
@@ -14,18 +16,31 @@ class MessageRepositoryImpl extends MessageRepository {
 
   MessageRepositoryImpl({required this.messageDataSource});
 
-
   @override
-  Stream<List<LastMessageEntity>> getChatListStream() {
-    // TODO: implement getChatListStream
-    throw UnimplementedError();
+  Stream<List<MessageEntity>> getMessageListStream({
+    required String senderUID,
+    required String recipientUID,}){
+
+    final Stream<List<MessageModel>> messageModelStream = messageDataSource.getMessageListStream(
+      senderUID: senderUID,
+      recipientUID: recipientUID
+    );
+    // convert MessageModel to MessageEntity
+    return messageModelStream.map((messageModelList) {
+      return messageModelList.map((e) => MessageEntity.fromMessageModel(e)).toList();
+    });
+
   }
 
   @override
-  Stream<List<MessageEntity>> getMessageStream() {
-    // TODO: implement getMessageStream
-    throw UnimplementedError();
+  Stream<List<LastMessageEntity>> getChatListStream({required String uid}){
+    final Stream<List<LastMessageModel>> lastMessageModelStream = messageDataSource.getChatListStream(uid: uid);
+    // convert LastMessageModel to LastMessageEntity
+    return lastMessageModelStream.map((lastMessageModelList) {
+      return lastMessageModelList.map((e) => LastMessageEntity.fromLastMessageModel(e)).toList();
+    });
   }
+
 
   @override
   Future<void> sendFileMessage(MessageEntity message) {
@@ -45,7 +60,7 @@ class MessageRepositoryImpl extends MessageRepository {
     required String recipientUID,
     required LastMessageEntity lastMessageEntity})  async {
    // convert LastMessageEntity to LastMessageModel
-    LastMessageModel lastMessageModel = LastMessageModel.fromEntity(lastMessageEntity);
+    LastMessageModel lastMessageModel = LastMessageModel.fromLastMessageEntity(lastMessageEntity);
 
     await  messageDataSource.sendLastMessage(
       senderUID: senderUID,
@@ -68,5 +83,31 @@ class MessageRepositoryImpl extends MessageRepository {
       messageModel: messageModel
     );
 
+  }
+
+  @override
+  Future<void> setMessageStatus({required String senderUID, required String recipientUID, required String messageID}) async {
+    await messageDataSource.setMessageStatus(
+      senderUID: senderUID,
+      recipientUID: recipientUID,
+      messageID: messageID
+    );
+  }
+
+  @override
+  Future<void> setLastMessageStatus({required String senderUID, required String recipientUID}) async  {
+    await messageDataSource.setLastMessageStatus(
+      senderUID: senderUID,
+      recipientUID: recipientUID
+    );
+  }
+
+  @override
+  Future<String> storeFile({required File file, required String filePath})  async{
+   String url =await messageDataSource.storeFile(
+      file: file,
+      filePath: filePath
+    );
+    return url;
   }
 }

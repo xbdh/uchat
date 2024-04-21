@@ -6,6 +6,8 @@ import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
 import 'package:uchat/user/presentation/cubit/credential/credential_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 
+import '../cubit/uid/uid_cubit.dart';
+
 
 class LoginPage extends StatefulWidget {
 
@@ -40,8 +42,7 @@ class _LoginPageState extends State<LoginPage> {
         } else if (credentialState is CredentialLoginSuccess) {
 
             final uid = credentialState.uid;
-
-
+            BlocProvider.of<UidCubit>(context).setUid(uid);
           context.goNamed("Home",pathParameters: {'uid': uid});
           //context.goNamed("Info", pathParameters: {'uid': uid,"email": email});
         }

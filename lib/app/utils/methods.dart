@@ -137,3 +137,12 @@ void showMyAnimatedDialog({
     },
   );
 }
+
+Future<String> storeFile({
+  required File file,
+  required String filePath,
+}) async {
+  // upload file to firebase storage
+
+  return 'url';
+}

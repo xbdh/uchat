@@ -1,4 +1,6 @@
-  import 'package:uchat/app/enums/enums.dart';
+  import 'dart:io';
+
+import 'package:uchat/app/enums/enums.dart';
 import 'package:uchat/chat/domain/entities/last_message_entity.dart';
 import 'package:uchat/chat/domain/entities/message_entity.dart';
 import 'package:uchat/chat/domain/entities/message_reply_entity.dart';
@@ -16,9 +18,11 @@ abstract class MessageRepository {
 
     Future<void> sendFileMessage(MessageEntity message);
 
-    Stream<List<MessageEntity>> getMessageStream();
+    Stream<List<MessageEntity>> getMessageListStream({
+      required String senderUID,
+      required String recipientUID,});
 
-    Stream<List<LastMessageEntity>> getChatListStream();
+    Stream<List<LastMessageEntity>> getChatListStream({required String uid});
 
     Future<void> sendMessage({
       required String senderUID,
@@ -32,4 +36,22 @@ abstract class MessageRepository {
       required String recipientUID,
       required LastMessageEntity lastMessageEntity,
     });
+
+
+    Future<void> setMessageStatus({
+      required String senderUID,
+      required String recipientUID,
+      required String messageID,
+    });
+    Future<void> setLastMessageStatus({
+      required String senderUID,
+      required String recipientUID,
+      //required String messageID,
+    });
+
+    Future<String> storeFile({
+      required File file,
+      required String filePath,
+    });
+
   }

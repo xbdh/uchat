@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:uchat/chat/presentation/widgets/chat_bar.dart';
-import 'package:uchat/chat/presentation/widgets/chat_button_field.dart';
+import 'package:uchat/chat/presentation/widgets/chat_message_bar.dart';
+import 'package:uchat/chat/presentation/widgets/chat_message_buttom_field.dart';
+import 'package:uchat/chat/presentation/widgets/chat_message_list.dart';
 
 class ChatPage extends StatefulWidget {
   final String friendUid, friendName, friendImage;
@@ -22,7 +23,7 @@ class _ChatPageState extends State<ChatPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: ChatBar(friendUid: friendUid),
+        title: ChatMessageBar(friendUid: friendUid),
 
       ),
       body: Padding(
@@ -30,16 +31,9 @@ class _ChatPageState extends State<ChatPage> {
         child: Column(
          children: [
            Expanded(
-             child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text("Message $index"),
-                  );
-                },
-              ),
+             child: ChatMessageList(friendUid: friendUid),
              ),
-            ChatBottomField(friendUid: friendUid, friendName: friendName, friendImage: friendImage)
+            ChatMessageBottomField(friendUid: friendUid, friendName: friendName, friendImage: friendImage)
          ],
         ),
       ),

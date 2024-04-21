@@ -48,7 +48,7 @@ class LastMessageModel  extends Equatable {
       recipientName: snap['recipientName'],
       recipientImage: snap['recipientImage'],
       message: snap['message'],
-      messageType: MessageType.values[snap['messageType']],
+      messageType: MessageTypeExtension.fromString(snap['messageType']),
       timeSent: snap['timeSent'].toDate(),
       isSeen: snap['isSeen'],
     );
@@ -61,7 +61,7 @@ class LastMessageModel  extends Equatable {
       'recipientName': recipientName,
       'recipientImage': recipientImage,
       'message': message,
-      'messageType': messageType.name,
+      'messageType': messageType.toShortString(),
       'timeSent': timeSent,
       'isSeen': isSeen,
     };
@@ -73,13 +73,13 @@ class LastMessageModel  extends Equatable {
       recipientName: map['recipientName'],
       recipientImage: map['recipientImage'],
       message: map['message'],
-      messageType: MessageType.values[map['messageType']],
+      messageType: MessageTypeExtension.fromString(map['messageType']),
       timeSent: map['timeSent'].toDate(),
       isSeen: map['isSeen'],
     );
   }
 
-  factory LastMessageModel.fromEntity(LastMessageEntity lastMessageEntity){
+  factory LastMessageModel.fromLastMessageEntity(LastMessageEntity lastMessageEntity){
     return LastMessageModel(
       senderUID: lastMessageEntity.senderUID,
       recipientUID: lastMessageEntity.recipientUID,

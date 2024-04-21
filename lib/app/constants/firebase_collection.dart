@@ -7,3 +7,7 @@ class FirebaseCollectionManager {
   static const String likes = 'likes';
   static const String notifications = 'notifications';
 }
+
+class FirebaseStoreManager {
+  static const String chatFiles = 'chat_files';
+}

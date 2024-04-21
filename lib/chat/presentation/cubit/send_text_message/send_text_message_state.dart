@@ -8,6 +8,10 @@ final class SendTextMessageInitial extends SendTextMessageState {
   @override
   List<Object> get props => [];
 }
+final class SendTextMessageLoading extends SendTextMessageState {
+  @override
+  List<Object> get props => [];
+}
 
 final class SendTextMessageSuccess extends SendTextMessageState {
   @override

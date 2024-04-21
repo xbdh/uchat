@@ -44,4 +44,6 @@ abstract class UserRepository {
   // get friend requests
   Future<List<UserEntity>> getFriendRequests(String uid);
 
+  Future<void> setUserOnlineStatus(bool isOnline);
+
 }

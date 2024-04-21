@@ -26,6 +26,7 @@ class SendTextMessageCubit extends Cubit<SendTextMessageState> {
   }) async {
 
     try {
+      emit(SendTextMessageLoading());
       await sendTextMessageUseCase.call(
         sender: sender,
         messageReply: messageReply,
@@ -42,3 +43,21 @@ class SendTextMessageCubit extends Cubit<SendTextMessageState> {
   }
 
 }
+//如果你的Cubit中包含多种状态（如success、fail和loading），
+// 并且你发现只有第一次输入后能成功清除TextField，而后续输入没有触发清除操作，
+// 这可能是因为Cubit状态更新的方式导致的。
+//
+//在Flutter的Bloc或Cubit中，如果连续发出的两个状态对象是相同的（即它们的所有属性值都相等），
+// 那么Bloc/Cubit将不会触发状态改变的监听器（BlocListener、BlocBuilder等）。
+// 这是因为Bloc/Cubit默认使用状态对象的==操作符来检测状态变化，如果连续两个状态相等，
+// 则认为状态没有变化。
+//
+//考虑到你的状态有success、fail以及loading，如果你在每次发送成功后都仅仅更新状态为success，
+// 并且success状态之间没有区别（例如，它们都是简单的Success()状态），
+// 那么第一次之后的状态更新将不会被识别为状态变化，因此BlocListener的listener不会被调用来清除TextField。
+//
+//为了解决这个问题，你可以在发送操作之前将状态设置为loading，
+// 然后根据操作的结果设置为success或fail。此外，确保每次状态更新时都创建一个新的状态对象，
+// 你还可以为success状态添加额外的信息（如时间戳或唯一ID），确保每次成功状态都是不同的。
+//
+

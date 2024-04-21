@@ -31,7 +31,7 @@ class _LandingPageState extends State<LandingPage> {
       listener: (context, state) {
         if (state is Authenticated) {
            String uid = state.uid;
-           BlocProvider.of<UserCubit>(context).getDataLocal();
+           //BlocProvider.of<UserCubit>(context).getDataLocal();
            BlocProvider.of<UidCubit>(context).setUid(uid);
           context.goNamed("Home", pathParameters: {"uid": uid});
         } else if (state is UnAuthenticated) {
