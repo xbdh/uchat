@@ -15,8 +15,7 @@ import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
 import 'chat/presentation/cubit/chat_list_steam/chat_list_stream_cubit.dart';
 import 'chat/presentation/cubit/chat_message_list_steam/chat_message_list_stream_cubit.dart';
 import 'chat/presentation/cubit/message_reply/message_reply_cubit.dart';
-import 'chat/presentation/cubit/send_file_message/send_file_message_cubit.dart';
-import 'chat/presentation/cubit/send_text_message/send_text_message_cubit.dart';
+import 'chat/presentation/cubit/send_message/send_message_cubit.dart';
 import 'chat/presentation/cubit/set_message_status/set_message_status_cubit.dart';
 import 'main_injection_container.dart' as di;
 import 'user/presentation/cubit/user/user_cubit.dart';
@@ -73,11 +72,14 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => di.sl< MessageReplyCubit>(),
         ),
+        // BlocProvider(
+        //   create: (context) => di.sl<SendTextMessageCubit>(),
+        // ),
+        // BlocProvider(
+        //   create: (context) => di.sl<SendFileMessageCubit>(),
+        // ),
         BlocProvider(
-          create: (context) => di.sl<SendTextMessageCubit>(),
-        ),
-        BlocProvider(
-          create: (context) => di.sl<SendFileMessageCubit>(),
+          create: (context) => di.sl<SendMessageCubit>(),
         ),
         BlocProvider(
           create: (context) => di.sl<ChatListStreamCubit>(),

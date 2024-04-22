@@ -1,8 +1,7 @@
 import 'package:uchat/chat/presentation/cubit/chat_list_steam/chat_list_stream_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/chat_message_list_steam/chat_message_list_stream_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/message_reply/message_reply_cubit.dart';
-import 'package:uchat/chat/presentation/cubit/send_file_message/send_file_message_cubit.dart';
-import 'package:uchat/chat/presentation/cubit/send_text_message/send_text_message_cubit.dart';
+import 'package:uchat/chat/presentation/cubit/send_message/send_message_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/set_message_status/set_message_status_cubit.dart';
 import 'package:uchat/main_injection_container.dart';
 
@@ -30,11 +29,7 @@ Future<void> chatInjectionContainer() async {
 
 
       ));
-  sl.registerFactory<SendTextMessageCubit>(() =>
-      SendTextMessageCubit(
-        sendTextMessageUseCase: sl.call(),
 
-      ));
   sl.registerFactory<ChatMessageListStreamCubit>(() =>
       ChatMessageListStreamCubit(
         getChatMessageListStreamUseCase: sl.call(),
@@ -53,10 +48,23 @@ Future<void> chatInjectionContainer() async {
 
       ));
 
-  sl.registerFactory<SendFileMessageCubit>(() =>
-      SendFileMessageCubit(
+  // sl.registerFactory<SendFileMessageCubit>(() =>
+  //     SendFileMessageCubit(
+  //         sendFileMessageUseCase: sl.call(),
+  //         storeFileUseCase: sl.call()
+  //
+  //     ));
+  // sl.registerFactory<SendTextMessageCubit>(() =>
+  //     SendTextMessageCubit(
+  //       sendTextMessageUseCase: sl.call(),
+  //
+  //     ));
+
+  sl.registerFactory<SendMessageCubit>(() =>
+      SendMessageCubit(
           sendFileMessageUseCase: sl.call(),
-          storeFileUseCase: sl.call()
+          storeFileUseCase: sl.call(),
+        sendTextMessageUseCase: sl.call(),
 
 
       ));

@@ -1,20 +1,64 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:uchat/chat/domain/entities/message_entity.dart';
-import 'package:uchat/chat/domain/entities/message_reply_entity.dart';
+import 'package:uuid/uuid.dart';
 
+import '../../../../app/constants/firebase_collection.dart';
 import '../../../../app/enums/enums.dart';
 import '../../../../user/domain/entities/user_entity.dart';
+import '../../../domain/entities/message_reply_entity.dart';
+import '../../../domain/use_cases/send_file_message_usecase.dart';
 import '../../../domain/use_cases/send_text_message_usecase.dart';
+import '../../../domain/use_cases/store_file_usecase.dart';
 
-part 'send_text_message_state.dart';
+part 'send_message_state.dart';
 
-class SendTextMessageCubit extends Cubit<SendTextMessageState> {
-  // usecase
+class SendMessageCubit extends Cubit<SendMessageState> {
+  SendFileMessageUseCase sendFileMessageUseCase;
+  StoreFileUseCase storeFileUseCase;
   SendTextMessageUseCase sendTextMessageUseCase;
+  SendMessageCubit(
+  {
+    required this.sendFileMessageUseCase,
+    required this.storeFileUseCase,
+    required this.sendTextMessageUseCase
+}
+      ) : super(SendMessageInitial());
 
-  SendTextMessageCubit({required this.sendTextMessageUseCase}) : super(SendTextMessageInitial());
+  Future<void> sendFileMessage({
+    required UserEntity sender,
+    required MessageReplyEntity? messageReply,
+    required String recipientUID,
+    required String recipientName,
+    required String recipientImage,
+    required File file,
+    required MessageType messageType,
+  }) async {
+    try {
+      emit(SendMessageLoading());
+      String messageId = const Uuid().v4();
 
+      final ref =
+          '${FirebaseStoreManager.chatFiles}/${messageType.toShortString()}/${sender.uid}/$recipientUID/$messageId';
+      String fileUrl = await storeFileUseCase.call(file, ref);
+
+      await sendFileMessageUseCase.call(
+        sender: sender,
+        messageReply: messageReply,
+        recipientUID: recipientUID,
+        recipientName: recipientName,
+        recipientImage: recipientImage,
+        message: fileUrl,
+        messageType: messageType,
+        messageId: messageId,
+      );
+
+      emit(SendMessageSuccess());
+    } catch (e) {
+      emit(SendMessageFailed());
+    }
+  }
   Future<void> sendTextMessage({
     required UserEntity sender,
     required MessageReplyEntity? messageReply,
@@ -26,7 +70,7 @@ class SendTextMessageCubit extends Cubit<SendTextMessageState> {
   }) async {
 
     try {
-      emit(SendTextMessageLoading());
+      emit(SendMessageLoading());
       await sendTextMessageUseCase.call(
         sender: sender,
         messageReply: messageReply,
@@ -36,13 +80,14 @@ class SendTextMessageCubit extends Cubit<SendTextMessageState> {
         message: message,
         messageType: messageType,
       );
-      emit(SendTextMessageSuccess());
+      emit(SendMessageSuccess());
     } catch (e) {
-      emit(SendTextMessageFailed());
+      emit(SendMessageFailed());
     }
   }
 
 }
+
 //如果你的Cubit中包含多种状态（如success、fail和loading），
 // 并且你发现只有第一次输入后能成功清除TextField，而后续输入没有触发清除操作，
 // 这可能是因为Cubit状态更新的方式导致的。
@@ -60,4 +105,3 @@ class SendTextMessageCubit extends Cubit<SendTextMessageState> {
 // 然后根据操作的结果设置为success或fail。此外，确保每次状态更新时都创建一个新的状态对象，
 // 你还可以为success状态添加额外的信息（如时间戳或唯一ID），确保每次成功状态都是不同的。
 //
-

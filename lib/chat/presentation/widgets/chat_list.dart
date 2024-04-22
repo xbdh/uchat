@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uchat/app/utils/methods.dart';
 import 'package:uchat/chat/presentation/widgets/single_chat.dart';
-
+import 'package:uchat/main_injection_container.dart' as di;
 import '../cubit/chat_list_steam/chat_list_stream_cubit.dart';
 
 class ChatList extends StatefulWidget {
@@ -18,34 +18,39 @@ class ChatList extends StatefulWidget {
 class _ChatListState extends State<ChatList> {
   @override
   void initState() {
-    BlocProvider.of<ChatListStreamCubit>(context).getChatListStream(uid: widget.uid);
+    // BlocProvider.of<ChatListStreamCubit>(context).getChatListStream(
+    //     uid: widget.uid);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ChatListStreamCubit, ChatListStreamState>(
-      listener: (context, state) {
-       if (state is ChatListStreamFailed) {
-          showSnackBar(context: context, message:"Failed to load chats");
-        }
-      },
-      builder: (context, state) {
-        if (state is ChatListStreamLoaded) {
-          final chatLists = state.chatLists;
-          if (chatLists.isEmpty) {
-            return const Center(
-              child: Text("No Chats Yet!"),
-            );
+    return BlocProvider(
+      create: (context) => di.sl<ChatListStreamCubit>()..getChatListStream(
+          uid: widget.uid),
+      child: BlocConsumer<ChatListStreamCubit, ChatListStreamState>(
+        listener: (context, state) {
+          if (state is ChatListStreamFailed) {
+            showSnackBar(context: context, message: "Failed to load chats");
           }
-          return ListView.builder(
-            itemCount: chatLists.length,
-            itemBuilder: (context, index) {
-              final chat = chatLists[index];
-              return SingleChat(
+        },
+        builder: (context, state) {
+          if (state is ChatListStreamLoaded) {
+            final chatLists = state.chatLists;
+            if (chatLists.isEmpty) {
+              return const Center(
+                child: Text("No Chats Yet!"),
+              );
+            }
+            return ListView.builder(
+              itemCount: chatLists.length,
+              itemBuilder: (context, index) {
+                final chat = chatLists[index];
+                return SingleChat(
                   lastMessage: chat,
                   onTap: () {
                     context.pushNamed(
-                     "Chat",
+                      "Chat",
                       queryParameters: {
                         "friendUid": chat.recipientUID,
                         "friendName": chat.recipientName,
@@ -53,16 +58,16 @@ class _ChatListState extends State<ChatList> {
                       },
                     );
                   },
-              );
-            },
-          );
-        }else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-
-        }
-      },
+                );
+              },
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
     );
   }
 }

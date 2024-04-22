@@ -38,6 +38,16 @@ class _ChatMessageListState extends State<ChatMessageList> {
     _scrollController.dispose();
     super.dispose();
   }
+  Future<void> _scrollToBottom() async {
+    if (_scrollController.hasClients) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      _scrollController.animateTo(
+        _scrollController.position.minScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +75,13 @@ class _ChatMessageListState extends State<ChatMessageList> {
               }
 
               // auto scroll to bottom
-              WidgetsBinding.instance!.addPostFrameCallback((_) {
-                _scrollController.animateTo(
-                  _scrollController.position.maxScrollExtent,
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeOut,
-                );
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _scrollToBottom();
               });
               return GroupedListView<MessageEntity,DateTime>(
                 controller: _scrollController,
                 elements: messageLists,
+                reverse: true,
                 groupBy: (element)  {
                   return DateTime(
                     element.timeSent.year,
@@ -118,8 +125,8 @@ class _ChatMessageListState extends State<ChatMessageList> {
                       }
                       );
                 },
-                groupComparator: (DateTime value1, DateTime value2) => value2.compareTo(value1),
-                itemComparator: (MessageEntity element1, MessageEntity element2) => element2.timeSent.compareTo(element1.timeSent),
+                groupComparator: (DateTime value1, DateTime value2) => value1.compareTo(value2),
+                itemComparator: (MessageEntity element1, MessageEntity element2) => element1.timeSent.compareTo(element2.timeSent),
                 useStickyGroupSeparators: true,
                 floatingHeader: true,
                 order: GroupedListOrder.DESC,

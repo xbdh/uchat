@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:uchat/app/enums/enums.dart';
 import 'package:uchat/chat/domain/entities/message_entity.dart';
 
+import 'dispaly_message_type.dart';
+
 class AlignMessageRight extends StatelessWidget {
   const AlignMessageRight({
     super.key,
@@ -107,19 +109,19 @@ class AlignMessageRight extends StatelessWidget {
                             height: 5,
                           ),
                         ],
-                        // DisplayMessageType(
-                        //   message: message.message,
-                        //   type: message.messageType,
-                        //   color: Colors.white,
-                        //   isReply: false,
-                        //   viewOnly: viewOnly,
-                        // ),
-                        Text(
-                          message.message,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
+                        DisplayMessageType(
+                          message: message.message,
+                          type: message.messageType,
+                          color: Colors.white,
+                          isReply: false,
+                          //viewOnly: viewOnly,
                         ),
+                        // Text(
+                        //   message.message,
+                        //   style: const TextStyle(
+                        //     fontSize: 16,
+                        //   ),
+                        // ),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           //mainAxisAlignment: MainAxisAlignment.end,
