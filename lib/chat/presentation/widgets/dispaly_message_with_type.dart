@@ -1,26 +1,30 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:uchat/chat/presentation/widgets/video_player.dart';
 
 import '../../../app/enums/enums.dart';
+import '../../../main.dart';
+import 'audio_player.dart';
 
-class DisplayMessageType extends StatelessWidget {
+class DisplayMessageWithType extends StatelessWidget {
   final String message;
   final MessageType type;
   final Color color;
   final bool isReply;
   // final bool viewOnly;
 
-  const DisplayMessageType({
-    Key? key,
+  const DisplayMessageWithType({
+    super.key,
     required this.message,
     required this.type,
     required this.color,
     required this.isReply,
     // required this.viewOnly,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    //logger.i("DisplayMessageWithType: $message");
     Widget messageToShow() {
       switch (type) {
         case MessageType.text:
@@ -30,8 +34,9 @@ class DisplayMessageType extends StatelessWidget {
               color: color,
               fontSize: 16.0,
             ),
-            // maxLines: maxLines,
-            // overflow: overFlow,
+            //maxLines: maxLines,
+            //超过换行
+            //overflow: TextOverflow.ellipsis,
           );
         case MessageType.image:
           return isReply
@@ -42,22 +47,20 @@ class DisplayMessageType extends StatelessWidget {
             imageUrl: message,
             fit: BoxFit.cover,
           );
-        // case MessageEnum.video:
-        //   return isReply
-        //       ? const Icon(Icons.video_collection)
-        //       : VideoPlayerWidget(
-        //     videoUrl: message,
-        //     color: color,
-        //     viewOnly: viewOnly,
-        //   );
-        // case MessageEnum.audio:
-        //   return isReply
-        //       ? const Icon(Icons.audiotrack)
-        //       : AudioPlayerWidget(
-        //     audioUrl: message,
-        //     color: color,
-        //     viewOnly: viewOnly,
-        //   );
+        case MessageType.video:
+          return
+            VideoPlayerWidget(
+            videoUrl: message,
+            color: color,
+            viewOnly: false,
+          );
+        case MessageType.audio:
+          //return Text(message);
+          return AudioPlayerWidget(
+            audioUrl: message,
+            color: color,
+            viewOnly: false,
+          );
         default:
           return Text(
             message,

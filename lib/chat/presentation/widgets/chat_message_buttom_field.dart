@@ -4,7 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sound_record/flutter_sound_record.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:uchat/chat/presentation/cubit/message_reply/message_reply_cubit.dart';
 import 'package:uchat/chat/presentation/widgets/message_reply_preview_swipe.dart';
 
@@ -30,13 +33,17 @@ class ChatMessageBottomField extends StatefulWidget {
 class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
   late TextEditingController _textEditingController;
   late FocusNode _focusNode;
-  bool sending = false;
-  //bool fileSending = false;
+  late FlutterSoundRecord _soundRecord;
+  bool isLoading = false;
+  bool isShowSendButton = false;
   File? finalFileImage;
   String filePath = '';
+  bool isRecording = false;
+
 
   @override
   void initState() {
+    _soundRecord = FlutterSoundRecord();
     _textEditingController = TextEditingController();
     _focusNode = FocusNode();
     super.initState();
@@ -46,7 +53,49 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
   void dispose() {
     _textEditingController.dispose();
     _focusNode.dispose();
+    _soundRecord.dispose();
     super.dispose();
+  }
+
+  // check microphone permission
+  Future<bool> checkMicrophonePermission() async {
+    bool hasPermission = await Permission.microphone.isGranted;
+    final status = await Permission.microphone.request();
+    if (status == PermissionStatus.granted) {
+      hasPermission = true;
+    } else {
+      hasPermission = false;
+    }
+
+    return hasPermission;
+  }
+
+  // start recording audio
+  Future<void> startRecording() async {
+    final hasPermission = await checkMicrophonePermission();
+    if (hasPermission) {
+      var tempDir = await getTemporaryDirectory();
+      filePath = '${tempDir.path}/flutter_sound.aac';
+      await _soundRecord.start(
+        path: filePath,
+      );
+      setState(() {
+        isRecording = true;
+      });
+    }
+  }
+
+  // stop recording audio
+  Future<void> stopRecording() async {
+    await _soundRecord.stop();
+    setState(() {
+      isRecording = false;
+      //isSendingAudio = true;
+    });
+    // send audio message to firestore
+    // sendFileMessage(
+    //   messageType: MessageEnum.audio,
+    // );
   }
 
  Future<void> selectImage(bool fromCamera) async {
@@ -64,26 +113,23 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
     popContext();
   }
 
-  // select a video file from device
-  // void selectVideo(bool fromCamera) async {
-  //   File? fileVideo = await pickVideo(
-  //     fromCamera: fromCamera,
-  //     context: context,
-  //     onFail: (String message) {
-  //       showSnackBar(context: context, message: message);
-  //     },
-  //   );
-  //
-  //   popContext();
-  //
-  //   if (fileVideo != null) {
-  //     filePath = fileVideo.path;
-  //     // send video message to firestore
-  //     sendFileMessage(
-  //       messageType: MessageType.video,
-  //     );
-  //   }
-  // }
+  //select a video file from device
+  Future<void> selectVideo(bool fromCamera) async {
+    File? fileVideo = await pickVideo(
+      fromCamera: fromCamera,
+      context: context,
+      onFail: (String message) {
+        showSnackBar(context: context, message: message);
+      },
+    );
+
+    popContext();
+
+    if (fileVideo != null) {
+      filePath = fileVideo.path;
+      // send video message to firestore
+    }
+  }
 
   popContext() {
     Navigator.pop(context);
@@ -119,6 +165,8 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
         .watch<MessageReplyCubit>()
         .state;
 
+    // logger.i("messageReplay ++$messageReplay");
+
     return BlocConsumer<SendMessageCubit, SendMessageState>(
       listener: (context, state) {
         if (state is SendMessageFailed) {
@@ -126,7 +174,7 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
         } else if (state is SendMessageSuccess) {
           logger.i("ssssssssssssssssssssssssssssssss");
           setState(() {
-            sending = false;
+            isLoading = false;
            // fileSending = false;
           });
           _textEditingController.clear();
@@ -137,11 +185,14 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
           print("loading+++++++++++++++++");
           setState(() {
             //fileSending= true;
-            sending = true;
+            isLoading = true;
+            //isShowSendButton = false;
           });
         }
       },
       builder: (context, state) {
+
+        //print("messageReplay $messageReplay");
         final isMessageReply = messageReplay != null;
         return Container(
           decoration: BoxDecoration(
@@ -163,7 +214,7 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {
+                    onPressed:  () {
                       showModalBottomSheet(
                         context: context,
                         builder: (context) {
@@ -234,13 +285,27 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                                   children: [
                                     _attachWindowItem(icon: Icons.headphones,
                                         color: Colors.deepOrange,
-                                        title: "Audio"),
+                                        title: "Audio",
+                                        onTap: ()  {
+
+                                        }),
                                     _attachWindowItem(
                                         icon: Icons.videocam_rounded,
                                         color: Colors.lightGreen,
                                         title: "Video",
-                                        onTap: () {
-                                          //selectVideo(false);
+                                        onTap: () async {
+                                          await selectVideo(false);
+                                          await BlocProvider.of<SendMessageCubit>(context)
+                                              .sendFileMessage(
+                                            sender: myEntity,
+                                            messageReply: messageReplay,
+                                            recipientUID: widget.friendUid,
+                                            recipientName: widget.friendName,
+                                            recipientImage: widget.friendImage,
+                                            file: File(filePath),
+                                            messageType: MessageType.video,
+                                          );
+
                                         }),
                                     _attachWindowItem(
                                         icon: Icons.gif_box_outlined,
@@ -259,8 +324,52 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                     },
                     icon: const Icon(Icons.attachment),
                   ),
+                  GestureDetector(
+                    onLongPress: (){
+                      logger.i("long press");
+                      startRecording();
+                    },
+                    onLongPressUp: (){
+                      logger.i("long press up");
+                      stopRecording();
+                      logger.i("long press up$filePath");
+                      filePath==''?null:
+                      BlocProvider.of<SendMessageCubit>(context)
+                          .sendFileMessage(
+                        sender: myEntity,
+                        messageReply: messageReplay,
+                        recipientUID: widget.friendUid,
+                        recipientName: widget.friendName,
+                        recipientImage: widget.friendImage,
+                        file: File(filePath),
+                        messageType: MessageType.audio,
+                      );
+
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme
+                            .of(context)
+                            .primaryColor,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      margin: const EdgeInsets.all(5),
+                      child: const SizedBox(
+                        width: 24.0, // 控制大小
+                        height: 24.0, // 控制大小
+                        child: Icon(Icons.mic, color: Colors.white),
+
+                      ),
+                    ),
+                  ),
+
                   Expanded(
                     child: TextField(
+                      onChanged: (value) {
+                        // setState(() {
+                        //   isShowSendButton = value.isNotEmpty;
+                        // });
+                      },
                       controller: _textEditingController,
                       focusNode: _focusNode,
                       decoration: InputDecoration.collapsed(
@@ -272,10 +381,18 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                       ),
                     ),
                   ),
+                  // isLoading
+                  //     ? const Padding(
+                  //          padding: EdgeInsets.all(8.0),
+                  //           child:CircularProgressIndicator()
+                  //   )
+                  //     :
                   GestureDetector(
-                      onTap: () {
-                       sending ? null :
-                        BlocProvider.of<SendMessageCubit>(context)
+                      onTap: ()  async{
+                       // isShowSendButton ?
+                        isLoading?null:
+                            _textEditingController.text.isNotEmpty?
+                         BlocProvider.of<SendMessageCubit>(context)
                             .sendTextMessage(
                           sender: myEntity,
                           messageReply: messageReplay,
@@ -284,8 +401,9 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                           recipientImage: widget.friendImage,
                           message: _textEditingController.text,
                           messageType: MessageType.text,
-                        );
+                        ):null;
                       },
+
                       child: Container(
                         decoration: BoxDecoration(
                           color: Theme
@@ -296,24 +414,41 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                         margin: const EdgeInsets.all(5),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: sending
+
+                          child: isLoading
                               ? const SizedBox(
-                            width: 24.0, // 控制大小
-                            height: 24.0, // 控制大小
-                            child: CircularProgressIndicator(
-                              strokeWidth: 3.0, // 可以调整这个值来改变加载指示器的粗细
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white),
-                            ),
-                          )
+                              width: 24.0, // 控制大小
+                              height: 24.0, // 控制大小
+                              child: CircularProgressIndicator(
+                                strokeWidth: 3.0, // 可以调整这个值来改变加载指示器的粗细
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white),
+                              ),
+                            )
                               : const SizedBox(
-                            width: 24.0, // 确保与CircularProgressIndicator的尺寸相同
-                            height: 24.0, // 确保与CircularProgressIndicator的尺寸相同
-                            child: Icon(Icons.arrow_upward, color: Colors.white),
+                              width: 24.0, // 确保与CircularProgressIndicator的尺寸相同
+                              height: 24.0, // 确保与CircularProgressIndicator的尺寸相同
+                              child: Icon(Icons.arrow_upward, color: Colors.white),
+                          ),
+                          // child: isShowSendButton
+                          //   ? const Icon(Icons.arrow_upward, color: Colors.white)
+                          // : const Icon(Icons.mic, color: Colors.white),
+                          //     ? const SizedBox(
+                          //   width: 24.0, // 控制大小
+                          //   height: 24.0, // 控制大小
+                          //   child: CircularProgressIndicator(
+                          //     strokeWidth: 3.0, // 可以调整这个值来改变加载指示器的粗细
+                          //     valueColor: AlwaysStoppedAnimation<Color>(
+                          //         Colors.white),
+                          //   ),
+                          // )
+                          //     : const SizedBox(
+                          //   width: 24.0, // 确保与CircularProgressIndicator的尺寸相同
+                          //   height: 24.0, // 确保与CircularProgressIndicator的尺寸相同
+                          //   child: Icon(Icons.arrow_upward, color: Colors.white),
                           ),
                         ),
                       )
-                  ),
                 ],
               ),
             ],

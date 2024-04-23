@@ -1,8 +1,10 @@
 import 'package:date_format/date_format.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uchat/app/widgets/user_avatar.dart';
 import 'package:uchat/chat/domain/entities/last_message_entity.dart';
+import 'package:uchat/chat/presentation/widgets/last_message_preview.dart';
 
 import '../../../user/presentation/cubit/uid/uid_cubit.dart';
 
@@ -33,9 +35,9 @@ class SingleChat extends StatelessWidget {
               style: TextStyle(
               fontWeight: FontWeight.bold,),
               )
-            : const SizedBox(),
+            : const SizedBox.shrink(),
 
-          Text(lastMessage.message),
+          LastMessagePreview(lastMessage: lastMessage),
         ],
       ),
       trailing: Padding(

@@ -6,19 +6,24 @@ import 'chat_swipe_to.dart';
 class SingleChatMessage extends StatelessWidget {
   final MessageEntity message;
   final bool isMe;
-  final Function onLeftSwipe;
+  //final Function onLeftSwipe;
 
-  const SingleChatMessage({super.key,
+  const SingleChatMessage({
+    super.key,
     required this.message,
     required this.isMe,
-    required this.onLeftSwipe});
+   // required this.onLeftSwipe
+  });
 
   @override
   Widget build(BuildContext context) {
     return ChatSwipeTo(
-      onSwipeLeft: onLeftSwipe,
+      //onSwipeLeft: onLeftSwipe,
       isMe: isMe,
       messageEntity: message,
     );
+    // return Container(
+    //   child: Text(message.message),
+    // );
   }
 }

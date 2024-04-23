@@ -7,6 +7,10 @@ part 'message_reply_state.dart';
 class MessageReplyCubit extends Cubit<MessageReplyEntity?> {
   MessageReplyCubit() : super(null);
 
-  void setMessageReply(MessageReplyEntity reply) => emit(reply);
-  void clearMessageReply() => emit(null);
+  Future<void> setMessageReply(MessageReplyEntity reply) async{
+    emit(reply);
+  }
+  Future<void > clearMessageReply()async {
+    emit(null);
+  }
 }

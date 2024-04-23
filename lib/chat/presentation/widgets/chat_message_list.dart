@@ -9,6 +9,7 @@ import 'package:uchat/chat/presentation/cubit/set_message_status/set_message_sta
 import 'package:uchat/chat/presentation/widgets/chat_data_time.dart';
 import 'package:uchat/chat/presentation/widgets/single_chat_message.dart';
 
+import '../../../main.dart';
 import '../../../user/presentation/cubit/uid/uid_cubit.dart';
 import '../cubit/chat_list_steam/chat_list_stream_cubit.dart';
 import 'package:uchat/main_injection_container.dart' as di;
@@ -40,7 +41,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
   }
   Future<void> _scrollToBottom() async {
     if (_scrollController.hasClients) {
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 200));
       _scrollController.animateTo(
         _scrollController.position.minScrollExtent,
         duration: const Duration(milliseconds: 300),
@@ -61,10 +62,8 @@ class _ChatMessageListState extends State<ChatMessageList> {
         onVerticalDragDown: (_) {
           FocusScope.of(context).unfocus();
         },
-        child: BlocConsumer<ChatMessageListStreamCubit, ChatMessageListStreamState>(
-          listener: (context, state) {
-            // TODO: implement listener
-          },
+        child: BlocBuilder<ChatMessageListStreamCubit, ChatMessageListStreamState>(
+
           builder: (context, state) {
             if (state is ChatMessageListStreamLoaded) {
               final messageLists = state.messageLists;
@@ -75,62 +74,89 @@ class _ChatMessageListState extends State<ChatMessageList> {
               }
 
               // auto scroll to bottom
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _scrollToBottom();
-              });
-              return GroupedListView<MessageEntity,DateTime>(
-                controller: _scrollController,
-                elements: messageLists,
-                reverse: true,
-                groupBy: (element)  {
-                  return DateTime(
-                    element.timeSent.year,
-                    element.timeSent.month,
-                    element.timeSent.day,
-                  );
-                },
-                groupHeaderBuilder: (MessageEntity messageEntity) {
-                  return SizedBox(
-                    height: 50,
-                    child: ChatDateTime(
-                      messageEntity: messageEntity,
-                    )
-                  );
-                },
-                itemBuilder: (context, element) {
-                  // update seen
-                  if (!element.isSeen&&element.senderUID != uid) {
-                    BlocProvider.of<SetMessageStatusCubit>(context).
-                    setMessageStatus(
-                        senderUID: element.senderUID,
-                        recipientUID: uid,
-                        messageID: element.messageId
-                    );
-                  }
+              // WidgetsBinding.instance.addPostFrameCallback((_) {
+              //   _scrollToBottom();
+              // });
+              // logger.i("messageLists: $messageLists");
+              else {
+                // return ListView.builder(
+                //   controller: _scrollController,
+                //   itemCount: messageLists.length,
+                //   itemBuilder: (context, index) {
+                //     final msg = messageLists[index];
+                //     final bool isMe = msg.senderUID == uid;
+                //     return SingleChatMessage(
+                //         key: ValueKey(msg.messageId),
+                //         message: msg
+                //     , isMe: isMe);
+                //   },
+                // );
 
-                  final bool isMe = element.senderUID == uid;
-                  return SingleChatMessage(
-                      message: element,
+              return Container(
+                child: GroupedListView<dynamic, DateTime>(
+
+                  //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  controller: _scrollController,
+                  elements: messageLists,
+                  reverse: true,
+                  groupBy: (element) {
+                    return DateTime(
+                      element.timeSent.year,
+                      element.timeSent.month,
+                      element.timeSent.day,
+                    );
+                  },
+                  groupHeaderBuilder: (dynamic messageEntity) {
+                    return SizedBox(
+                        height: 50,
+                        child: ChatDateTime(
+                          messageEntity: messageEntity,
+                        )
+                    );
+                  },
+                  itemBuilder: (context, dynamic element) {
+                    // update seen
+                    // if (!element.isSeen&&element.senderUID != uid) {
+                    //   BlocProvider.of<SetMessageStatusCubit>(context).
+                    //   setMessageStatus(
+                    //       senderUID: element.senderUID,
+                    //       recipientUID: uid,
+                    //       messageID: element.messageId
+                    //   );
+                    // }
+                    final msg = element as MessageEntity;
+
+                    final bool isMe = msg.senderUID == uid;
+                    return SingleChatMessage(
+                      key: ValueKey(element.messageId),
+                      message: msg,
                       isMe: isMe,
-                      onLeftSwipe: (){
-                          final messageReply=MessageReplyEntity(
-                              message:element.message,
-                              senderUID: element.senderUID,
-                              senderName: element.senderName,
-                              senderImage: element.senderImage,
-                              messageType: element.messageType,
-                              isMe: isMe);
-                          BlocProvider.of<MessageReplyCubit>(context).setMessageReply(
-                          messageReply);
-                      }
-                      );
-                },
-                groupComparator: (DateTime value1, DateTime value2) => value1.compareTo(value2),
-                itemComparator: (MessageEntity element1, MessageEntity element2) => element1.timeSent.compareTo(element2.timeSent),
-                useStickyGroupSeparators: true,
-                floatingHeader: true,
-                order: GroupedListOrder.DESC,
+                      // onLeftSwipe: (){
+                      //     final messageReply=MessageReplyEntity(
+                      //         message:element.message,
+                      //         senderUID: element.senderUID,
+                      //         senderName: element.senderName,
+                      //         senderImage: element.senderImage,
+                      //         messageType: element.messageType,
+                      //         isMe: isMe);
+                      //     BlocProvider.of<MessageReplyCubit>(context).setMessageReply(
+                      //     messageReply);
+                      // }
+                    );
+                  },
+                  groupComparator: (DateTime value1, DateTime value2) =>
+                      value1.compareTo(value2),
+                  itemComparator: (dynamic element1, dynamic element2) {
+                    var time1 = element1.timeSent;
+                    var time2 = element2.timeSent;
+                    return time1!.compareTo(time2!);
+                  },
+                  useStickyGroupSeparators: true,
+                  floatingHeader: true,
+                  order: GroupedListOrder.DESC,
+                ),
               );
+            }
             } else {
               return const Center(
                 child: CircularProgressIndicator(),

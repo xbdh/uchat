@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uchat/app/enums/enums.dart';
 import 'package:uchat/chat/domain/entities/message_entity.dart';
 
-import 'dispaly_message_type.dart';
+import 'dispaly_message_with_type.dart';
 
 class AlignMessageRight extends StatelessWidget {
   const AlignMessageRight({
@@ -19,6 +19,7 @@ class AlignMessageRight extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //return Text(message.message);
     final time = formatDate(message.timeSent, [hh, ':', nn, ' ', am]);
     final isReplying = message.repliedTo.isNotEmpty;
     // get the reations from the list
@@ -50,7 +51,7 @@ class AlignMessageRight extends StatelessWidget {
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.7,
-          //minWidth: MediaQuery.of(context).size.width * 0.3,
+          minWidth: MediaQuery.of(context).size.width * 0.3,
         ),
         child: Stack(
           children: [
@@ -109,7 +110,7 @@ class AlignMessageRight extends StatelessWidget {
                             height: 5,
                           ),
                         ],
-                        DisplayMessageType(
+                        DisplayMessageWithType(
                           message: message.message,
                           type: message.messageType,
                           color: Colors.white,

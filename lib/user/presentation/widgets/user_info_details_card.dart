@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uchat/app/widgets/profile_status.dart';
@@ -29,6 +30,7 @@ class UserInfoDetailsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment:  CrossAxisAlignment.start,
           children: [
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -40,6 +42,7 @@ class UserInfoDetailsCard extends StatelessWidget {
                 //const SizedBox(width: 2),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Text(
                       userName,
@@ -52,7 +55,7 @@ class UserInfoDetailsCard extends StatelessWidget {
                      Text(
                       userEmail,
                       style: GoogleFonts.openSans(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                       )
                     )
