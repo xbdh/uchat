@@ -7,8 +7,14 @@ import 'package:uchat/chat/presentation/widgets/chat_message_list.dart';
 
 class ChatPage extends StatefulWidget {
   final String friendUid, friendName, friendImage;
+  final String? groupID;
 
-  const ChatPage({super.key, required this.friendUid, required this.friendName, required this.friendImage});
+  const ChatPage({super.key,
+    required this.friendUid,
+    required this.friendName,
+    required this.friendImage,
+    this.groupID,
+  });
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -20,6 +26,7 @@ class _ChatPageState extends State<ChatPage> {
     final friendUid = widget.friendUid;
     final friendName = widget.friendName;
     final friendImage = widget.friendImage;
+    bool isGroup = widget.groupID != null;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,9 +38,17 @@ class _ChatPageState extends State<ChatPage> {
         child: Column(
          children: [
            Expanded(
-             child: ChatMessageList(friendUid: friendUid),
+             child: ChatMessageList(
+                 friendUid: friendUid,
+                 groupID: null,
              ),
-            ChatMessageBottomField(friendUid: friendUid, friendName: friendName, friendImage: friendImage)
+             ),
+            ChatMessageBottomField(
+                friendUid: friendUid,
+                friendName: friendName,
+                friendImage: friendImage,
+                groupID: null,
+            )
          ],
         ),
       ),

@@ -73,6 +73,9 @@ class SingleChat extends StatelessWidget {
               fontWeight: FontWeight.bold,),
               )
             : const SizedBox.shrink(),
+          const SizedBox(
+            width:5,
+          ),
 
           LastMessagePreview(
             lastMessage: lastMes,

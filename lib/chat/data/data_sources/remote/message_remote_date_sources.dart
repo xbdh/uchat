@@ -20,7 +20,9 @@ abstract class MessageRemoteDataSource {
 
   Stream<List<MessageModel>> getMessageListStream({
     required String senderUID,
-    required String recipientUID,});
+    required String recipientUID,
+    required String? groupID,
+  });
 
 
   Stream<List<LastMessageModel>> getChatListStream({required String uid});
@@ -56,4 +58,6 @@ abstract class MessageRemoteDataSource {
   Future<void> createGroup(GroupModel groupModel);
 
   Stream<List<GroupModel>> getGroupListStream({required String uid, required isPrivate});
+
+  Future<GroupModel> getSingleGroup(String groupId);
 }

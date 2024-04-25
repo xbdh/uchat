@@ -7,7 +7,7 @@ class GetChatMessageListStreamUseCase {
 
   GetChatMessageListStreamUseCase({required this.repository});
 
-  Stream<List<MessageEntity>> call(String senderUID, String recipientUID) {
-    return repository.getMessageListStream(senderUID: senderUID, recipientUID: recipientUID);
+  Stream<List<MessageEntity>> call(String senderUID, String recipientUID,String? groupID) {
+    return repository.getMessageListStream(senderUID: senderUID, recipientUID: recipientUID,groupID: groupID);
   }
 }

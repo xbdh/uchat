@@ -1,6 +1,7 @@
 import 'package:uchat/chat/presentation/cubit/chat_list_steam/chat_list_stream_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/chat_message_list_steam/chat_message_list_stream_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/create_group/create_group_cubit.dart';
+import 'package:uchat/chat/presentation/cubit/get_single_group/get_single_group_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/group_list_stream/group_list_stream_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/message_reply/message_reply_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/send_message/send_message_cubit.dart';
@@ -16,6 +17,7 @@ import 'domain/use_cases/create_group_usecase.dart';
 import 'domain/use_cases/get_chat_list_stream_usecase.dart';
 import 'domain/use_cases/get_chat_message_list_stream_usecase.dart';
 import 'domain/use_cases/get_group_list_stream_usecase.dart';
+import 'domain/use_cases/get_single_group_usecase.dart';
 import 'domain/use_cases/send_file_message_usecase.dart';
 import 'domain/use_cases/send_text_message_usecase.dart';
 import 'domain/use_cases/store_file_usecase.dart';
@@ -88,6 +90,12 @@ Future<void> chatInjectionContainer() async {
         getGroupListStreamUseCase: sl.call(),
 
       ));
+  sl.registerFactory<GetSingleGroupCubit>(() =>
+      GetSingleGroupCubit(
+        getSingleGroupUseCase: sl.call(),
+
+      ));
+
 
   // * USE CASES INJECTION
 
@@ -117,6 +125,8 @@ Future<void> chatInjectionContainer() async {
           () => CreateGroupUseCase(repository: sl.call()));
   sl.registerLazySingleton<GetGroupListStreamUseCase>(
           () => GetGroupListStreamUseCase(repository: sl.call()));
+  sl.registerLazySingleton<GetSingleGroupUseCase>(
+          () => GetSingleGroupUseCase(repository: sl.call()));
 
 
   // * REPOSITORY & DATA SOURCES INJECTION

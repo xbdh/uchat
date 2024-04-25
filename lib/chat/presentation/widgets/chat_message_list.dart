@@ -18,8 +18,9 @@ import '../cubit/chat_message_list_steam/chat_message_list_stream_cubit.dart';
 import '../cubit/message_reply/message_reply_cubit.dart';
 class ChatMessageList extends StatefulWidget {
   final String friendUid;
+  final String? groupID;
 
-  const ChatMessageList({super.key, required this.friendUid});
+  const ChatMessageList({super.key, required this.friendUid, required this.groupID});
 
   @override
   State<ChatMessageList> createState() => _ChatMessageListState();
@@ -57,7 +58,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
         .state;
 
     return BlocProvider(
-      create: (context) => di.sl<ChatMessageListStreamCubit>()..getChatMessageListStream(senderUID: uid, recipientUID: widget.friendUid),
+      create: (context) => di.sl<ChatMessageListStreamCubit>()..getChatMessageListStream(senderUID: uid, recipientUID: widget.friendUid,groupID: widget.groupID),
       child: GestureDetector(
         onVerticalDragDown: (_) {
           FocusScope.of(context).unfocus();

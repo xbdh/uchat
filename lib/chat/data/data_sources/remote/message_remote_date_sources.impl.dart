@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -26,7 +27,16 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
   @override
   Stream<List<MessageModel>> getMessageListStream({
     required String senderUID,
-    required String recipientUID,}){
+    required String recipientUID,
+    required String? groupID,
+  }){
+    if (groupID != null) {
+      return fireStore.
+          collection(FirebaseCollectionManager.groups).
+          doc(groupID).
+          collection(FirebaseCollectionManager.messages).
+          snapshots().map((snapshot) => snapshot.docs.map((e)=> MessageModel.fromSnapshot(e)).toList()  );
+    }
 
     return fireStore.
           collection(FirebaseCollectionManager.users).
@@ -40,7 +50,7 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
 
   @override
   Stream<List<LastMessageModel>> getChatListStream({required String uid}){
-    print('getChatListStream+++++++++++$uid');
+    //print('getChatListStream+++++++++++$uid');
     return fireStore.
           collection(FirebaseCollectionManager.users).
           doc(uid).
@@ -175,6 +185,14 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
     where('isPrivate', isEqualTo: isPrivate).
     snapshots().
     map((snapshot) => snapshot.docs.map((e)=> GroupModel.fromSnapshot(e)).toList()  );
+  }
+
+  @override
+  Future<GroupModel> getSingleGroup(String groupId)  async {
+   final group= await fireStore.collection(FirebaseCollectionManager.groups).
+    doc(groupId).
+    get().then((value) => GroupModel.fromSnapshot(value));
+    return group;
   }
 
 

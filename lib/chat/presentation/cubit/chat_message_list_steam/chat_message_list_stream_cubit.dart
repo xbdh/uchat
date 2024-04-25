@@ -15,11 +15,12 @@ class ChatMessageListStreamCubit extends Cubit<ChatMessageListStreamState> {
   Future<void> getChatMessageListStream({
     required String senderUID,
     required String recipientUID,
+    required String? groupID,
   }) async {
     try {
       emit(ChatMessageListStreamLoading());
       final streamRespond = getChatMessageListStreamUseCase.call(
-        senderUID, recipientUID
+        senderUID, recipientUID, groupID,
       );
       streamRespond.listen((streams) {
         // if closed

@@ -21,10 +21,16 @@ import 'package:uchat/main_injection_container.dart' as di;
 import '../cubit/send_message/send_message_cubit.dart';
 
 class ChatMessageBottomField extends StatefulWidget {
-  final String friendUid, friendName, friendImage;
+  final String friendUid, friendName, friendImage ;
+  final String? groupID;
 
   const ChatMessageBottomField(
-      {super.key, required this.friendUid, required this.friendName, required this.friendImage});
+      {super.key,
+        required this.friendUid,
+        required this.friendName,
+        required this.friendImage,
+        required this.groupID
+      });
 
   @override
   State<ChatMessageBottomField> createState() => _ChatMessageBottomFieldState();

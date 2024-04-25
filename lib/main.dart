@@ -15,6 +15,7 @@ import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
 import 'chat/presentation/cubit/chat_list_steam/chat_list_stream_cubit.dart';
 import 'chat/presentation/cubit/chat_message_list_steam/chat_message_list_stream_cubit.dart';
 import 'chat/presentation/cubit/create_group/create_group_cubit.dart';
+import 'chat/presentation/cubit/get_single_group/get_single_group_cubit.dart';
 import 'chat/presentation/cubit/group_list_stream/group_list_stream_cubit.dart';
 import 'chat/presentation/cubit/message_reply/message_reply_cubit.dart';
 import 'chat/presentation/cubit/send_message/send_message_cubit.dart';
@@ -99,6 +100,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => di.sl<GroupListStreamCubit>(),
         ),
+        BlocProvider(
+          create: (context) => di.sl<GetSingleGroupCubit>(),
+        ),
+
       ],
       child: AdaptiveTheme(
         light: ThemeData(

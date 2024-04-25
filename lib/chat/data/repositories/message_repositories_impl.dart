@@ -21,11 +21,14 @@ class MessageRepositoryImpl extends MessageRepository {
   @override
   Stream<List<MessageEntity>> getMessageListStream({
     required String senderUID,
-    required String recipientUID,}){
+    required String recipientUID,
+    required String? groupID,
+  }){
 
     final Stream<List<MessageModel>> messageModelStream = messageDataSource.getMessageListStream(
       senderUID: senderUID,
-      recipientUID: recipientUID
+      recipientUID: recipientUID,
+groupID: groupID
     );
     // convert MessageModel to MessageEntity
     return messageModelStream.map((messageModelList) {
@@ -126,5 +129,11 @@ class MessageRepositoryImpl extends MessageRepository {
     return messageDataSource.getGroupListStream(uid: uid, isPrivate: isPrivate).map((groupModelList) {
       return groupModelList.map((e) => GroupEntity.fromGroupModel(e)).toList();
     });
+  }
+
+  @override
+  Future<GroupEntity> getSingleGroup(String groupId) async {
+    final groupModel = await messageDataSource.getSingleGroup(groupId);
+    return GroupEntity.fromGroupModel(groupModel);
   }
 }

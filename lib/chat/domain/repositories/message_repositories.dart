@@ -22,7 +22,9 @@ abstract class MessageRepository {
 
     Stream<List<MessageEntity>> getMessageListStream({
       required String senderUID,
-      required String recipientUID,});
+      required String recipientUID,
+      required String? groupID,
+    });
 
     Stream<List<LastMessageEntity>> getChatListStream({required String uid});
 
@@ -60,5 +62,6 @@ abstract class MessageRepository {
 
     Stream<List<GroupEntity>>getGroupListStream({required String uid,required isPrivate});
 
-
+    // get single group
+    Future<GroupEntity> getSingleGroup(String groupId);
   }
