@@ -9,7 +9,7 @@ import 'package:uchat/user/domain/entities/user_entity.dart';
 import 'package:uchat/user/presentation/cubit/auth/auth_cubit.dart';
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 
-import 'package:uchat/user/presentation/widgets/setting_list_title.dart';
+import 'package:uchat/app/widgets/setting_list_title.dart';
 
 class ProfilePage extends StatefulWidget {
   final String loginUid;

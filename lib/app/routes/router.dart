@@ -1,6 +1,9 @@
 import 'package:uchat/app/home/home_page.dart';
 import 'package:uchat/app/landing/landing_page.dart';
 import 'package:uchat/chat/presentation/pages/chat_page.dart';
+import 'package:uchat/chat/presentation/pages/create_group_page.dart';
+import 'package:uchat/chat/presentation/pages/private_group_page.dart';
+import 'package:uchat/chat/presentation/pages/public_group_list_page.dart';
 import 'package:uchat/user/presentation/pages/friend_requests_page.dart';
 import 'package:uchat/user/presentation/pages/friends_page.dart';
 import 'package:uchat/user/presentation/pages/info_page.dart';
@@ -9,6 +12,8 @@ import 'package:go_router/go_router.dart';
 import 'package:uchat/user/presentation/pages/other_profile_page.dart';
 import 'package:uchat/user/presentation/pages/people_page.dart';
 import 'package:uchat/user/presentation/pages/profile_page.dart';
+
+import '../../chat/presentation/pages/public_group_page.dart';
 
 // GoRouter configuration
 final chatRouter = GoRouter(
@@ -84,5 +89,31 @@ final chatRouter = GoRouter(
         friendImage: state.uri.queryParameters['friendImage']!,
       ),
     ),
+
+    GoRoute(
+      name: "CreateGroup",
+      path: '/create_group',
+      builder: (context, state) => CreateGroupPage(),
+    ),
+
+    GoRoute(
+      name: "PrivateGroup",
+      path: '/private_group',
+      builder: (context, state) => PrivateGroupPage(
+        groupId: state.uri.queryParameters['groupId']!,
+        groupName: state.uri.queryParameters['groupName']!,
+        groupImage: state.uri.queryParameters['groupImage']!,
+      )
+    ),
+
+    GoRoute(
+      name: "PublicGroup",
+      path: '/public_group',
+      builder: (context, state) =>PublicGroupPage(
+        groupId: state.uri.queryParameters['groupId']!,
+        groupName: state.uri.queryParameters['groupName']!,
+        groupImage: state.uri.queryParameters['groupImage']!,
+      )
+    )
   ],
 );

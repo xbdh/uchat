@@ -6,16 +6,16 @@ import 'package:uchat/app/enums/enums.dart';
 import 'package:uchat/chat/data/models/last_message_model.dart';
 
 class LastMessageEntity  extends Equatable {
-  String senderUID;
-  String recipientUID;
-  String recipientName;
-  String recipientImage;
-  String message;
-  MessageType messageType;
-  DateTime timeSent;
-  bool isSeen;
+  final String senderUID;
+  final String recipientUID;
+  final String recipientName;
+  final String recipientImage;
+  final String message;
+  final MessageType messageType;
+  final DateTime timeSent;
+  final bool isSeen;
 
-  LastMessageEntity({
+  const LastMessageEntity({
     required this.senderUID,
     required this.recipientUID,
     required this.recipientName,

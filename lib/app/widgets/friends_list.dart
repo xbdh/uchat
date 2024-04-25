@@ -7,9 +7,11 @@ import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubi
 import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 import 'package:uchat/main_injection_container.dart' as di;
-import 'package:uchat/user/presentation/widgets/friend_list_title.dart';
+import 'package:uchat/app/widgets/friend_list_title.dart';
 
-import '../cubit/friend_request/friend_request_cubit.dart';
+import '../../user/presentation/cubit/friend_request/friend_request_cubit.dart';
+import 'friend_list_group_view_title.dart';
+import 'friend_request_list_title.dart';
 
 class FriendsList extends StatelessWidget {
   final String uid;
@@ -21,7 +23,7 @@ class FriendsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context){
-        if(viewType == FriendViewType.friends){
+        if(viewType == FriendViewType.friends|| viewType == FriendViewType.group){
           return di.sl<FriendListCubit>()..getFriendList( myUID: uid);
         }else{
           return di.sl<FriendListCubit>()..getFriendRequestList(myUID: uid );
@@ -30,7 +32,7 @@ class FriendsList extends StatelessWidget {
 
       child: BlocBuilder<FriendListCubit, FriendListState>(
         builder: (context, friendRequestState) {
-          if (viewType == FriendViewType.friends) {
+          if (viewType == FriendViewType.friends || viewType == FriendViewType.group) {
             if (friendRequestState is FriendListLoaded) {
               final friends = friendRequestState.friends;
               if (friends.isEmpty) {
@@ -45,8 +47,10 @@ class FriendsList extends StatelessWidget {
                   itemCount: friends.length,
                   itemBuilder: (context, index) {
                     final friend = friendRequestState.friends[index];
-                    return FriendListTitle(
-                      viewType: viewType,
+                    return viewType==FriendViewType.friends
+                        ? FriendListTitle(
+                      friend: friend,
+                    ):FriendListGroupViewTitle(
                       friend: friend,
                     );
                   },
@@ -72,9 +76,8 @@ class FriendsList extends StatelessWidget {
                   itemCount: friendRequests.length,
                   itemBuilder: (context, index) {
                     final friendRequest =friendRequests[index];
-                    return FriendListTitle(
-                      viewType: viewType,
-                      friend: friendRequest,
+                    return FriendRequestListTitle(
+                      friendRequest: friendRequest,
                     );
                   },
                 );

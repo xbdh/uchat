@@ -8,8 +8,9 @@ import '../cubit/chat_list_steam/chat_list_stream_cubit.dart';
 
 class ChatList extends StatefulWidget {
   final String uid;
+  final bool isGroup;
 
-  const ChatList({super.key, required this.uid});
+  const ChatList({super.key, required this.uid,required this.isGroup});
 
   @override
   State<ChatList> createState() => _ChatListState();
@@ -48,6 +49,7 @@ class _ChatListState extends State<ChatList> {
                 final chat = chatLists[index];
                 return SingleChat(
                   lastMessage: chat,
+                  isGroup: false,
                   onTap: () {
                     context.pushNamed(
                       "Chat",

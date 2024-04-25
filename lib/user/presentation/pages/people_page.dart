@@ -7,6 +7,8 @@ import 'package:uchat/app/widgets/user_avatar.dart';
 import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
 import 'package:uchat/user/presentation/cubit/user/user_cubit.dart';
 
+import '../../../app/widgets/friend_list_all_user_view_title.dart';
+
 class PeoplePage extends StatefulWidget {
   // final String uid;
   const PeoplePage({super.key});
@@ -64,14 +66,8 @@ class _PeoplePageState extends State<PeoplePage> {
                       return ListView.builder(
                         itemCount: users.length,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(users[index].name),
-                            subtitle: Text(users[index].aboutMe),
-                            leading: UserAvatar(
-                              imageUrl: users[index].image,
-                              radius: 40,
-                              onPressed: () {},
-                            ),
+                          return FriendListAllUserViewTitle(
+                            friend: users[index],
                             onTap: () {
 
                               context.pushNamed(

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uchat/app/widgets/user_avatar.dart';
 import 'package:uchat/chat/presentation/pages/chat_list_page.dart';
+import 'package:uchat/chat/presentation/pages/group_page.dart';
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 import 'package:uchat/user/presentation/cubit/my_entity/my_entity_cubit.dart';
@@ -12,7 +13,7 @@ import 'package:uchat/user/presentation/pages/people_page.dart';
 
 import '../../main.dart';
 
-class HomePage extends StatefulWidget  {
+class HomePage extends StatefulWidget {
   final String uid;
 
   const HomePage({super.key, required this.uid});
@@ -21,16 +22,13 @@ class HomePage extends StatefulWidget  {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with WidgetsBindingObserver, TickerProviderStateMixin{
+class _HomePageState extends State<HomePage>
+    with WidgetsBindingObserver, TickerProviderStateMixin {
   String ImageUrl = '';
 
   final PageController _pageController = PageController(initialPage: 0);
   int currentIndex = 0;
-  List<Widget> pages = [
-    ChatListPage(),
-    const Group(),
-    PeoplePage()
-  ];
+  List<Widget> pages = [ChatListPage(), GroupPage(), PeoplePage()];
 
   @override
   void initState() {
@@ -45,7 +43,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
     WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
- // did change App lifecycle state
+
+  // did change App lifecycle state
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // if (state == AppLifecycleState.resumed) {
@@ -56,8 +55,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
 
     switch (state) {
       case AppLifecycleState.resumed:
-      // user comes back to the app
-      // update user status to online
+        // user comes back to the app
+        // update user status to online
         BlocProvider.of<UserCubit>(context).setUserOnlineStatus(true);
         // 应该还要更新一下用户的lastSeen
         break;
@@ -65,12 +64,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
       case AppLifecycleState.hidden:
-      // app is inactive, paused, detached or hidden
-      // update user status to offline
-      BlocProvider.of<UserCubit>(context).setUserOnlineStatus(false);
+        // app is inactive, paused, detached or hidden
+        // update user status to offline
+        BlocProvider.of<UserCubit>(context).setUserOnlineStatus(false);
         break;
       default:
-      // handle other states
+        // handle other states
         break;
     }
     super.didChangeAppLifecycleState(state);
@@ -99,11 +98,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
                             ? getSingleUserstate.singleUser.image
                             : '',
                         onPressed: () {
-                          context.pushNamed("Profile",
-                              pathParameters: {
-                                'uid': widget.uid,
-                                'loginUid': widget.uid
-                              });
+                          context.pushNamed("Profile", pathParameters: {
+                            'uid': widget.uid,
+                            'loginUid': widget.uid
+                          });
                         },
                         radius: 20,
                       ),
@@ -119,6 +117,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver, Ticker
                   },
                   children: pages,
                 ),
+                floatingActionButton: currentIndex == 1
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          context.pushNamed('CreateGroup');
+                        },
+                        child: const Icon(CupertinoIcons.add),
+                      )
+                    : null,
                 bottomNavigationBar: BottomNavigationBar(
                   items: const <BottomNavigationBarItem>[
                     BottomNavigationBarItem(

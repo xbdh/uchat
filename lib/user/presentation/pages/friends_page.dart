@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uchat/app/enums/enums.dart';
 import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
-import 'package:uchat/user/presentation/widgets/friends_list.dart';
+import 'package:uchat/app/widgets/friends_list.dart';
 
 class FriendsPage extends StatefulWidget {
   const FriendsPage({super.key});

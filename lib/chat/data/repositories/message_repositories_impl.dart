@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:uchat/app/enums/enums.dart';
 import 'package:uchat/chat/data/data_sources/remote/message_remote_date_sources.dart';
+import 'package:uchat/chat/domain/entities/group_entity.dart';
 import 'package:uchat/chat/domain/entities/last_message_entity.dart';
 import 'package:uchat/chat/domain/entities/message_entity.dart';
 import 'package:uchat/chat/domain/repositories/message_repositories.dart';
 import 'package:uchat/user/data/models/user_model.dart';
 import 'package:uchat/user/domain/entities/user_entity.dart';
 
+import '../models/group_model.dart';
 import '../models/last_message_model.dart';
 import '../models/message_model.dart';
 
@@ -109,5 +111,20 @@ class MessageRepositoryImpl extends MessageRepository {
       filePath: filePath
     );
     return url;
+  }
+
+  @override
+  Future<void> createGroup(GroupEntity groupEntity) async {
+    // convert GroupEntity to GroupModel
+    GroupModel groupModel = GroupModel.fromGroupEntity(groupEntity);
+    await messageDataSource.createGroup(groupModel);
+
+  }
+
+  @override
+  Stream<List<GroupEntity>> getGroupListStream({required String uid, required isPrivate}) {
+    return messageDataSource.getGroupListStream(uid: uid, isPrivate: isPrivate).map((groupModelList) {
+      return groupModelList.map((e) => GroupEntity.fromGroupModel(e)).toList();
+    });
   }
 }

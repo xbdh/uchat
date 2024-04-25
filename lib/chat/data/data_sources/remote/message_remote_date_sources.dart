@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:uchat/app/enums/enums.dart';
+import 'package:uchat/chat/data/models/group_model.dart';
 import 'package:uchat/chat/data/models/last_message_model.dart';
 import 'package:uchat/chat/data/models/message_model.dart';
 import 'package:uchat/user/data/models/user_model.dart';
@@ -52,4 +53,7 @@ abstract class MessageRemoteDataSource {
     required File file,
     required String filePath,
   });
+  Future<void> createGroup(GroupModel groupModel);
+
+  Stream<List<GroupModel>> getGroupListStream({required String uid, required isPrivate});
 }

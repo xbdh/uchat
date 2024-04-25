@@ -6,6 +6,8 @@ import 'package:uchat/chat/domain/entities/message_entity.dart';
 import 'package:uchat/chat/domain/entities/message_reply_entity.dart';
 import 'package:uchat/user/domain/entities/user_entity.dart';
 
+import '../entities/group_entity.dart';
+
 abstract class MessageRepository {
     Future<void> sendTextMessage({
       required UserEntity sender,
@@ -53,5 +55,10 @@ abstract class MessageRepository {
       required File file,
       required String filePath,
     });
+
+    Future<void> createGroup(GroupEntity groupEntity);
+
+    Stream<List<GroupEntity>>getGroupListStream({required String uid,required isPrivate});
+
 
   }

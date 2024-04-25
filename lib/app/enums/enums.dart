@@ -12,7 +12,7 @@ enum MessageType {
 extension MessageTypeExtension on MessageType {
   // 将枚举转换为字符串
   String toShortString() {
-    return this.toString().split('.').last;
+    return toString().split('.').last;
   }
 
   // 从字符串转换为枚举
@@ -20,6 +20,24 @@ extension MessageTypeExtension on MessageType {
     return MessageType.values.firstWhere(
           (e) => e.toShortString() == str,
       orElse: () => throw ArgumentError('无法将"$str"转换为MessageType'),
+    );
+  }
+}
+
+enum GroupType {
+  private,
+  public,
+}
+
+extension GroupTypeExtension on GroupType {
+  String toShortString() {
+    return toString().split('.').last;
+  }
+
+  static GroupType fromString(String str) {
+    return GroupType.values.firstWhere(
+          (e) => e.toShortString() == str,
+      orElse: () => throw ArgumentError('无法将"$str"转换为GroupType'),
     );
   }
 }

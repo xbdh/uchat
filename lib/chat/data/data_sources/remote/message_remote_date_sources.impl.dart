@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uchat/app/constants/firebase_collection.dart';
 import 'package:uchat/app/enums/enums.dart';
+import 'package:uchat/chat/data/models/group_model.dart';
 
 import 'package:uchat/chat/data/models/last_message_model.dart';
 
@@ -158,6 +159,22 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
     String downloadUrl = await snapshot.ref.getDownloadURL();
     //copilot kengwo
     return downloadUrl;
+  }
+
+  @override
+  Future<void> createGroup(GroupModel groupModel) async {
+    await fireStore.collection(FirebaseCollectionManager.groups).
+    doc(groupModel.groupId).
+    set(groupModel.toMap());
+
+  }
+
+  @override
+  Stream<List<GroupModel>> getGroupListStream({required String uid, required isPrivate}) {
+    return fireStore.collection(FirebaseCollectionManager.groups).
+    where('isPrivate', isEqualTo: isPrivate).
+    snapshots().
+    map((snapshot) => snapshot.docs.map((e)=> GroupModel.fromSnapshot(e)).toList()  );
   }
 
 

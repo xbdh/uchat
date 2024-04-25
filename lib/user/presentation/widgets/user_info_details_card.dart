@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:uchat/app/widgets/profile_status.dart';
 import 'package:uchat/app/widgets/user_avatar.dart';
 import 'package:uchat/user/domain/entities/user_entity.dart';
-import 'package:uchat/user/presentation/pages/profile_page.dart';
 
 class UserInfoDetailsCard extends StatelessWidget {
   final String loginUid;

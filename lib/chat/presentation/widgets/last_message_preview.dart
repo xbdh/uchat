@@ -4,20 +4,24 @@ import 'package:uchat/chat/domain/entities/last_message_entity.dart';
 import '../../../app/enums/enums.dart';
 
 class LastMessagePreview extends StatelessWidget {
-  final LastMessageEntity lastMessage;
+  final String lastMessage;
+  final MessageType messageType;
   //final MessageType type;
   //final bool isMe;
 
-  const LastMessagePreview({super.key, required this.lastMessage});
+  const LastMessagePreview({super.key,
+    required this.lastMessage,
+    required this.messageType,
+  });
 
   @override
   Widget build(BuildContext context) {
     Widget lastMessageToShow() {
-      switch (lastMessage.messageType) {
+      switch (messageType) {
         case MessageType.text:
           return Expanded(
             child: Text(
-              lastMessage.message,
+              lastMessage,
               style: const TextStyle(
                 //color: color,
                 fontSize: 16.0,
@@ -56,7 +60,7 @@ class LastMessagePreview extends StatelessWidget {
           );
         default:
           return Text(
-            lastMessage.message,
+            lastMessage,
             style: const TextStyle(
               //color: color,
               fontSize: 16.0,

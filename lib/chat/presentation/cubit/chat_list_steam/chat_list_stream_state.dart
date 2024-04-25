@@ -15,8 +15,8 @@ final class ChatListStreamLoading extends ChatListStreamState {
 }
 
 final class ChatListStreamLoaded extends ChatListStreamState {
-  List<LastMessageEntity> chatLists;
-  ChatListStreamLoaded({required this.chatLists});
+  final List<LastMessageEntity> chatLists;
+  const ChatListStreamLoaded({required this.chatLists});
   @override
   List<Object> get props => [chatLists];
 }

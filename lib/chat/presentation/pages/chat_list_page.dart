@@ -36,7 +36,9 @@ class _ChatListPageState extends State<ChatListPage> {
               ),
             ),
             Expanded(
-              child: ChatList( uid : uid),
+              child: ChatList( uid : uid,
+              isGroup:  false,
+              ),
             ),
 
           ],

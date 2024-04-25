@@ -7,21 +7,20 @@ import 'package:uchat/app/widgets/user_avatar.dart';
 import 'package:uchat/user/domain/entities/user_entity.dart';
 import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubit.dart';
 
-import '../cubit/uid/uid_cubit.dart';
+import '../../user/presentation/cubit/uid/uid_cubit.dart';
 import 'package:uchat/main_injection_container.dart' as di;
 
-class FriendListTitle extends StatefulWidget {
-  final FriendViewType viewType;
-  final UserEntity friend;
+class FriendRequestListTitle extends StatefulWidget {
+  final UserEntity friendRequest;
 
-  const FriendListTitle(
-      {super.key, required this.viewType, required this.friend});
+  const FriendRequestListTitle(
+      {super.key, required this.friendRequest});
 
   @override
-  State<FriendListTitle> createState() => _FriendListTitleState();
+  State<FriendRequestListTitle> createState() => _FriendRequestListTitleState();
 }
 
-class _FriendListTitleState extends State<FriendListTitle> {
+class _FriendRequestListTitleState extends State<FriendRequestListTitle> {
    bool accepted = false;
 
   @override
@@ -36,26 +35,25 @@ class _FriendListTitleState extends State<FriendListTitle> {
           });
           showSnackBar(
             context: context,
-            message: 'You are now friends with ${widget.friend.name}',
+            message: 'You are now friends with ${widget.friendRequest.name}',
           );
         }
       },
       child: ListTile(
           minLeadingWidth: 0,
           contentPadding: const EdgeInsets.only(left: -10),
-          title: Text(widget.friend.name),
+          title: Text(widget.friendRequest.name),
           subtitle: Text(
-            widget.friend.aboutMe,
-            maxLines: 2,
+            widget.friendRequest.aboutMe,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           leading: UserAvatar(
-            imageUrl: widget.friend.image,
+            imageUrl: widget.friendRequest.image,
             radius: 40,
             onPressed: () {},
           ),
-          trailing: widget.viewType == FriendViewType.friendRequests
-              ? ElevatedButton(
+          trailing: ElevatedButton(
                 // if accepted is true, the button will be null
                 onPressed: accepted
                     ? null
@@ -63,28 +61,15 @@ class _FriendListTitleState extends State<FriendListTitle> {
                         BlocProvider.of<FriendRequestCubit>(context)
                             .acceptFriendRequest(
                           myUID: uid,
-                          friendUID: widget.friend.uid,
+                          friendUID: widget.friendRequest.uid,
                         );
                       },
                // if accepted is true, the text will be Accepted
 
                   child: accepted ?const Text('Accepted'):const Text('Accept'),
-                )
-              : null,
+                ),
+              
           onTap: () {
-            if (widget.viewType == FriendViewType.friends) {
-              // Navigator.of(context).pushNamed(
-              //   OtherProfilePage.routeName,
-              //   arguments: friend.uid,
-              // );
-              context.pushNamed(
-                  "Chat",
-                  queryParameters: {
-                    'friendUid': widget.friend.uid,
-                    'friendName': widget.friend.name,
-                    'friendImage': widget.friend.image
-                  });
-            }
           }),
     );
     return const Placeholder();
