@@ -1,8 +1,10 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uchat/app/enums/enums.dart';
 import 'package:uchat/chat/domain/entities/message_entity.dart';
 
+import '../../../user/presentation/cubit/uid/uid_cubit.dart';
 import 'dispaly_message_with_type.dart';
 
 class AlignMessageRight extends StatelessWidget {
@@ -10,16 +12,18 @@ class AlignMessageRight extends StatelessWidget {
     super.key,
     required this.message,
     // this.viewOnly = false,
-    // required this.isGroupChat,
+    required this.isGroupChat,
   });
+
 
   final MessageEntity message;
   // final bool viewOnly;
-  // final bool isGroupChat;
+  final bool isGroupChat;
 
   @override
   Widget build(BuildContext context) {
     //return Text(message.message);
+      final uid = context.watch<UidCubit>().state;
     final time = formatDate(message.timeSent, [hh, ':', nn, ' ', am]);
     final isReplying = message.repliedTo.isNotEmpty;
     // get the reations from the list
@@ -29,22 +33,22 @@ class AlignMessageRight extends StatelessWidget {
         ? const EdgeInsets.only(left: 20.0, bottom: 25.0)
         : const EdgeInsets.only(bottom: 0.0);
 
-    // bool messageSeen() {
-    //   final uid = context.read<AuthenticationProvider>().userModel!.uid;
-    //   bool isSeen = false;
-    //   if (isGroupChat) {
-    //     List<String> isSeenByList = message.isSeenBy;
-    //     if (isSeenByList.contains(uid)) {
-    //       // remove our uid then check again
-    //       isSeenByList.remove(uid);
-    //     }
-    //     isSeen = isSeenByList.isNotEmpty ? true : false;
-    //   } else {
-    //     isSeen = message.isSeen ? true : false;
-    //   }
-    //
-    //   return isSeen;
-    // }
+    // 除了我之外，另一个用户看到了消息就为true
+    bool messageSeen() {
+      bool isSeen = false;
+      if (isGroupChat) {
+        List<String> isSeenByList = message.isSeenBy;
+        if (isSeenByList.contains(uid)) {
+          // remove our uid then check again
+          isSeenByList.remove(uid);
+        }
+        isSeen = isSeenByList.isNotEmpty ? true : false;
+      } else {
+        isSeen = message.isSeen ? true : false;
+      }
+
+      return isSeen;
+    }
 
     return Align(
       alignment: Alignment.centerRight,
@@ -138,9 +142,9 @@ class AlignMessageRight extends StatelessWidget {
                               width: 5,
                             ),
                             Icon(
-                              message.isSeen ? Icons.done_all : Icons.done,
+                              messageSeen() ? Icons.done_all : Icons.done,
                               color:
-                              message.isSeen ? Colors.blue : Colors.white60,
+                              messageSeen() ? Colors.blue : Colors.white60,
                               size: 15,
                             ),
                           ],

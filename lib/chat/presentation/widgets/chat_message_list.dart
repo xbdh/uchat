@@ -74,29 +74,18 @@ class _ChatMessageListState extends State<ChatMessageList> {
                 );
               }
 
-              // auto scroll to bottom
-              // WidgetsBinding.instance.addPostFrameCallback((_) {
-              //   _scrollToBottom();
-              // });
+              //
               // logger.i("messageLists: $messageLists");
               else {
-                // return ListView.builder(
-                //   controller: _scrollController,
-                //   itemCount: messageLists.length,
-                //   itemBuilder: (context, index) {
-                //     final msg = messageLists[index];
-                //     final bool isMe = msg.senderUID == uid;
-                //     return SingleChatMessage(
-                //         key: ValueKey(msg.messageId),
-                //         message: msg
-                //     , isMe: isMe);
-                //   },
-                // );
 
+                //auto scroll to bottom
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                _scrollToBottom();
+                });
               return Container(
                 child: GroupedListView<dynamic, DateTime>(
 
-                  //keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                   controller: _scrollController,
                   elements: messageLists,
                   reverse: true,
@@ -117,14 +106,28 @@ class _ChatMessageListState extends State<ChatMessageList> {
                   },
                   itemBuilder: (context, dynamic element) {
                     // update seen
-                    // if (!element.isSeen&&element.senderUID != uid) {
-                    //   BlocProvider.of<SetMessageStatusCubit>(context).
-                    //   setMessageStatus(
-                    //       senderUID: element.senderUID,
-                    //       recipientUID: uid,
-                    //       messageID: element.messageId
-                    //   );
-                    // }
+                    if (widget.groupID != null) {
+                          BlocProvider.of<SetMessageStatusCubit>(context).
+                          setMessageStatus(
+                              currentUID: uid,
+                              recipientUID: widget.friendUid,
+                              messageID: element.messageId,
+                              isGroup: true,
+                              isSeenByList: element.isSeenBy
+                          );
+                    }else {
+                      if (!element.isSeen && element.senderUID != uid) {
+                        BlocProvider.of<SetMessageStatusCubit>(context).
+                        setMessageStatus(
+                            currentUID: uid,
+                            recipientUID: widget.friendUid,
+                            messageID: element.messageId,
+                            isGroup: false,
+                            isSeenByList: element.isSeenBy
+                        );
+                      }
+                    }
+
                     final msg = element as MessageEntity;
 
                     final bool isMe = msg.senderUID == uid;
@@ -132,6 +135,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
                       key: ValueKey(element.messageId),
                       message: msg,
                       isMe: isMe,
+                      isGroupChat: widget.groupID != null,
                       // onLeftSwipe: (){
                       //     final messageReply=MessageReplyEntity(
                       //         message:element.message,

@@ -91,18 +91,26 @@ groupID: groupID
   }
 
   @override
-  Future<void> setMessageStatus({required String senderUID, required String recipientUID, required String messageID}) async {
+  Future<void> setMessageStatus({required String currentUID, required String recipientUID, required String messageID}) async {
     await messageDataSource.setMessageStatus(
-      senderUID: senderUID,
+      currentUID: currentUID,
       recipientUID: recipientUID,
       messageID: messageID
     );
   }
+  @override
+  Future<void> setGroupMessageStatus({required String currentUID, required String recipientUID, required String messageID}) async {
+    await messageDataSource.setGroupMessageStatus(
+        currentUID: currentUID,
+        recipientUID: recipientUID,
+        messageID: messageID
+    );
+  }
 
   @override
-  Future<void> setLastMessageStatus({required String senderUID, required String recipientUID}) async  {
+  Future<void> setLastMessageStatus({required String currentUID, required String recipientUID}) async  {
     await messageDataSource.setLastMessageStatus(
-      senderUID: senderUID,
+      currentUID: currentUID,
       recipientUID: recipientUID
     );
   }
@@ -165,5 +173,15 @@ groupID: groupID
       messageID: messageID,
       messageModel: messageModel
     );
+  }
+
+  @override
+  Stream<int> getGroupUnreadMessageCount({required String uid, required String groupID}) {
+    return messageDataSource.getGroupUnreadMessageCount(uid: uid, groupID: groupID);
+  }
+
+  @override
+  Stream<int> getUnreadMessageCount({required String uid, required String recipientUID}) {
+    return messageDataSource.getUnreadMessageCount(uid: uid, recipientUID: recipientUID);
   }
 }

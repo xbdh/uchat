@@ -5,9 +5,9 @@ class UpdateLastMessageStatusUseCase {
 
   UpdateLastMessageStatusUseCase({required this.repository});
 
-  Future<void> call(String senderUID,
+  Future<void> call(String currentUID,
                     String recipientUID,) async{
-    await repository.setLastMessageStatus(senderUID: senderUID, recipientUID: recipientUID);
+    await repository.setLastMessageStatus(currentUID: currentUID, recipientUID: recipientUID);
 
   }
 }

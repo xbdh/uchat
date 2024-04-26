@@ -1,11 +1,13 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uchat/app/widgets/user_avatar.dart';
 import 'package:uchat/chat/domain/entities/group_entity.dart';
 import 'package:uchat/chat/domain/entities/last_message_entity.dart';
 import 'package:uchat/chat/presentation/widgets/last_message_preview.dart';
+import 'package:uchat/chat/presentation/widgets/unread_mesasage_counter.dart';
 
 import '../../../user/presentation/cubit/uid/uid_cubit.dart';
 
@@ -84,14 +86,15 @@ class SingleChat extends StatelessWidget {
         ],
       ),
       trailing: Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding: const EdgeInsets.only(right: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(dateTime),
-            // lastMessage.isSeen
-            //   ? const Icon(Icons.done_all)
-            //   : const Icon(Icons.done),
+            UnReadMessageCounter(
+              recipientUID: recipientId,
+              isGroup: isGroup,
+            )
           ],
         ),
       )

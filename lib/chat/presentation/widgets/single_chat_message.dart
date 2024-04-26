@@ -6,12 +6,14 @@ import 'chat_swipe_to.dart';
 class SingleChatMessage extends StatelessWidget {
   final MessageEntity message;
   final bool isMe;
+  final bool isGroupChat;
   //final Function onLeftSwipe;
 
   const SingleChatMessage({
     super.key,
     required this.message,
     required this.isMe,
+    required this.isGroupChat,
    // required this.onLeftSwipe
   });
 
@@ -21,6 +23,7 @@ class SingleChatMessage extends StatelessWidget {
       //onSwipeLeft: onLeftSwipe,
       isMe: isMe,
       messageEntity: message,
+      isGroupChat: isGroupChat,
     );
     // return Container(
     //   child: Text(message.message),

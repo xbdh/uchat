@@ -117,13 +117,13 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
 
   @override
   Future<void> setMessageStatus({
-    required String senderUID,
+    required String currentUID,
     required String recipientUID,
     required String messageID})  async {
      // update sender message status as seen
     await  fireStore.
           collection(FirebaseCollectionManager.users).
-          doc(senderUID).
+          doc(currentUID).
           collection(FirebaseCollectionManager.chats).
           doc(recipientUID).
           collection(FirebaseCollectionManager.messages).
@@ -135,7 +135,7 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
           collection(FirebaseCollectionManager.users).
           doc(recipientUID).
           collection(FirebaseCollectionManager.chats).
-          doc(senderUID).
+          doc(currentUID).
           collection(FirebaseCollectionManager.messages).
           doc(messageID).
           update({'isSeen': true});
@@ -144,12 +144,12 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
 
   @override
   Future<void> setLastMessageStatus({
-    required String senderUID,
+    required String currentUID,
     required String recipientUID})  async {
    // update sender message status as seen
     await  fireStore.
           collection(FirebaseCollectionManager.users).
-          doc(senderUID).
+          doc(currentUID).
           collection(FirebaseCollectionManager.chats).
           doc(recipientUID).
           update({'isSeen': true});
@@ -159,7 +159,7 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
           collection(FirebaseCollectionManager.users).
           doc(recipientUID).
           collection(FirebaseCollectionManager.chats).
-          doc(senderUID).
+          doc(currentUID).
           update({'isSeen': true});
   }
 
@@ -240,6 +240,66 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
 
   }
 
+  @override
+  Future<void> setGroupMessageStatus({required String currentUID, required String recipientUID, required String messageID})async {
+    // update sender message status as seen
+    await fireStore.
+          collection(FirebaseCollectionManager.groups).
+          doc(recipientUID).
+          collection(FirebaseCollectionManager.messages).
+          doc(messageID).
+          update({
+         'isSeenBy': FieldValue.arrayUnion([currentUID])
+          });
 
+
+  }
+
+  @override
+  Stream<int> getGroupUnreadMessageCount({required String uid, required String groupID}) {
+
+    // logger.i('Uid++++++++++++++${uid}');
+    // logger.i('getGroupUnreadMessageCount++++++++++++++${groupID}');
+
+    return fireStore.collection(FirebaseCollectionManager.groups).
+    doc(groupID).
+    collection(FirebaseCollectionManager.messages).
+    snapshots().
+    asyncMap((event) {
+      var count = 0;
+      for (var doc in event.docs) {
+        final message = MessageModel.fromSnapshot(doc);
+        if (!message.isSeenBy.contains(uid)) {
+          count++;
+        }
+      }
+      return count;
+    });
+  }
+
+  @override
+  Stream<int> getUnreadMessageCount({required String uid, required String recipientUID}) {
+    // logger.i('__Uid++++++++++++++${uid}');
+    // logger.i('__getUnreadMessageCount++++++++++++++${recipientUID}');
+
+    try {
+      return fireStore.collection(FirebaseCollectionManager.users).
+      doc(uid).
+      collection(FirebaseCollectionManager.chats).
+      doc(recipientUID).
+      collection(FirebaseCollectionManager.messages).
+          where('isSeen', isEqualTo: false).
+          where('senderUID', isNotEqualTo: uid).
+      snapshots().
+      map((event) {
+        //logger.i('event.docs.length++++++++++++++${event.docs.length}');
+        return event.docs.length;
+      });
+    } catch (e) {
+      logger.e('error++++++++++++++${e}');
+      throw e;
+    }
+
+  }
 
 }

@@ -56,12 +56,18 @@ abstract class MessageRepository {
 
 
     Future<void> setMessageStatus({
-      required String senderUID,
+      required String currentUID,
       required String recipientUID,
       required String messageID,
     });
+    Future<void> setGroupMessageStatus({
+      required String currentUID,
+      required String recipientUID,
+      required String messageID,
+    });
+    
     Future<void> setLastMessageStatus({
-      required String senderUID,
+      required String currentUID,
       required String recipientUID,
       //required String messageID,
     });
@@ -77,4 +83,10 @@ abstract class MessageRepository {
 
     // get single group
     Future<GroupEntity> getSingleGroup(String groupId);
-  }
+
+    Stream<int> getUnreadMessageCount({required String uid, required String recipientUID});
+
+    Stream<int> getGroupUnreadMessageCount({required String uid, required String groupID});
+
+
+}

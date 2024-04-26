@@ -13,11 +13,12 @@ class ChatSwipeTo extends StatelessWidget {
   //final Function onSwipeLeft;
   final bool isMe;
   final MessageEntity messageEntity;
-
+  final bool isGroupChat;
   const ChatSwipeTo({super.key,
     //required this.onSwipeLeft,
     required this.isMe,
     required this.messageEntity,
+    required this.isGroupChat,
   });
 
   @override
@@ -39,8 +40,8 @@ class ChatSwipeTo extends StatelessWidget {
         //onSwipeLeft();
       },
       child: isMe
-        ? AlignMessageRight(message: messageEntity)
-          : AlignMessageLeft(message: messageEntity),
+        ? AlignMessageRight(message: messageEntity, isGroupChat: isGroupChat)
+          : AlignMessageLeft(message: messageEntity, isGroupChat: isGroupChat),
     );
   }
 }

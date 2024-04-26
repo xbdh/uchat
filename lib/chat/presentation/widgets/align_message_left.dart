@@ -11,7 +11,11 @@ import 'dispaly_message_with_type.dart';
 
 class AlignMessageLeft extends StatelessWidget {
   final MessageEntity message;
-  const AlignMessageLeft({super.key, required this.message});
+  final bool isGroupChat;
+  const AlignMessageLeft({super.key,
+    required this.message,
+    required this.isGroupChat,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,23 +41,16 @@ class AlignMessageLeft extends StatelessWidget {
            // 底部对其
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            // if (isGroupChat)
-            //   Padding(
-            //     padding: const EdgeInsets.only(right: 5),
-            //     child: userImageWidget(
-            //       imageUrl: message.senderImage,
-            //       radius: 20,
-            //       onTap: () {},
-            //     ),
-            //   ),
-            // Padding(
-            //   padding: const EdgeInsets.only(right: 5),
-            //   child: UserAvatar(
-            //     imageUrl: message.senderImage,
-            //     radius: 20,
-            //     onPressed: () {},
-            //   ),
-            // ),
+            if (isGroupChat)
+
+            Padding(
+              padding: const EdgeInsets.only(right: 5),
+              child: UserAvatar(
+                imageUrl: message.senderImage,
+                radius: 20,
+                onPressed: () {},
+              ),
+            ),
             Expanded(
               child: Stack(
                 children: [
