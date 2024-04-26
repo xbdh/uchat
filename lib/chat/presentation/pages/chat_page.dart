@@ -4,16 +4,17 @@ import 'package:go_router/go_router.dart';
 import 'package:uchat/chat/presentation/widgets/chat_message_bar.dart';
 import 'package:uchat/chat/presentation/widgets/chat_message_buttom_field.dart';
 import 'package:uchat/chat/presentation/widgets/chat_message_list.dart';
+import 'package:uchat/chat/presentation/widgets/group_message_bar.dart';
 
 class ChatPage extends StatefulWidget {
   final String friendUid, friendName, friendImage;
-  final String? groupID;
+  final String groupId;
 
   const ChatPage({super.key,
     required this.friendUid,
     required this.friendName,
     required this.friendImage,
-    this.groupID,
+    required this.groupId,
   });
 
   @override
@@ -26,11 +27,13 @@ class _ChatPageState extends State<ChatPage> {
     final friendUid = widget.friendUid;
     final friendName = widget.friendName;
     final friendImage = widget.friendImage;
-    bool isGroup = widget.groupID != null;
+    bool isGroup = widget.groupId.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(
-        title: ChatMessageBar(friendUid: friendUid),
+        title: isGroup ?
+          GroupMessageBar(groupId: friendUid)
+          :ChatMessageBar(friendUid: friendUid)
 
       ),
       body: Padding(
@@ -40,14 +43,14 @@ class _ChatPageState extends State<ChatPage> {
            Expanded(
              child: ChatMessageList(
                  friendUid: friendUid,
-                 groupID: null,
+                 groupID: isGroup ? friendUid : null,
              ),
              ),
             ChatMessageBottomField(
                 friendUid: friendUid,
                 friendName: friendName,
                 friendImage: friendImage,
-                groupID: null,
+                groupID: isGroup ? friendUid : null,
             )
          ],
         ),

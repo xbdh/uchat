@@ -34,6 +34,7 @@ class SendMessageCubit extends Cubit<SendMessageState> {
     required String recipientImage,
     required File file,
     required MessageType messageType,
+    required String? groupID,
   }) async {
     try {
       emit(SendMessageLoading());
@@ -52,6 +53,7 @@ class SendMessageCubit extends Cubit<SendMessageState> {
         message: fileUrl,
         messageType: messageType,
         messageId: messageId,
+        groupID: groupID,
       );
 
       emit(SendMessageSuccess());
@@ -67,6 +69,7 @@ class SendMessageCubit extends Cubit<SendMessageState> {
     required String recipientImage,
     required String message,
     required MessageType messageType,
+    required String? groupID,
   }) async {
 
     try {
@@ -79,6 +82,7 @@ class SendMessageCubit extends Cubit<SendMessageState> {
         recipientImage: recipientImage,
         message: message,
         messageType: messageType,
+        groupID: groupID,
       );
       emit(SendMessageSuccess());
     } catch (e) {

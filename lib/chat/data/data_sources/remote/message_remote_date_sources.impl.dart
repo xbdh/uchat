@@ -14,6 +14,7 @@ import 'package:uchat/chat/data/models/message_model.dart';
 import 'package:uchat/user/data/models/user_model.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../main.dart';
 import 'message_remote_date_sources.dart';
 
 class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
@@ -193,6 +194,50 @@ class MessageRemoteDataSourceImpl extends MessageRemoteDataSource {
     doc(groupId).
     get().then((value) => GroupModel.fromSnapshot(value));
     return group;
+  }
+
+  @override
+  Future<void> sendGroupLastMessage({
+    required String senderUID,
+    required String recipientUID,
+    required GroupModel groupModel}) async{
+
+    // logger.i('sendGroupe++++++++++++++${groupModel.toMap()}');
+    // logger.i('senderUID++++++++++++++${senderUID}');
+    // logger.i('recipientUID++++++++++++++${recipientUID}');
+
+    try {
+      await fireStore.
+      collection(FirebaseCollectionManager.groups).
+      doc(recipientUID).
+      update({
+        'lastMessage': groupModel.lastMessage,
+        "senderUID" : groupModel.senderUID,
+        "messageType": groupModel.messageType.toShortString(),
+        "timeSent": groupModel.timeSent,
+
+      });
+    } catch (e) {
+      //logger.e('errore++++++++++++++${e}');
+      throw e;
+    }
+
+
+  }
+
+  @override
+  Future<void> sendGroupMessage({
+    required String senderUID,
+    required String recipientUID,
+    required String messageID,
+    required MessageModel messageModel}) async {
+    await fireStore.
+          collection(FirebaseCollectionManager.groups).
+          doc(recipientUID).
+          collection(FirebaseCollectionManager.messages).
+          doc(messageID).
+          set(messageModel.toMap());
+
   }
 
 

@@ -3,6 +3,7 @@ import 'package:uchat/app/widgets/user_avatar.dart';
 import 'package:uchat/user/domain/entities/user_entity.dart';
 import 'package:uuid/uuid.dart';
 
+import '../entities/group_entity.dart';
 import '../entities/last_message_entity.dart';
 import '../entities/message_entity.dart';
 import '../entities/message_reply_entity.dart';
@@ -22,6 +23,7 @@ class SendFileMessageUseCase {
     required String message,
     required MessageType messageType,
     required String messageId,
+    required String? groupID,
 
   }) async {
 
@@ -71,6 +73,44 @@ class SendFileMessageUseCase {
         isSeenBy: [sender.uid],
         deletedBy: []
     );
+
+    if (groupID != null) {
+      await repository.sendGroupMessage(
+          senderUID: sender.uid,
+          recipientUID: recipientUID,
+          messageID: messageId,
+          messageEntity: senderMessageEntity
+      );
+
+      final lastGroupMessage =GroupEntity(
+        creatorUID: "",
+        groupName : "",
+        groupDescription : "",
+        groupImage: '',
+        groupId : '',
+        lastMessage: message,
+        senderUID: sender.uid,
+        messageType: messageType,
+        messageId :'',
+        timeSent:  DateTime.now(),
+        createdAt : DateTime.now(),
+        isPrivate: false,
+        editSettings: false,
+        approveMembers: false,
+        lockMessages: false,
+        requestToJoin: false,
+        membersUIDs: [],
+        adminsUIDs: [],
+        awaitingApprovalUIDs: [],
+      );
+
+      await repository.sendGroupLastMessage(
+          senderUID: sender.uid,
+          recipientUID: recipientUID,
+          groupEntity: lastGroupMessage
+      );
+      return;
+    }
 
     final recipientMessageEntity = senderMessageEntity.copyWith(
         recipientUID: senderMessageEntity.senderUID,

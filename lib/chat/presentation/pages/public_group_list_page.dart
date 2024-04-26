@@ -61,11 +61,12 @@ class PublicGroupListPage extends StatelessWidget {
                               isGroup: true,
                               onTap: () {
                                 context.pushNamed(
-                                  "PublicGroup",
+                                  "Chat",
                                   queryParameters: {
+                                    "friendUid": group.groupId,
+                                    "friendName": group.groupName,
+                                    "friendImage": group.groupImage,
                                     "groupId": group.groupId,
-                                    "groupName": group.groupName,
-                                    "groupImage": group.groupImage,
                                   },
                                 );
                               },

@@ -41,6 +41,19 @@ abstract class MessageRepository {
       required LastMessageEntity lastMessageEntity,
     });
 
+    Future<void> sendGroupMessage({
+      required String senderUID,
+      required String recipientUID,
+      required String messageID,
+      required MessageEntity messageEntity,
+    });
+
+    Future<void> sendGroupLastMessage({
+      required String senderUID,
+      required String recipientUID,
+      required GroupEntity groupEntity,
+    });
+
 
     Future<void> setMessageStatus({
       required String senderUID,

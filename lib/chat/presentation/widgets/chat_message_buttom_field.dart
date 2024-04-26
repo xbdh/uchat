@@ -173,7 +173,9 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
 
     // logger.i("messageReplay ++$messageReplay");
 
-    return BlocConsumer<SendMessageCubit, SendMessageState>(
+    return BlocProvider(
+  create: (context) => di.sl<SendMessageCubit>(),
+  child: BlocConsumer<SendMessageCubit, SendMessageState>(
       listener: (context, state) {
         if (state is SendMessageFailed) {
          showSnackBar(context: context, message: "Failed to send message");
@@ -260,6 +262,7 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                                             recipientImage: widget.friendImage,
                                             file: File(filePath),
                                             messageType: MessageType.image,
+                                            groupID: widget.groupID,
                                           );
                                         }),
                                     _attachWindowItem(
@@ -277,6 +280,7 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                                             recipientImage: widget.friendImage,
                                             file: File(filePath),
                                             messageType: MessageType.image,
+                                            groupID: widget.groupID,
                                           );
                                         }),
 
@@ -310,6 +314,7 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                                             recipientImage: widget.friendImage,
                                             file: File(filePath),
                                             messageType: MessageType.video,
+                                            groupID: widget.groupID,
                                           );
 
                                         }),
@@ -349,6 +354,7 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                         recipientImage: widget.friendImage,
                         file: File(filePath),
                         messageType: MessageType.audio,
+                        groupID: widget.groupID,
                       );
 
                     },
@@ -407,6 +413,7 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                           recipientImage: widget.friendImage,
                           message: _textEditingController.text,
                           messageType: MessageType.text,
+                          groupID: widget.groupID,
                         ):null;
                       },
 
@@ -436,22 +443,6 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
                               height: 24.0, // 确保与CircularProgressIndicator的尺寸相同
                               child: Icon(Icons.arrow_upward, color: Colors.white),
                           ),
-                          // child: isShowSendButton
-                          //   ? const Icon(Icons.arrow_upward, color: Colors.white)
-                          // : const Icon(Icons.mic, color: Colors.white),
-                          //     ? const SizedBox(
-                          //   width: 24.0, // 控制大小
-                          //   height: 24.0, // 控制大小
-                          //   child: CircularProgressIndicator(
-                          //     strokeWidth: 3.0, // 可以调整这个值来改变加载指示器的粗细
-                          //     valueColor: AlwaysStoppedAnimation<Color>(
-                          //         Colors.white),
-                          //   ),
-                          // )
-                          //     : const SizedBox(
-                          //   width: 24.0, // 确保与CircularProgressIndicator的尺寸相同
-                          //   height: 24.0, // 确保与CircularProgressIndicator的尺寸相同
-                          //   child: Icon(Icons.arrow_upward, color: Colors.white),
                           ),
                         ),
                       )
@@ -461,7 +452,8 @@ class _ChatMessageBottomFieldState extends State<ChatMessageBottomField> {
           ),
         );
       },
-    );
+    ),
+);
   }
   _attachWindowItem(
       {IconData? icon, Color? color, String? title, VoidCallback? onTap}) {

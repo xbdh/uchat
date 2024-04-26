@@ -61,11 +61,18 @@ class PrivateGroupListPage extends StatelessWidget {
                         isGroup: true,
                         onTap: () {
                           context.pushNamed(
-                            "PrivateGroup",
+                            "Chat",
                             queryParameters: {
+                              "friendUid": group.groupId,
+                              "friendName": group.groupName,
+                              "friendImage": group.groupImage,
                               "groupId": group.groupId,
-                              "groupName": group.groupName,
-                              "groupImage": group.groupImage,
+
+                              //
+                              // friendUid: state.uri.queryParameters['friendUid']!,
+                              // friendName: state.uri.queryParameters['friendName']!,
+                              // friendImage: state.uri.queryParameters['friendImage']!,
+                              // groupID: state.uri.queryParameters['groupID'],
                             },
                           );
                         },

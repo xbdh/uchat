@@ -57,6 +57,7 @@ class _ChatListState extends State<ChatList> {
                         "friendUid": chat.recipientUID,
                         "friendName": chat.recipientName,
                         "friendImage": chat.recipientImage,
+                        "groupId": "",
                       },
                     );
                   },

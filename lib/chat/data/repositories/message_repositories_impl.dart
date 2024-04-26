@@ -136,4 +136,34 @@ groupID: groupID
     final groupModel = await messageDataSource.getSingleGroup(groupId);
     return GroupEntity.fromGroupModel(groupModel);
   }
+
+  @override
+  Future<void> sendGroupLastMessage({
+    required String senderUID,
+    required String recipientUID,
+    required GroupEntity groupEntity}) async {
+    // convert GroupEntity to GroupModel
+    GroupModel groupModel = GroupModel.fromGroupEntity(groupEntity);
+    await messageDataSource.sendGroupLastMessage(
+      senderUID: senderUID,
+      recipientUID: recipientUID,
+      groupModel: groupModel
+    );
+  }
+
+  @override
+  Future<void> sendGroupMessage({
+    required String senderUID,
+    required String recipientUID,
+    required String messageID,
+    required MessageEntity messageEntity}) async {
+    // convert MessageEntity to MessageModel
+    MessageModel messageModel = MessageModel.fromEntity(messageEntity);
+    await messageDataSource.sendGroupMessage(
+      senderUID: senderUID,
+      recipientUID: recipientUID,
+      messageID: messageID,
+      messageModel: messageModel
+    );
+  }
 }
