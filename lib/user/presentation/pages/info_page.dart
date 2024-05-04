@@ -124,6 +124,7 @@ class _InfoPAgeState extends State<InfoPage> {
         createdAt: '',
         isOnline: true,
         friendsUIDs: [],
+        fcmToken: '',
         friendRequestsFromUIDs: [],
         sentFriendRequestsToUIDs: [],
         );

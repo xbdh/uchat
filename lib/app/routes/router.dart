@@ -2,8 +2,6 @@ import 'package:uchat/app/home/home_page.dart';
 import 'package:uchat/app/landing/landing_page.dart';
 import 'package:uchat/chat/presentation/pages/chat_page.dart';
 import 'package:uchat/chat/presentation/pages/create_group_page.dart';
-import 'package:uchat/chat/presentation/pages/private_group_page.dart';
-import 'package:uchat/chat/presentation/pages/public_group_list_page.dart';
 import 'package:uchat/user/presentation/pages/friend_requests_page.dart';
 import 'package:uchat/user/presentation/pages/friends_page.dart';
 import 'package:uchat/user/presentation/pages/info_page.dart';
@@ -13,7 +11,9 @@ import 'package:uchat/user/presentation/pages/other_profile_page.dart';
 import 'package:uchat/user/presentation/pages/people_page.dart';
 import 'package:uchat/user/presentation/pages/profile_page.dart';
 
-import '../../chat/presentation/pages/public_group_page.dart';
+import '../../chat/presentation/pages/group_info_page.dart';
+import '../../chat/presentation/pages/voice_call_page.dart';
+
 
 // GoRouter configuration
 final chatRouter = GoRouter(
@@ -88,6 +88,7 @@ final chatRouter = GoRouter(
         friendName: state.uri.queryParameters['friendName']!,
         friendImage: state.uri.queryParameters['friendImage']!,
         groupId: state.uri.queryParameters['groupId']!,
+        //friendFcmToken: state.uri.queryParameters['friendFcmToken']!,
       ),
     ),
 
@@ -98,23 +99,23 @@ final chatRouter = GoRouter(
     ),
 
     GoRoute(
-      name: "PrivateGroup",
-      path: '/private_group',
-      builder: (context, state) => PrivateGroupPage(
+      name: "GroupInfo",
+      path: '/group_info',
+      builder: (context, state) => GroupInfoPage(
         groupId: state.uri.queryParameters['groupId']!,
-        groupName: state.uri.queryParameters['groupName']!,
-        groupImage: state.uri.queryParameters['groupImage']!,
       )
     ),
-
     GoRoute(
-      name: "PublicGroup",
-      path: '/public_group',
-      builder: (context, state) =>PublicGroupPage(
-        groupId: state.uri.queryParameters['groupId']!,
-        groupName: state.uri.queryParameters['groupName']!,
-        groupImage: state.uri.queryParameters['groupImage']!,
-      )
-    )
+        name: "VoiceCall",
+        path: '/voice_call',
+        builder: (context, state) => VoiceCallPage(
+          friendUid: state.uri.queryParameters['friendUid']!,
+          friendName: state.uri.queryParameters['friendName']!,
+          friendImage: state.uri.queryParameters['friendImage']!,
+          //friendFcmToken: state.uri.queryParameters['friendFcmToken']!,
+        )
+    ),
+
+
   ],
 );

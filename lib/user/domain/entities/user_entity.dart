@@ -14,6 +14,7 @@ class UserEntity extends Equatable {
   final String lastSeen;
   final String createdAt;
   final bool isOnline;
+  final String fcmToken ;
   final List<String> friendsUIDs;
   final List<String> friendRequestsFromUIDs;
   final List<String> sentFriendRequestsToUIDs;
@@ -29,6 +30,7 @@ class UserEntity extends Equatable {
     required this.lastSeen,
     required this.createdAt,
     required this.isOnline,
+    required this.fcmToken ,
     required this.friendsUIDs,
     required this.friendRequestsFromUIDs,
     required this.sentFriendRequestsToUIDs,
@@ -46,6 +48,7 @@ class UserEntity extends Equatable {
     lastSeen,
     createdAt,
     isOnline,
+    fcmToken,
     friendsUIDs,
     friendRequestsFromUIDs,
     sentFriendRequestsToUIDs,
@@ -63,6 +66,7 @@ class UserEntity extends Equatable {
       lastSeen: userModel.lastSeen,
       createdAt: userModel.createdAt,
       isOnline: userModel.isOnline,
+      fcmToken: userModel.fcmToken,
       friendsUIDs: userModel.friendsUIDs,
       friendRequestsFromUIDs: userModel.friendRequestsFromUIDs,
       sentFriendRequestsToUIDs: userModel.sentFriendRequestsToUIDs,
@@ -80,6 +84,7 @@ class UserEntity extends Equatable {
     String? lastSeen,
     String? createdAt,
     bool? isOnline,
+    String? fcmToken,
     List<String>? friendsUIDs,
     List<String>? friendRequestsFromUIDs,
     List<String>? sentFriendRequestsToUIDs,
@@ -95,6 +100,7 @@ class UserEntity extends Equatable {
       lastSeen: lastSeen ?? this.lastSeen,
       createdAt: createdAt ?? this.createdAt,
       isOnline: isOnline ?? this.isOnline,
+      fcmToken: fcmToken ?? this.fcmToken,
       friendsUIDs: friendsUIDs ?? this.friendsUIDs,
       friendRequestsFromUIDs: friendRequestsFromUIDs ?? this.friendRequestsFromUIDs,
       sentFriendRequestsToUIDs: sentFriendRequestsToUIDs ?? this.sentFriendRequestsToUIDs,

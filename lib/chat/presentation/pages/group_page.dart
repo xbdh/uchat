@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uchat/chat/presentation/pages/private_group_list_page.dart';
 import 'package:uchat/chat/presentation/pages/public_group_list_page.dart';
-import 'package:uchat/chat/presentation/pages/public_group_page.dart';
+
 
 class GroupPage extends StatelessWidget {
   GroupPage({Key? key}) : super(key: key);

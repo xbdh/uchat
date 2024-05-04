@@ -2,14 +2,18 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:uchat/main.dart';
 import 'package:uchat/user/domain/entities/user_entity.dart';
 import 'package:uchat/user/domain/use_cases/credential/check_user_exists_usecase.dart';
+import 'package:uchat/user/domain/use_cases/user/bind_fcm_token_usecase.dart';
 import 'package:uchat/user/domain/use_cases/user/get_all_user_usecase.dart';
 import 'package:uchat/user/domain/use_cases/user/get_data_local_usecase.dart';
 
 import 'package:uchat/user/domain/use_cases/user/save_data.dart';
 import 'package:uchat/user/domain/use_cases/user/set_user_online_status_usecase.dart';
+
+import '../../../domain/use_cases/user/get_fcm_token_usecase.dart';
 
 part 'user_state.dart';
 
@@ -19,15 +23,19 @@ class UserCubit extends Cubit<UserState> {
   final GetDataLocalUseCase getDataLocalUseCase;
   final GetAllUsersUseCase getAllUsersUseCase;
   final SetUserOnlineStatusUseCase setUserOnlineStatusUseCase;
+  final BindFcmTokenUseCase bindFcmTokenUseCase;
+  final GetFcmTokenUseCase getFcmTokenUseCase;
 
   UserEntity? userEntity;
 
   UserCubit( {
+    required this.bindFcmTokenUseCase,
     required this.userCheckExistUseCase,
     required this.savaDataUseCase,
     required this.getDataLocalUseCase,
     required this.getAllUsersUseCase,
     required this.setUserOnlineStatusUseCase,
+    required this.getFcmTokenUseCase,
   }) : super(UserInitial());
   Future<void> checkUserExist(String id) async {
     try {
@@ -89,5 +97,14 @@ class UserCubit extends Cubit<UserState> {
 
       await setUserOnlineStatusUseCase.call(isOnline);
 
+  }
+  Future<void> bindFcmToken(String uid) async {
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+     logger.d('bindFcmToken $uid, $fcmToken');
+    await bindFcmTokenUseCase.call(uid, fcmToken!);
+  }
+  Future<String> getFcmToken(String uid) async {
+    final st=await getFcmTokenUseCase.call(uid);
+    return st;
   }
 }

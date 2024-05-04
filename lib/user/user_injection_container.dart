@@ -30,8 +30,10 @@ import 'domain/use_cases/friend/get_friend_list_usecase.dart';
 import 'domain/use_cases/friend/get_friend_requests_list_usecase.dart';
 import 'domain/use_cases/friend/remove_friend_usecase.dart';
 import 'domain/use_cases/friend/send_friend_request_usecase.dart';
+import 'domain/use_cases/user/bind_fcm_token_usecase.dart';
 import 'domain/use_cases/user/get_data_local_usecase.dart';
 import 'domain/use_cases/user/get_data_remote_usecase.dart';
+import 'domain/use_cases/user/get_fcm_token_usecase.dart';
 import 'domain/use_cases/user/get_single_user_usecase.dart';
 import 'domain/use_cases/user/save_data_local_usecase.dart';
 import 'domain/use_cases/user/set_user_online_status_usecase.dart';
@@ -64,6 +66,8 @@ Future<void> userInjectionContainer() async {
         getDataLocalUseCase: sl(),
         getAllUsersUseCase: sl(),
         setUserOnlineStatusUseCase: sl(),
+        bindFcmTokenUseCase: sl(),
+        getFcmTokenUseCase: sl(),
       ));
 
 
@@ -154,6 +158,11 @@ Future<void> userInjectionContainer() async {
 
   sl.registerLazySingleton<SetUserOnlineStatusUseCase>(
           () => SetUserOnlineStatusUseCase(repository: sl.call()));
+
+  sl.registerLazySingleton<BindFcmTokenUseCase>(
+          () => BindFcmTokenUseCase(repository: sl.call()));
+  sl.registerLazySingleton<GetFcmTokenUseCase>(
+          () => GetFcmTokenUseCase(repository: sl.call()));
 
   // * REPOSITORY & DATA SOURCES INJECTION
 

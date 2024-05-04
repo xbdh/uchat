@@ -35,5 +35,7 @@ abstract class UserRemoteDataSource {
   Future<List<UserModel>> getFriendRequests(String uid);
 
   Future<void> setUserOnlineStatus(bool isOnline);
+  Future<void> bindFcmToken(String uid, String fcmToken);
+  Future<String> getFcmToken(String uid);
   // Future<List<ContactEntity>> getDeviceNumber();
 }

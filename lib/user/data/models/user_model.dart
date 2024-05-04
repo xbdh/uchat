@@ -15,6 +15,7 @@ class UserModel extends Equatable  {
   final String lastSeen;
   final String createdAt;
   final bool isOnline;
+  final String fcmToken ;
   final List<String> friendsUIDs;
   final List<String> friendRequestsFromUIDs;
   final List<String> sentFriendRequestsToUIDs;
@@ -30,6 +31,7 @@ class UserModel extends Equatable  {
     required this.lastSeen,
     required this.createdAt,
     required this.isOnline,
+    required this.fcmToken ,
     required this.friendsUIDs,
     required this.friendRequestsFromUIDs,
     required this.sentFriendRequestsToUIDs,
@@ -50,6 +52,7 @@ class UserModel extends Equatable  {
       lastSeen: snap['lastSeen'],
       createdAt: snap['createdAt'],
       isOnline: snap['isOnline'],
+      fcmToken: snap['fcmToken'],
       friendsUIDs: List<String>.from(snap['friendsUIDs']),
       friendRequestsFromUIDs: List<String>.from(snap['friendRequestsFromUIDs']),
       sentFriendRequestsToUIDs: List<String>.from(snap['sentFriendRequestsToUIDs']),
@@ -66,6 +69,7 @@ class UserModel extends Equatable  {
     'lastSeen': lastSeen,
     'createdAt': createdAt,
     'isOnline': isOnline,
+    'fcmToken': fcmToken,
     'friendsUIDs': friendsUIDs,
     'friendRequestsFromUIDs': friendRequestsFromUIDs,
     'sentFriendRequestsToUIDs': sentFriendRequestsToUIDs,
@@ -83,6 +87,7 @@ class UserModel extends Equatable  {
       lastSeen: map['lastSeen'],
       createdAt: map['createdAt'],
       isOnline: map['isOnline'],
+      fcmToken: map['fcmToken'],
       friendsUIDs: List<String>.from(map['friendsUIDs']),
       friendRequestsFromUIDs: List<String>.from(map['friendRequestsFromUIDs']),
       sentFriendRequestsToUIDs: List<String>.from(map['sentFriendRequestsToUIDs']),
@@ -101,6 +106,7 @@ class UserModel extends Equatable  {
     lastSeen,
     createdAt,
     isOnline,
+    fcmToken,
     friendsUIDs,
     friendRequestsFromUIDs,
     sentFriendRequestsToUIDs,
@@ -118,6 +124,7 @@ class UserModel extends Equatable  {
       lastSeen: entity.lastSeen,
       createdAt: entity.createdAt,
       isOnline: entity.isOnline,
+      fcmToken: entity.fcmToken,
       friendsUIDs: entity.friendsUIDs,
       friendRequestsFromUIDs: entity.friendRequestsFromUIDs,
       sentFriendRequestsToUIDs: entity.sentFriendRequestsToUIDs,

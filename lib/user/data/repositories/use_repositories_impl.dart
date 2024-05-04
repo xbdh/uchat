@@ -156,6 +156,17 @@ class UserRepositoryImpl implements UserRepository {
     await remoteDataSource.setUserOnlineStatus(isOnline);
   }
 
+  @override
+  Future<void> bindFcmToken(String uid, String fcmToken) async  {
+      await remoteDataSource.bindFcmToken(uid, fcmToken);
+  }
+
+  @override
+  Future<String> getFcmToken(String uid) async {
+    final s=await remoteDataSource.getFcmToken(uid);
+    return s;
+  }
+
 
 }
 

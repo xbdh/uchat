@@ -64,6 +64,14 @@ dependencies:
   permission_handler: ^11.3.1
   flutter_sound_record: ^3.3.2
   cached_video_player: ^2.0.4
+  dio: ^5.4.3+1
+  cookie_jar: ^4.0.8
+  dio_cookie_manager: ^3.1.1
+  firebase_messaging: ^14.9.1
+  agora_rtc_engine: ^6.3.0
+  crypto: ^3.0.3
+  flutter_local_notifications: ^17.1.1
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:
@@ -93,7 +101,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
     - assets/images/
     - assets/lottie/
-
+    - assets/icons/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

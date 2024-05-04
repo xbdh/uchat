@@ -35,6 +35,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       createdAt: user.createdAt,
       isOnline: user.isOnline,
       friendsUIDs: user.friendsUIDs,
+      fcmToken: user.fcmToken,
       friendRequestsFromUIDs: user.friendRequestsFromUIDs,
       sentFriendRequestsToUIDs: user.sentFriendRequestsToUIDs,
     ).toMap();
@@ -379,5 +380,24 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
         fireStore.collection(FirebaseCollectionManager.users);
     final uid = auth.currentUser!.uid;
     userCollection.doc(uid).update({"isOnline": isOnline});
+  }
+
+  @override
+  Future<void> bindFcmToken(String uid, String fcmToken) async{
+    // update user fcmToken
+    final userCollection =
+        fireStore.collection(FirebaseCollectionManager.users);
+    await userCollection.doc(uid).update({"fcmToken": fcmToken});
+
+  }
+
+  @override
+  Future<String> getFcmToken(String uid) async {
+    // get user fcmToken where uid = uid
+    final userCollection =
+        fireStore.collection(FirebaseCollectionManager.users);
+    final userDoc = await userCollection.doc(uid).get();
+    final s= userDoc.get("fcmToken") as String;
+    return s;
   }
 }

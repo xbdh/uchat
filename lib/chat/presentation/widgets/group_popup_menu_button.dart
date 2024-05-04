@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class GroupPopupMenuButton extends StatelessWidget {
   const GroupPopupMenuButton({
@@ -18,10 +19,13 @@ class GroupPopupMenuButton extends StatelessWidget {
     return PopupMenuButton<GroupPopupMenuOption>(
       onSelected: (option) {
         switch (option) {
-          case GroupPopupMenuOption.edit:
-            //onEdit();
+          case GroupPopupMenuOption.info:
+            context.pushNamed(
+                'GroupInfo',
+              queryParameters: {'groupId': groupId}
+               );
             break;
-          case GroupPopupMenuOption.delete:
+          case GroupPopupMenuOption.setting:
             //onDelete();
             break;
         }
@@ -29,12 +33,12 @@ class GroupPopupMenuButton extends StatelessWidget {
       itemBuilder: (context) {
         return [
           PopupMenuItem(
-            value: GroupPopupMenuOption.edit,
+            value: GroupPopupMenuOption.info,
             child: Text('Group Info'),
           ),
           PopupMenuItem(
-            value: GroupPopupMenuOption.delete,
-            child: Text('Setting'),
+            value: GroupPopupMenuOption.setting,
+            child: Text('Group Setting'),
           ),
         ];
       },
@@ -42,6 +46,6 @@ class GroupPopupMenuButton extends StatelessWidget {
   }
 }
 enum GroupPopupMenuOption {
-  edit,
-  delete,
+  info,
+  setting,
 }

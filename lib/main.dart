@@ -1,4 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logger/logger.dart';
 import 'package:uchat/app/routes/router.dart';
 import 'package:uchat/firebase_options.dart';
@@ -12,6 +15,7 @@ import 'package:uchat/user/presentation/cubit/friend_request/friend_request_cubi
 import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cubit.dart';
 import 'package:uchat/user/presentation/cubit/my_entity/my_entity_cubit.dart';
 import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
+import 'app/utils/FirebaseMassagingHandler.dart';
 import 'chat/presentation/cubit/chat_list_steam/chat_list_stream_cubit.dart';
 import 'chat/presentation/cubit/chat_message_list_steam/chat_message_list_stream_cubit.dart';
 import 'chat/presentation/cubit/create_group/create_group_cubit.dart';
@@ -19,6 +23,7 @@ import 'chat/presentation/cubit/get_single_group/get_single_group_cubit.dart';
 import 'chat/presentation/cubit/get_unread_count/get_unread_count_cubit.dart';
 import 'chat/presentation/cubit/group_list_stream/group_list_stream_cubit.dart';
 import 'chat/presentation/cubit/message_reply/message_reply_cubit.dart';
+import 'chat/presentation/cubit/notifications/notification_cubit.dart';
 import 'chat/presentation/cubit/send_message/send_message_cubit.dart';
 import 'chat/presentation/cubit/set_message_status/set_message_status_cubit.dart';
 import 'main_injection_container.dart' as di;
@@ -34,6 +39,25 @@ Future<void> main() async {
   await di.init();
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
   runApp(MyApp(savedThemeMode: savedThemeMode));
+  firebaseInit().whenComplete(() {
+    FirebaseMassagingHandler.config();
+  });
+}
+
+Future firebaseInit() async {
+  FirebaseMessaging.onBackgroundMessage(
+    FirebaseMassagingHandler.firebaseMessagingBackground,
+  );
+  // current device is android
+
+  if ( TargetPlatform.android==defaultTargetPlatform  ) {
+    FirebaseMassagingHandler.flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()!
+        .createNotificationChannel(FirebaseMassagingHandler.channel_call);
+    FirebaseMassagingHandler.flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()!
+        .createNotificationChannel(FirebaseMassagingHandler.channel_message);
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -108,6 +132,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => di.sl<GetUnreadCountCubit>(),
         ),
+        BlocProvider(
+          create: (context) => di.sl<NotificationCubit>(),
+        ),
+
       ],
       child: AdaptiveTheme(
         light: ThemeData(

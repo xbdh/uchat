@@ -46,4 +46,7 @@ abstract class UserRepository {
 
   Future<void> setUserOnlineStatus(bool isOnline);
 
+  Future<void> bindFcmToken(String uid, String fcmToken);
+  Future<String> getFcmToken(String uid);
+
 }

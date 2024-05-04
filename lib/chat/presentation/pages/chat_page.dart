@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uchat/chat/presentation/widgets/chat_message_bar.dart';
 import 'package:uchat/chat/presentation/widgets/chat_message_buttom_field.dart';
 import 'package:uchat/chat/presentation/widgets/chat_message_list.dart';
 import 'package:uchat/chat/presentation/widgets/group_message_bar.dart';
 import 'package:uchat/chat/presentation/widgets/group_popup_menu_button.dart';
+import 'package:uchat/main.dart';
+
+import '../../../user/presentation/cubit/user/user_cubit.dart';
+import '../cubit/notifications/notification_cubit.dart';
 
 class ChatPage extends StatefulWidget {
   final String friendUid, friendName, friendImage;
@@ -17,6 +22,7 @@ class ChatPage extends StatefulWidget {
     required this.friendName,
     required this.friendImage,
     required this.groupId,
+
   });
 
   @override
@@ -30,7 +36,9 @@ class _ChatPageState extends State<ChatPage> {
     final friendName = widget.friendName;
     final friendImage = widget.friendImage;
     bool isGroup = widget.groupId.isNotEmpty;
+    //final friendFcmToken = BlocProvider.of<UserCubit>(context).getFcmToken(friendUid);
 
+   // logger.i('friendFcmToken: $friendFcmToken');
     return Scaffold(
       appBar: AppBar(
         title: isGroup
@@ -42,7 +50,49 @@ class _ChatPageState extends State<ChatPage> {
                   groupId: friendUid,
                 )
               ]
-            : null,
+            : <Widget>[
+              Row(
+                children: [
+                  // IconButton(
+                  //   icon: const Icon(Icons.video_call),
+                  //   onPressed: () {
+                  //     context.goNamed('VideoCall',
+                  //       queryParameters: {
+                  //         'friendUid': friendUid,
+                  //         'friendName': friendName,
+                  //         'friendImage': friendImage,
+                  //         'friendFcmToken': friendFcmToken,
+                  //       },
+                  //     );
+                  //   },
+                  // ),
+                  IconButton(
+                    icon: const Icon(Icons.call),
+                    onPressed: () {
+                      BlocProvider.of<NotificationCubit>(context).
+                            sendNotification(friendUid,
+                                              friendName,
+                                              friendImage,
+                                               "voice");
+                      logger.i("sendNotification");
+                      // context.goNamed('VoiceCall',
+                      //   queryParameters: {
+                      //     'friendUid': friendUid,
+                      //     'friendName': friendName,
+                      //     'friendImage': friendImage,
+                      //     //'friendFcmToken': friendFcmToken,
+                      //   },
+                      // );
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.videocam),
+                    onPressed: () {},
+                  ),
+                ],
+              )
+
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

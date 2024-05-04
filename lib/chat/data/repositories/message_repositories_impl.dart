@@ -9,6 +9,7 @@ import 'package:uchat/chat/domain/repositories/message_repositories.dart';
 import 'package:uchat/user/data/models/user_model.dart';
 import 'package:uchat/user/domain/entities/user_entity.dart';
 
+import '../data_sources/local/local_data_sources.dart';
 import '../models/group_model.dart';
 import '../models/last_message_model.dart';
 import '../models/message_model.dart';
@@ -16,7 +17,9 @@ import '../models/message_model.dart';
 class MessageRepositoryImpl extends MessageRepository {
   final MessageRemoteDataSource messageDataSource;
 
-  MessageRepositoryImpl({required this.messageDataSource});
+
+  MessageRepositoryImpl({required this.messageDataSource,
+  });
 
   @override
   Stream<List<MessageEntity>> getMessageListStream({
