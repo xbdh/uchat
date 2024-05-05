@@ -72,13 +72,6 @@ class _ChatPageState extends State<ChatPage> {
                   IconButton(
                     icon: const Icon(Icons.call),
                     onPressed: () {
-                      BlocProvider.of<NotificationCubit>(context).
-                            sendNotification(uid, //来自我的uid ，给你sendNotification
-                                              friendUid,
-                                              friendName,
-                                              friendImage,
-                                               "voice");
-                      logger.i("sendNotification");
                       context.goNamed('VoiceCall',
                         queryParameters: {
                           'friendUid': friendUid,

@@ -8,15 +8,21 @@ final class AgoraInitial extends AgoraState {
   @override
   List<Object> get props => [];
 }
-final class AgoraLocalUserJoined extends AgoraState {
+final class AgoraLocalJoining extends AgoraState {
   @override
   List<Object> get props => [];
 }
-final class AgoraRemoteUserLeft extends AgoraState {
+
+final class AgoraLocalJoined extends AgoraState {
   @override
   List<Object> get props => [];
 }
-final class AgoraRemoteUserJoined extends AgoraState {
+
+final class AgoraRemoteJoined extends AgoraState {
+  @override
+  List<Object> get props => [];
+}
+final class AgoraRemoteLeave extends AgoraState {
   @override
   List<Object> get props => [];
 }
