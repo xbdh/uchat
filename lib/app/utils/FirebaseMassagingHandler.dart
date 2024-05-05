@@ -65,14 +65,14 @@ class FirebaseMassagingHandler {
       await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
 
 
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-        print("\n notification on onMessage function \n");
-        print(message.data["call_type"]);
-        if(message!=null){
-          _receiveNotification(message);
-        }
-
-      });
+      // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      //   print("\n notification on onMessage function \n");
+      //   print(message.data["call_type"]);
+      //   if(message!=null){
+      //     _receiveNotification(message);
+      //   }
+      //
+      // });
     } on Exception catch (e) {
       print("$e");
     }

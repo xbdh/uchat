@@ -111,7 +111,8 @@ class _HomePageState extends State<HomePage>
                   'friendUid': friendUid,
                   'friendName': friendName,
                   'friendImage': friendImage,
-                  'callType': callType,
+                  'role': 'audience',
+                  //'callType': callType,
                 },
               );
             },

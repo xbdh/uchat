@@ -112,6 +112,7 @@ final chatRouter = GoRouter(
           friendUid: state.uri.queryParameters['friendUid']!,
           friendName: state.uri.queryParameters['friendName']!,
           friendImage: state.uri.queryParameters['friendImage']!,
+          role: state.uri.queryParameters['role']!,
           //friendFcmToken: state.uri.queryParameters['friendFcmToken']!,
         )
     ),

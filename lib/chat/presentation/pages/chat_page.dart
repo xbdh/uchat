@@ -8,6 +8,7 @@ import 'package:uchat/chat/presentation/widgets/chat_message_list.dart';
 import 'package:uchat/chat/presentation/widgets/group_message_bar.dart';
 import 'package:uchat/chat/presentation/widgets/group_popup_menu_button.dart';
 import 'package:uchat/main.dart';
+import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
 
 import '../../../user/presentation/cubit/user/user_cubit.dart';
 import '../cubit/notifications/notification_cubit.dart';
@@ -36,6 +37,8 @@ class _ChatPageState extends State<ChatPage> {
     final friendName = widget.friendName;
     final friendImage = widget.friendImage;
     bool isGroup = widget.groupId.isNotEmpty;
+
+    final uid = BlocProvider.of<UidCubit>(context).state;
     //final friendFcmToken = BlocProvider.of<UserCubit>(context).getFcmToken(friendUid);
 
    // logger.i('friendFcmToken: $friendFcmToken');
@@ -70,19 +73,21 @@ class _ChatPageState extends State<ChatPage> {
                     icon: const Icon(Icons.call),
                     onPressed: () {
                       BlocProvider.of<NotificationCubit>(context).
-                            sendNotification(friendUid,
+                            sendNotification(uid, //来自我的uid ，给你sendNotification
+                                              friendUid,
                                               friendName,
                                               friendImage,
                                                "voice");
                       logger.i("sendNotification");
-                      // context.goNamed('VoiceCall',
-                      //   queryParameters: {
-                      //     'friendUid': friendUid,
-                      //     'friendName': friendName,
-                      //     'friendImage': friendImage,
-                      //     //'friendFcmToken': friendFcmToken,
-                      //   },
-                      // );
+                      context.goNamed('VoiceCall',
+                        queryParameters: {
+                          'friendUid': friendUid,
+                          'friendName': friendName,
+                          'friendImage': friendImage,
+                          'role': 'anchor',
+                          //'friendFcmToken': friendFcmToken,
+                        },
+                      );
                     },
                   ),
                   IconButton(

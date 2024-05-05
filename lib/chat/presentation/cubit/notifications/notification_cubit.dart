@@ -17,7 +17,9 @@ class NotificationCubit extends Cubit<NotificationState> {
   }
       ) : super(NotificationInitial());
 
-  Future<void> sendNotification(String friendUid,
+  Future<void> sendNotification(
+      String uid,
+      String friendUid,
       String friendName,
       String friendImage,
       String callType
@@ -26,7 +28,7 @@ class NotificationCubit extends Cubit<NotificationState> {
     try {
       final friendFcmToken = await getFcmTokenUseCase.call(friendUid);
       logger.i('friendFcmToken: $friendFcmToken');
-      await sendNotificationUseCase.call(friendUid, friendFcmToken, friendName, friendImage,callType);
+      await sendNotificationUseCase.call(uid, friendFcmToken, friendName, friendImage,callType);
 
       emit(NotificationSuccess());
     } catch (e) {

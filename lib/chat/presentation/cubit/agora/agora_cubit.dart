@@ -18,7 +18,7 @@ class AgoraCubit extends Cubit<AgoraState> {
       ) : super(AgoraInitial());
   late RtcEngine _engine;
 
-  void initAgora() async {
+  Future<void> initAgora(String uid,String friendUid,String role) async {
     // 获取权限
     await [Permission.microphone].request();
 
@@ -52,16 +52,31 @@ class AgoraCubit extends Cubit<AgoraState> {
         },
       ),
     );
+
+    await _engine.enableAudio();
+    await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+    await _engine.setAudioProfile(
+        profile:AudioProfileType.audioProfileDefault,
+       scenario: AudioScenarioType.audioScenarioGameStreaming);
+    await joinChannel(uid,friendUid,role);
   }
 
-  void joinChannel(String uid,String friendUid,String role) async {
+  Future<void> joinChannel(String uid,String friendUid,String role) async {
+    logger.i('uid from remote : $uid');
+    logger.i('friendUid from remote : $friendUid');
+    logger.i('role from remote : $role');
     late String channelId;
     if (role == "anchor") {
       channelId= md5.convert(utf8.encode("${uid}_${friendUid}")).toString();
     } else {
       channelId = md5.convert(utf8.encode("${friendUid}_${uid}")).toString();
     }
+    logger.i('channelId from remote : $channelId');
+
     final token = await getRtcTokenUseCase(channelId);
+
+    logger.i('token : $token');
+
 
     await _engine.joinChannel(
       token: token,
@@ -71,8 +86,10 @@ class AgoraCubit extends Cubit<AgoraState> {
     );
   }
 
-  void leaveChannel() {
-    _engine.leaveChannel();
+  Future<void > leaveChannel()async {
+    //_engine.leaveChannel();
+    await _engine.leaveChannel(); // 离开频道
+    await _engine.release();
 
   }
 }

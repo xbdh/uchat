@@ -13,14 +13,14 @@ class CallRemoteDataSourceImpl  extends CallRemoteDataSource{
   @override
   Future<String> getRtcToken(String channelName) async {
     final res=await dio.post(
-      'api/get_rtc_token',
+      'rtc_token',
       queryParameters: {
-        'channelName': channelName,
+        'channel_name': channelName,
       },
     );
 
-    logger.i('getRtcToken: ${res.data}');
-    return res.data['data']['token'];
+    logger.i('getRtcToken from remote: ${res.data['token']}');
+    return res.data['token'];
 
   }
 

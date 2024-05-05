@@ -1,3 +1,4 @@
+import 'package:uchat/chat/presentation/cubit/agora/agora_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/chat_list_steam/chat_list_stream_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/chat_message_list_steam/chat_message_list_stream_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/create_group/create_group_cubit.dart';
@@ -25,6 +26,7 @@ import 'domain/use_cases/create_group_usecase.dart';
 import 'domain/use_cases/get_chat_list_stream_usecase.dart';
 import 'domain/use_cases/get_chat_message_list_stream_usecase.dart';
 import 'domain/use_cases/get_group_list_stream_usecase.dart';
+import 'domain/use_cases/get_rtc_token_usecase.dart';
 import 'domain/use_cases/get_single_group_usecase.dart';
 import 'domain/use_cases/get_unread_count_usecase.dart';
 import 'domain/use_cases/send_file_message_usecase.dart';
@@ -119,6 +121,12 @@ Future<void> chatInjectionContainer() async {
         sendNotificationUseCase: sl.call(),
         getFcmTokenUseCase: sl.call(),
       ));
+  //AgoraCubit
+  sl.registerLazySingleton<AgoraCubit>(() =>
+      AgoraCubit(
+        getRtcTokenUseCase: sl.call(),
+        //sendNotificationsUseCase: sl.call(),
+      ));
 
 
   // * USE CASES INJECTION
@@ -160,6 +168,9 @@ Future<void> chatInjectionContainer() async {
   sl.registerLazySingleton<SendNotificationsUseCase>(
           () => SendNotificationsUseCase(repository: sl.call()));
 
+
+  sl.registerLazySingleton<GetRtcTokenUseCase>(
+          () => GetRtcTokenUseCase(repository: sl.call()));
   // * REPOSITORY & DATA SOURCES INJECTION
 
   sl.registerLazySingleton<MessageRepository>(
@@ -189,6 +200,7 @@ Future<void> chatInjectionContainer() async {
       LocalDataSourceImpl(
         sharedPreferences: sl.call(),
       ));
+
 
 
 
