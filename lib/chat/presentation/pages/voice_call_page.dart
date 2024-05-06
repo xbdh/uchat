@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +41,23 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
   bool enableSpeakerphone = true;
   bool isJoined = false, switchCamera = true, switchRender = true;
   final player = AudioPlayer();
+  Timer? _timer;
+  int _seconds = 0;
+
+  void startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _seconds++;
+      });
+    });
+  }
+
+  void stopTimer() {
+    if (_timer != null) {
+      _timer!.cancel();
+      _timer = null;
+    }
+  }
 
   @override
   void initState() {
@@ -61,8 +80,13 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
     BlocProvider.of<AgoraCubit>(context).leaveChannel();
     player.pause();
     player.dispose();
+    stopTimer();
   }
-
+  String formatDuration(int seconds) {
+    final int minutes = seconds ~/ 60;
+    final int remainingSeconds = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
+  }
 
 
 
@@ -89,18 +113,36 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
 
       if (state is AgoraRemoteJoined){
         player.pause();
+        startTimer();
       }
       if (state is AgoraRemoteLeave) {
+        stopTimer();
          BlocProvider.of<AgoraCubit>(context).leaveChannel();
+         context.goNamed('Chat',
+             queryParameters: {
+               'friendUid': widget.friendUid,
+               'friendName': widget.friendName,
+               'friendImage': widget.friendImage,
+               'groupId': '',
+             });
       }
     }else {
       if (state is AgoraLocalJoined){
         setState(() {
           isJoined = true;
         });
+        startTimer();
       }
       if (state is AgoraRemoteLeave) {
+        stopTimer();
         BlocProvider.of<AgoraCubit>(context).leaveChannel();
+        context.goNamed('Chat',
+            queryParameters: {
+              'friendUid': widget.friendUid,
+              'friendName': widget.friendName,
+              'friendImage': widget.friendImage,
+              'groupId': '',
+            });
       }
     }
     // TODO: implement listener
@@ -124,7 +166,7 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
                           Container(
                             margin: EdgeInsets.only(top: 6),
                             child: Text(
-                              "Time",
+                              formatDuration(_seconds),
                               style: TextStyle(
                                 //color: AppColors.primaryElementText,
                                 fontSize: 14,
@@ -226,11 +268,12 @@ class _VoiceCallPageState extends State<VoiceCallPage> {
                             onTap: isJoined?
                                 () {
                               BlocProvider.of<AgoraCubit>(context).leaveChannel();
-                              context.goNamed('ChatPage',
+                              context.goNamed('Chat',
                                   queryParameters: {
                                     'friendUid': widget.friendUid,
                                     'friendName': widget.friendName,
                                     'friendImage': widget.friendImage,
+                                    'groupId': '',
                                   });
 
                                 }: () {
