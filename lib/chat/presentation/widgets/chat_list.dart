@@ -23,6 +23,11 @@ class _ChatListState extends State<ChatList> {
     //     uid: widget.uid);
     super.initState();
   }
+  @override
+  void dispose() {
+    BlocProvider.of<ChatListStreamCubit>(context).leaveChatListStream();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

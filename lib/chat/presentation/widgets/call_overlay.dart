@@ -9,6 +9,7 @@ class CallOverlay {
   void show({
     required String friendImage,
     required String friendName,
+    required String callType,
     required VoidCallback onReject,
     required VoidCallback onAccept,
   }) {
@@ -52,7 +53,7 @@ class CallOverlay {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(friendName, style: TextStyle(fontSize: 16)),
-                    Text("Incoming call", style: TextStyle(fontSize: 12)),
+                    Text("${callType} call", style: TextStyle(fontSize: 12)),
                   ],
                 ),
                 Row(
@@ -74,7 +75,7 @@ class CallOverlay {
                         child: Icon(Icons.call_end, color: Colors.white),
                       ),
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: 20),
                     GestureDetector(
                       onTap: () {
                         _overlayEntry?.remove();

@@ -1,4 +1,5 @@
-import 'package:uchat/chat/presentation/cubit/agora/agora_cubit.dart';
+import 'package:uchat/chat/presentation/cubit/agora/agora_video_cubit.dart';
+import 'package:uchat/chat/presentation/cubit/agora/agora_voice_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/chat_list_steam/chat_list_stream_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/chat_message_list_steam/chat_message_list_stream_cubit.dart';
 import 'package:uchat/chat/presentation/cubit/create_group/create_group_cubit.dart';
@@ -122,12 +123,18 @@ Future<void> chatInjectionContainer() async {
         getFcmTokenUseCase: sl.call(),
       ));
   //AgoraCubit
-  sl.registerLazySingleton<AgoraCubit>(() =>
-      AgoraCubit(
+  sl.registerLazySingleton<AgoraVoiceCubit>(() =>
+      AgoraVoiceCubit(
         getRtcTokenUseCase: sl.call(),
         //sendNotificationsUseCase: sl.call(),
       ));
 
+ // AgoraVideoCubit
+  sl.registerLazySingleton<AgoraVideoCubit>(() =>
+      AgoraVideoCubit(
+        getRtcTokenUseCase: sl.call(),
+        //sendNotificationsUseCase: sl.call(),
+      ));
 
   // * USE CASES INJECTION
 
@@ -171,6 +178,9 @@ Future<void> chatInjectionContainer() async {
 
   sl.registerLazySingleton<GetRtcTokenUseCase>(
           () => GetRtcTokenUseCase(repository: sl.call()));
+
+
+
   // * REPOSITORY & DATA SOURCES INJECTION
 
   sl.registerLazySingleton<MessageRepository>(

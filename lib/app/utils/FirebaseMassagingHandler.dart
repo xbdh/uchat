@@ -78,192 +78,192 @@ class FirebaseMassagingHandler {
     }
   }
 
-  static Future<void> _receiveNotification(RemoteMessage message) async {
-
-      if(message.data!=null && message.data["call_type"]!=null) {
-        //  ////1. voice 2. video 3. text, 4.cancel
-        if (message.data["call_type"]=="voice") {
-        //  FirebaseMassagingHandler.flutterLocalNotificationsPlugin.cancelAll();
-          var data = message.data;
-          var friendUid = data["uid"];
-          var friendName = data["name"];
-          var  friendImage= data["image"];
-          // var doc_id = data["doc_id"]??"";
-          // var call_role= data["call_type"];
-          if (friendUid != null && friendName != null && friendImage != null) {
-            // show snackbar use Bloc provider
-
-
-            // logger all
-            logger.i("${friendName} is calling you");
-            logger.i("${friendImage} is calling you");
-            logger.i("${friendUid} is calling you");
-
-            Get.snackbar(
-                icon:Container(
-                  width: 40,
-                  height: 40,
-                  padding: EdgeInsets.all(0),
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(friendImage)),
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(20)),
-                  ),
-                ),
-                "${friendName}",
-                "Voice call",
-                duration:Duration(seconds: 30),
-                isDismissible:false,
-                mainButton:TextButton(onPressed: (){}, child: Container(width:90, child: Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,children: [
-                  GestureDetector(
-                    onTap: (){
-                      // if(Get.isSnackbarOpen){
-                      //   Get.closeAllSnackbars();
-                      // }
-                      // FirebaseMassagingHandler._sendNotifications("cancel",to_token,to_avatar,to_name,doc_id);
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        //color: AppColors.primaryElementBg,
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(30)),
-                      ),
-                      child: Image.asset(
-                          "assets/icons/a_phone.png"),
-                    ),),
-                  GestureDetector(
-                      onTap: (){
-                        // if(Get.isSnackbarOpen){
-                        //   Get.closeAllSnackbars();
-                        // }
-                        // Get.toNamed(AppRoutes.VoiceCall, parameters: {
-                        //   "to_token": to_token,
-                        //   "to_name": to_name,
-                        //   "to_avatar": to_avatar,
-                        //   "doc_id": doc_id,
-                        //   "call_role": "audience"
-                        // });
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          //color: AppColors.primaryElementStatus,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(30)),
-                        ),
-                        child: Image.asset(
-                            "assets/icons/a_telephone.png"),
-                      ))
-                ],)))
-            );
-
-          }
-
-        }else if(message.data["call_type"]=="video"){
-      //    FirebaseMassagingHandler.flutterLocalNotificationsPlugin.cancelAll();
-          //  ////1. voice 2. video 3. text, 4.cancel
-            var data = message.data;
-            var friendUid = data["uid"];
-            var friendName = data["name"];
-            var  friendImage= data["image"];
-            var doc_id = data["doc_id"]??"";
-            // var call_role= data["call_type"];
-            if (friendUid != null && friendName != null && friendImage != null) {
-              // ConfigStore.to.isCallVocie = true;
-              Get.snackbar(
-                  icon:Container(
-                    width: 40,
-                    height: 40,
-                    padding: EdgeInsets.all(0),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: NetworkImage(friendImage)),
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(20)),
-                    ),
-                  ),
-                  "${friendName}",
-                  "Video call",
-                  duration:Duration(seconds: 30),
-                  isDismissible:false,
-                  mainButton:TextButton(onPressed: (){}, child: Container(width:90, child: Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,children: [
-                    GestureDetector(
-                      onTap: (){
-                        // if(Get.isSnackbarOpen){
-                        //   Get.closeAllSnackbars();
-                        // }
-                        // FirebaseMassagingHandler._sendNotifications("cancel",to_token,to_avatar,to_name,doc_id);
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          //color: AppColors.primaryElementBg,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(30)),
-                        ),
-                        child: Image.asset(
-                            "assets/icons/a_phone.png"),
-                      ),),
-                    GestureDetector(
-                        onTap: (){
-                          // if(Get.isSnackbarOpen){
-                          //   Get.closeAllSnackbars();
-                          // }
-                          // Get.toNamed(AppRoutes.VideoCall, parameters: {
-                          //   "to_token": to_token,
-                          //   "to_name": to_name,
-                          //   "to_avatar": to_avatar,
-                          //   "doc_id": doc_id,
-                          //   "call_role": "audience"
-                          // });
-                        },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            //color: AppColors.primaryElementStatus,
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(30)),
-                          ),
-                          child: Image.asset(
-                              "assets/icons/a_telephone.png"),
-                        ))
-                  ],)))
-              );
-            }
-
-        }else if(message.data["call_type"]=="cancel"){
-              // FirebaseMassagingHandler.flutterLocalNotificationsPlugin.cancelAll();
-              //
-              // if(Get.isSnackbarOpen){
-              //   Get.closeAllSnackbars();
-              // }
-              //
-              // if(Get.currentRoute.contains(AppRoutes.VoiceCall) || Get.currentRoute.contains(AppRoutes.VideoCall)){
-              //   Get.back();
-              // }
-
-              // var _prefs = await SharedPreferences.getInstance();
-              // await _prefs.setString("CallVocieOrVideo","");
-
-        }
-
-
-
-      }
-
-  }
+  // static Future<void> _receiveNotification(RemoteMessage message) async {
+  //
+  //     if(message.data!=null && message.data["call_type"]!=null) {
+  //       //  ////1. voice 2. video 3. text, 4.cancel
+  //       if (message.data["call_type"]=="voice") {
+  //       //  FirebaseMassagingHandler.flutterLocalNotificationsPlugin.cancelAll();
+  //         var data = message.data;
+  //         var friendUid = data["uid"];
+  //         var friendName = data["name"];
+  //         var  friendImage= data["image"];
+  //         // var doc_id = data["doc_id"]??"";
+  //         // var call_role= data["call_type"];
+  //         if (friendUid != null && friendName != null && friendImage != null) {
+  //           // show snackbar use Bloc provider
+  //
+  //
+  //           // logger all
+  //           logger.i("${friendName} is calling you");
+  //           logger.i("${friendImage} is calling you");
+  //           logger.i("${friendUid} is calling you");
+  //
+  //           Get.snackbar(
+  //               icon:Container(
+  //                 width: 40,
+  //                 height: 40,
+  //                 padding: EdgeInsets.all(0),
+  //                 decoration: BoxDecoration(
+  //                   image: DecorationImage(
+  //                     fit: BoxFit.fill,
+  //                     image: NetworkImage(friendImage)),
+  //                   borderRadius: BorderRadius.all(
+  //                       Radius.circular(20)),
+  //                 ),
+  //               ),
+  //               "${friendName}",
+  //               "Voice call",
+  //               duration:Duration(seconds: 30),
+  //               isDismissible:false,
+  //               mainButton:TextButton(onPressed: (){}, child: Container(width:90, child: Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,children: [
+  //                 GestureDetector(
+  //                   onTap: (){
+  //                     // if(Get.isSnackbarOpen){
+  //                     //   Get.closeAllSnackbars();
+  //                     // }
+  //                     // FirebaseMassagingHandler._sendNotifications("cancel",to_token,to_avatar,to_name,doc_id);
+  //                   },
+  //                   child: Container(
+  //                     width: 40,
+  //                     height: 40,
+  //                     padding: EdgeInsets.all(10),
+  //                     decoration: BoxDecoration(
+  //                       //color: AppColors.primaryElementBg,
+  //                       borderRadius: BorderRadius.all(
+  //                           Radius.circular(30)),
+  //                     ),
+  //                     child: Image.asset(
+  //                         "assets/icons/a_phone.png"),
+  //                   ),),
+  //                 GestureDetector(
+  //                     onTap: (){
+  //                       // if(Get.isSnackbarOpen){
+  //                       //   Get.closeAllSnackbars();
+  //                       // }
+  //                       // Get.toNamed(AppRoutes.VoiceCall, parameters: {
+  //                       //   "to_token": to_token,
+  //                       //   "to_name": to_name,
+  //                       //   "to_avatar": to_avatar,
+  //                       //   "doc_id": doc_id,
+  //                       //   "call_role": "audience"
+  //                       // });
+  //                     },
+  //                     child: Container(
+  //                       width: 40,
+  //                       height: 40,
+  //                       padding: EdgeInsets.all(10),
+  //                       decoration: BoxDecoration(
+  //                         //color: AppColors.primaryElementStatus,
+  //                         borderRadius: BorderRadius.all(
+  //                             Radius.circular(30)),
+  //                       ),
+  //                       child: Image.asset(
+  //                           "assets/icons/a_telephone.png"),
+  //                     ))
+  //               ],)))
+  //           );
+  //
+  //         }
+  //
+  //       }else if(message.data["call_type"]=="video"){
+  //     //    FirebaseMassagingHandler.flutterLocalNotificationsPlugin.cancelAll();
+  //         //  ////1. voice 2. video 3. text, 4.cancel
+  //           var data = message.data;
+  //           var friendUid = data["uid"];
+  //           var friendName = data["name"];
+  //           var  friendImage= data["image"];
+  //           var doc_id = data["doc_id"]??"";
+  //           // var call_role= data["call_type"];
+  //           if (friendUid != null && friendName != null && friendImage != null) {
+  //             // ConfigStore.to.isCallVocie = true;
+  //             Get.snackbar(
+  //                 icon:Container(
+  //                   width: 40,
+  //                   height: 40,
+  //                   padding: EdgeInsets.all(0),
+  //                   decoration: BoxDecoration(
+  //                     image: DecorationImage(
+  //                         fit: BoxFit.fill,
+  //                         image: NetworkImage(friendImage)),
+  //                     borderRadius: BorderRadius.all(
+  //                         Radius.circular(20)),
+  //                   ),
+  //                 ),
+  //                 "${friendName}",
+  //                 "Video call",
+  //                 duration:Duration(seconds: 30),
+  //                 isDismissible:false,
+  //                 mainButton:TextButton(onPressed: (){}, child: Container(width:90, child: Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,children: [
+  //                   GestureDetector(
+  //                     onTap: (){
+  //                       // if(Get.isSnackbarOpen){
+  //                       //   Get.closeAllSnackbars();
+  //                       // }
+  //                       // FirebaseMassagingHandler._sendNotifications("cancel",to_token,to_avatar,to_name,doc_id);
+  //                     },
+  //                     child: Container(
+  //                       width: 40,
+  //                       height: 40,
+  //                       padding: EdgeInsets.all(10),
+  //                       decoration: BoxDecoration(
+  //                         //color: AppColors.primaryElementBg,
+  //                         borderRadius: BorderRadius.all(
+  //                             Radius.circular(30)),
+  //                       ),
+  //                       child: Image.asset(
+  //                           "assets/icons/a_phone.png"),
+  //                     ),),
+  //                   GestureDetector(
+  //                       onTap: (){
+  //                         // if(Get.isSnackbarOpen){
+  //                         //   Get.closeAllSnackbars();
+  //                         // }
+  //                         // Get.toNamed(AppRoutes.VideoCall, parameters: {
+  //                         //   "to_token": to_token,
+  //                         //   "to_name": to_name,
+  //                         //   "to_avatar": to_avatar,
+  //                         //   "doc_id": doc_id,
+  //                         //   "call_role": "audience"
+  //                         // });
+  //                       },
+  //                       child: Container(
+  //                         width: 40,
+  //                         height: 40,
+  //                         padding: EdgeInsets.all(10),
+  //                         decoration: BoxDecoration(
+  //                           //color: AppColors.primaryElementStatus,
+  //                           borderRadius: BorderRadius.all(
+  //                               Radius.circular(30)),
+  //                         ),
+  //                         child: Image.asset(
+  //                             "assets/icons/a_telephone.png"),
+  //                       ))
+  //                 ],)))
+  //             );
+  //           }
+  //
+  //       }else if(message.data["call_type"]=="cancel"){
+  //             // FirebaseMassagingHandler.flutterLocalNotificationsPlugin.cancelAll();
+  //             //
+  //             // if(Get.isSnackbarOpen){
+  //             //   Get.closeAllSnackbars();
+  //             // }
+  //             //
+  //             // if(Get.currentRoute.contains(AppRoutes.VoiceCall) || Get.currentRoute.contains(AppRoutes.VideoCall)){
+  //             //   Get.back();
+  //             // }
+  //
+  //             // var _prefs = await SharedPreferences.getInstance();
+  //             // await _prefs.setString("CallVocieOrVideo","");
+  //
+  //       }
+  //
+  //
+  //
+  //     }
+  //
+  // }
 
   static Future<void> _sendNotifications(String call_type,String to_token,String to_avatar,String to_name,String doc_id) async {
 

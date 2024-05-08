@@ -94,7 +94,7 @@ class NotificationCubit extends Cubit<NotificationState> {
           var friendUid = data["uid"];
           var friendName = data["name"];
           var  friendImage= data["image"];
-          var doc_id = data["doc_id"]??"";
+          //var doc_id = data["doc_id"]??"";
           // var call_role= data["call_type"];
           if (friendUid != null && friendName != null && friendImage != null) {
             // ConfigStore.to.isCallVocie = true;
@@ -102,7 +102,7 @@ class NotificationCubit extends Cubit<NotificationState> {
               friendUid: friendUid,
               friendName: friendName,
               friendImage: friendImage,
-              callType: "voice",
+              callType: "video",
             ));
 
           }

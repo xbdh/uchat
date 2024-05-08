@@ -38,6 +38,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
   @override
   void dispose() {
     _scrollController.dispose();
+    BlocProvider.of<ChatMessageListStreamCubit>(context).leaveChatMessageListStream();
     super.dispose();
   }
   Future<void> _scrollToBottom() async {

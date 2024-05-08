@@ -12,6 +12,7 @@ import 'package:uchat/user/presentation/pages/people_page.dart';
 import 'package:uchat/user/presentation/pages/profile_page.dart';
 
 import '../../chat/presentation/pages/group_info_page.dart';
+import '../../chat/presentation/pages/video_call_page.dart';
 import '../../chat/presentation/pages/voice_call_page.dart';
 
 
@@ -109,6 +110,18 @@ final chatRouter = GoRouter(
         name: "VoiceCall",
         path: '/voice_call',
         builder: (context, state) => VoiceCallPage(
+          friendUid: state.uri.queryParameters['friendUid']!,
+          friendName: state.uri.queryParameters['friendName']!,
+          friendImage: state.uri.queryParameters['friendImage']!,
+          role: state.uri.queryParameters['role']!,
+          //friendFcmToken: state.uri.queryParameters['friendFcmToken']!,
+        )
+    ),
+
+    GoRoute(
+        name: "VideoCall",
+        path: '/video_call',
+        builder: (context, state) => VideoCallPage(
           friendUid: state.uri.queryParameters['friendUid']!,
           friendName: state.uri.queryParameters['friendName']!,
           friendImage: state.uri.queryParameters['friendImage']!,

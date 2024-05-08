@@ -16,7 +16,8 @@ import 'package:uchat/user/presentation/cubit/get_single_user/get_single_user_cu
 import 'package:uchat/user/presentation/cubit/my_entity/my_entity_cubit.dart';
 import 'package:uchat/user/presentation/cubit/uid/uid_cubit.dart';
 import 'app/utils/FirebaseMassagingHandler.dart';
-import 'chat/presentation/cubit/agora/agora_cubit.dart';
+import 'chat/presentation/cubit/agora/agora_video_cubit.dart';
+import 'chat/presentation/cubit/agora/agora_voice_cubit.dart';
 import 'chat/presentation/cubit/chat_list_steam/chat_list_stream_cubit.dart';
 import 'chat/presentation/cubit/chat_message_list_steam/chat_message_list_stream_cubit.dart';
 import 'chat/presentation/cubit/create_group/create_group_cubit.dart';
@@ -144,9 +145,12 @@ class MyApp extends StatelessWidget {
 
         //AgoraCubit
         BlocProvider(
-          create: (context) => di.sl<AgoraCubit>(),
+          create: (context) => di.sl<AgoraVoiceCubit>(),
         ),
-
+        //
+        BlocProvider(
+          create: (context) => di.sl<AgoraVideoCubit>(),
+        ),
       ],
       child: AdaptiveTheme(
         light: ThemeData(

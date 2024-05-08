@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -12,6 +14,7 @@ class ChatMessageListStreamCubit extends Cubit<ChatMessageListStreamState> {
       {required this.getChatMessageListStreamUseCase}
       ) : super(ChatMessageListStreamInitial());
 
+  late StreamSubscription<List<MessageEntity>> chatMessageListStreamSubscription;
   Future<void> getChatMessageListStream({
     required String senderUID,
     required String recipientUID,
@@ -22,7 +25,7 @@ class ChatMessageListStreamCubit extends Cubit<ChatMessageListStreamState> {
       final streamRespond = getChatMessageListStreamUseCase.call(
         senderUID, recipientUID, groupID,
       );
-      streamRespond.listen((streams) {
+      chatMessageListStreamSubscription=streamRespond.listen((streams) {
         // if closed
         emit(ChatMessageListStreamLoaded(
           messageLists: streams,
@@ -32,5 +35,9 @@ class ChatMessageListStreamCubit extends Cubit<ChatMessageListStreamState> {
     } catch (e) {
       emit(ChatMessageListStreamFailed());
     }
+  }
+
+  Future<void> leaveChatMessageListStream() async {
+    chatMessageListStreamSubscription.cancel();
   }
 }

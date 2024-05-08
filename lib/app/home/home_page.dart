@@ -44,8 +44,9 @@ class _HomePageState extends State<HomePage>
     BlocProvider.of<UserCubit>(context).bindFcmToken(widget.uid);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("\n notification on onMessage function \n");
+      logger.i("\n notification on onMessage function \n");
       // 将消息传递给 Cubit
+      logger.i('message: $message');
       BlocProvider.of<NotificationCubit>(context).receiveNotification(message);
     });
   }
@@ -105,8 +106,20 @@ class _HomePageState extends State<HomePage>
             //friendUid: friendUid,
             friendName: friendName,
             friendImage: friendImage,
-            onAccept: (){
-              context.goNamed('VoiceCall',
+            callType: callType,
+            onAccept: () {
+              if (callType == 'video'){
+                context.pushNamed('VideoCall',
+                  queryParameters: {
+                    'friendUid': friendUid,
+                    'friendName': friendName,
+                    'friendImage': friendImage,
+                    'role': 'audience',
+                    //'callType': callType,
+                  },
+                );
+            }else if (callType == 'voice'){
+              context.pushNamed('VoiceCall',
                 queryParameters: {
                   'friendUid': friendUid,
                   'friendName': friendName,
@@ -115,6 +128,10 @@ class _HomePageState extends State<HomePage>
                   //'callType': callType,
                 },
               );
+            }
+              overlay.remove();
+
+
             },
             onReject: (){
               overlay.remove();

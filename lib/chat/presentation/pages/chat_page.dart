@@ -72,7 +72,7 @@ class _ChatPageState extends State<ChatPage> {
                   IconButton(
                     icon: const Icon(Icons.call),
                     onPressed: () {
-                      context.goNamed('VoiceCall',
+                      context.pushNamed('VoiceCall',
                         queryParameters: {
                           'friendUid': friendUid,
                           'friendName': friendName,
@@ -85,7 +85,18 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.videocam),
-                    onPressed: () {},
+                    onPressed: () {
+                      logger.i('video call pressed');
+                      context.pushNamed('VideoCall',
+                        queryParameters: {
+                          'friendUid': friendUid,
+                          'friendName': friendName,
+                          'friendImage': friendImage,
+                          'role': 'anchor',
+                          //'friendFcmToken': friendFcmToken,
+                        },
+                      );
+                    },
                   ),
                 ],
               )
