@@ -1,16 +1,11 @@
 # uchat
 
-A new Flutter project.
+即时通讯，支持文字，图片，语音，视频消息及回复引用，支持语音，视频通话
 
-## Getting Started
+## 资料
+https://www.udemy.com/course/master-flutter-by-building-a-video-and-voice-call-chat-app/ （使用 getx）
 
-This project is a starting point for a Flutter application.
+https://www.udemy.com/course/flutter-firebase-complete-chat-app/ （使用 provider）
 
-A few resources to get you started if this is your first Flutter project:
+项目来源于上述课程，将两者结合，使用了bloc状态库
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
