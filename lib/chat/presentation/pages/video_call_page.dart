@@ -15,16 +15,16 @@ import '../../../user/presentation/cubit/uid/uid_cubit.dart';
 import '../cubit/agora/agora_video_cubit.dart';
 import '../cubit/notifications/notification_cubit.dart';
 
-
 // 应用类
 class VideoCallPage extends StatefulWidget {
   final String friendUid, friendName, friendImage;
   final String role;
-  const VideoCallPage({super.key,
-    required this.friendUid,
-    required this.friendName,
-    required this.friendImage,
-    required this.role});
+  const VideoCallPage(
+      {super.key,
+      required this.friendUid,
+      required this.friendName,
+      required this.friendImage,
+      required this.role});
   @override
   _VideoCallPageState createState() => _VideoCallPageState();
 }
@@ -37,7 +37,7 @@ class _VideoCallPageState extends State<VideoCallPage> {
   bool isJoined = false, switchCamera = true, switchRender = true;
   final player = AudioPlayer();
   Timer? _timer;
-  int _seconds = 0;// 用于存储 RtcEngine 实例
+  int _seconds = 0; // 用于存储 RtcEngine 实例
   int? remoteUid;
   bool isReady = false;
 
@@ -59,19 +59,17 @@ class _VideoCallPageState extends State<VideoCallPage> {
   @override
   void initState() {
     super.initState();
-    final uid = BlocProvider
-        .of<UidCubit>(context)
-        .state;
+    final uid = BlocProvider.of<UidCubit>(context).state;
     logger.i("initState init argora video cubit");
-    BlocProvider.of<AgoraVideoCubit>(context).initAgora(
-        uid, widget.friendUid, widget.role
-    );
+    BlocProvider.of<AgoraVideoCubit>(context)
+        .initAgora(uid, widget.friendUid, widget.role);
 
     if (widget.role == "anchor") {
       player.setAsset("assets/music/Sound_Horizon.mp3");
       player.play();
     }
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -80,226 +78,254 @@ class _VideoCallPageState extends State<VideoCallPage> {
     player.dispose();
     stopTimer();
   }
+
   String formatDuration(int seconds) {
     final int minutes = seconds ~/ 60;
     final int remainingSeconds = seconds % 60;
     return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
-
-
   // 构建 UI，显示本地视图和远端视图
   @override
   Widget build(BuildContext context) {
-    final uid = BlocProvider
-        .of<UidCubit>(context)
-        .state;
+    final uid = BlocProvider.of<UidCubit>(context).state;
     return BlocListener<AgoraVideoCubit, AgoraVideoState>(
-  listener: (context, state) {
+      listener: (context, state) {
+        if (state is AgoraVideoIsReady) {
+          logger.i("AgoraVideoIsReady");
+          setState(() {
+            isReady = true;
+          });
+        }
 
-    if (state is AgoraVideoIsReady) {
-      logger.i("AgoraVideoIsReady");
-      setState(() {
-        isReady = true;
-      });
-    }
+        if (widget.role == "anchor") {
+          if (state is AgoraVideoRemoteJoined) {
+            logger.i("AgoraVideoRemoteJoined");
+            setState(() {
+              remoteUid = state.rUid;
+            });
+            logger.i("remoteUid: $remoteUid");
+            player.pause();
+            startTimer();
+          }
 
-    if (widget.role == "anchor") {
-      if (state is AgoraVideoRemoteJoined) {
-        logger.i("AgoraVideoRemoteJoined");
-        setState(() {
-          remoteUid = state.rUid;
-        });
-        logger.i("remoteUid: $remoteUid");
-        player.pause();
-        startTimer();
-      }
+          if (state is AgoraVideoLocalJoined) {
+            logger.i("AgoraVideoLocalJoined");
+            setState(() {
+              _localUserJoined = true;
+            });
+            logger.i("localUserJoined: $_localUserJoined");
+            BlocProvider.of<NotificationCubit>(context).sendNotification(
+                uid, //来自我的uid ，给你sendNotification
+                widget.friendUid,
+                widget.friendName,
+                widget.friendImage,
+                "video");
+            logger.i("video sendNotification");
+          }
 
-      if (state is AgoraVideoLocalJoined) {
-        logger.i("AgoraVideoLocalJoined");
-        setState(() {
-          _localUserJoined = true;
-        });
-        logger.i("localUserJoined: $_localUserJoined");
-        BlocProvider.of<NotificationCubit>(context).
-        sendNotification(uid, //来自我的uid ，给你sendNotification
-            widget.friendUid,
-            widget.friendName,
-            widget.friendImage,
-            "video");
-        logger.i("video sendNotification");
-
-      }
-
-      if (state is AgoraVideoRemoteLeft) {
-        stopTimer();
-        BlocProvider.of<AgoraVideoCubit>(context).leaveChannel();
-        // context.goNamed('Chat',
-        //     queryParameters: {
-        //       'friendUid': widget.friendUid,
-        //       'friendName': widget.friendName,
-        //       'friendImage': widget.friendImage,
-        //       'groupId': '',
-        //     });
-        context.pop();
-      }
-    }else {
-      if (state is AgoraVideoLocalJoined){
-        setState(() {
-          _localUserJoined = true;
-        });
-        startTimer();
-      }
-      if (state is AgoraVideoRemoteJoined) {
-        logger.i("AgoraVideoRemoteJoined");
-        setState(() {
-          remoteUid = state.rUid;
-        });
-        logger.i("remoteUid: $remoteUid");
-      }
-      if (state is AgoraVideoRemoteLeft) {
-        stopTimer();
-        BlocProvider.of<AgoraVideoCubit>(context).leaveChannel();
-        // context.goNamed('Chat',
-        //     queryParameters: {
-        //       'friendUid': widget.friendUid,
-        //       'friendName': widget.friendName,
-        //       'friendImage': widget.friendImage,
-        //       'groupId': '',
-        //     });
-        context.pop();
-      }
-    }
-
-  },
-  child: Scaffold(
-        appBar: AppBar(
-          title: Text("Video Call"),
-        ),
-        //backgroundColor: AppColors.primary_bg,
-        body: !isReady?Container():Stack(
-          children: [
-            remoteUid==null?Container():AgoraVideoView(
-              controller: VideoViewController.remote(
-                rtcEngine: BlocProvider.of<AgoraVideoCubit>(context).Engine,
-                canvas: VideoCanvas(uid: remoteUid!),
-                connection: RtcConnection(channelId: BlocProvider.of<AgoraVideoCubit>(context).channelId),
-              ),
-            ),
-            Positioned(
-                top: 30,
-                left: 15,
-                child:SizedBox(
-                  width: 80,
-                  height: 120,
-                  child: AgoraVideoView(
-                    controller: VideoViewController(
-                      rtcEngine: BlocProvider.of<AgoraVideoCubit>(context).Engine,
-                      canvas: const VideoCanvas(uid: 0),
-                    ),
-                  ),
-                ),
-            ),
-            // Positioned(
-            //     top: 10,
-            //     left: 30,
-            //     right: 30,
-            //     child:Column(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         children: [
-            //           Container(
-            //             margin: EdgeInsets.only(top:6.h),
-            //             child: Text("{Time}",
-            //               style: TextStyle(
-            //                 color: AppColors.primaryElementText,
-            //                 fontSize: 14,
-            //                 fontWeight: FontWeight.normal,
-            //               ),),),
-            //           Container(
-            //             width: 70,
-            //             height: 70,
-            //             margin: EdgeInsets.only(top:150),
-            //             padding: EdgeInsets.all(0),
-            //             decoration: BoxDecoration(
-            //               color: AppColors.primaryElementText,
-            //               borderRadius: BorderRadius.all(Radius.circular(10.w)),
-            //             ),
-            //             child: Image.network("${controller.state.to_avatar.value}",fit: BoxFit.fill,),),
-            //           Container(
-            //             margin: EdgeInsets.only(top:6.h),
-            //             child: Text("${controller.state.to_name.value}",
-            //               style: TextStyle(
-            //                 color: AppColors.primaryElementText,
-            //                 fontSize: 18.sp,
-            //                 fontWeight: FontWeight.normal,
-            //               ),),)
-            //         ])),
-            Positioned(
-                bottom: 80,
-                left: 30,
-                right: 30,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+          if (state is AgoraVideoRemoteLeft) {
+            stopTimer();
+            BlocProvider.of<AgoraVideoCubit>(context).leaveChannel();
+            // context.goNamed('Chat',
+            //     queryParameters: {
+            //       'friendUid': widget.friendUid,
+            //       'friendName': widget.friendName,
+            //       'friendImage': widget.friendImage,
+            //       'groupId': '',
+            //     });
+            context.pop();
+          }
+        } else {
+          if (state is AgoraVideoLocalJoined) {
+            setState(() {
+              _localUserJoined = true;
+            });
+            startTimer();
+          }
+          if (state is AgoraVideoRemoteJoined) {
+            logger.i("AgoraVideoRemoteJoined");
+            setState(() {
+              remoteUid = state.rUid;
+            });
+            logger.i("remoteUid: $remoteUid");
+          }
+          if (state is AgoraVideoRemoteLeft) {
+            stopTimer();
+            BlocProvider.of<AgoraVideoCubit>(context).leaveChannel();
+            // context.goNamed('Chat',
+            //     queryParameters: {
+            //       'friendUid': widget.friendUid,
+            //       'friendName': widget.friendName,
+            //       'friendImage': widget.friendImage,
+            //       'groupId': '',
+            //     });
+            context.pop();
+          }
+        }
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text("Video Call"),
+          ),
+          //backgroundColor: AppColors.primary_bg,
+          body: !isReady
+              ? Container()
+              : Stack(
                   children: [
-                    Column(children: [
-                      GestureDetector(child: Container(
-                        width: 60,
-                        height: 60,
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: _localUserJoined? AppColors.primaryElementBg:AppColors.primaryElementStatus,
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                    remoteUid == null
+                        ? Container()
+                        : AgoraVideoView(
+                            controller: VideoViewController.remote(
+                              rtcEngine:
+                                  BlocProvider.of<AgoraVideoCubit>(context)
+                                      .Engine,
+                              canvas: VideoCanvas(uid: remoteUid!),
+                              connection: RtcConnection(
+                                  channelId:
+                                      BlocProvider.of<AgoraVideoCubit>(context)
+                                          .channelId),
+                            ),
+                          ),
+                    Positioned(
+                      top: 30,
+                      left: 15,
+                      child: SizedBox(
+                        width: 80,
+                        height: 120,
+                        child: AgoraVideoView(
+                          controller: VideoViewController(
+                            rtcEngine: BlocProvider.of<AgoraVideoCubit>(context)
+                                .Engine,
+                            canvas: const VideoCanvas(uid: 0),
+                          ),
                         ),
-                        child: _localUserJoined ?Image.asset("assets/icons/a_phone.png"):Image.asset("assets/icons/a_telephone.png"),
                       ),
-                        onTap: _localUserJoined ? (){
-                          BlocProvider.of<AgoraVideoCubit>(context).leaveChannel();
-                          context.pop();
-                        }:(){
-
-                        },
-
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top:10),
-                        child: Text(_localUserJoined?"Disconnect":"Connected",style: TextStyle(
-                          color: AppColors.primaryElementText,
-                          fontSize: 12,
-                          fontWeight: FontWeight.normal,
-                        ),),),
-                    ]),
-                    Column(children: [
-                      GestureDetector(child: Container(
-                        width: 60,
-                        height: 60,
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: switchCamera?AppColors.primaryElementText:AppColors.primaryText,
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                        ),
-                        child: switchCamera?Image.asset("assets/icons/b_photo.png"):Image.asset("assets/icons/a_photo.png"),
-                      ),
-                        onTap: (){
-                          BlocProvider.of<AgoraVideoCubit>(context).switchCameraa();
-                          setState(() {
-                            switchCamera = !switchCamera;
-                          });
-                        }),
-                      Container(
-                        margin: EdgeInsets.only(top:10),
-                        child: Text("switchCamera",style: TextStyle(
-                          color: AppColors.primaryElementText,
-                          fontSize: 12,
-                          fontWeight: FontWeight.normal,
-                        ),),)
-                    ]),
-                  ],))
-          ],
-        )
-    ),
-);
+                    ),
+                    // Positioned(
+                    //     top: 10,
+                    //     left: 30,
+                    //     right: 30,
+                    //     child:Column(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: [
+                    //           Container(
+                    //             margin: EdgeInsets.only(top:6.h),
+                    //             child: Text("{Time}",
+                    //               style: TextStyle(
+                    //                 color: AppColors.primaryElementText,
+                    //                 fontSize: 14,
+                    //                 fontWeight: FontWeight.normal,
+                    //               ),),),
+                    //           Container(
+                    //             width: 70,
+                    //             height: 70,
+                    //             margin: EdgeInsets.only(top:150),
+                    //             padding: EdgeInsets.all(0),
+                    //             decoration: BoxDecoration(
+                    //               color: AppColors.primaryElementText,
+                    //               borderRadius: BorderRadius.all(Radius.circular(10.w)),
+                    //             ),
+                    //             child: Image.network("${controller.state.to_avatar.value}",fit: BoxFit.fill,),),
+                    //           Container(
+                    //             margin: EdgeInsets.only(top:6.h),
+                    //             child: Text("${controller.state.to_name.value}",
+                    //               style: TextStyle(
+                    //                 color: AppColors.primaryElementText,
+                    //                 fontSize: 18.sp,
+                    //                 fontWeight: FontWeight.normal,
+                    //               ),),)
+                    //         ])),
+                    Positioned(
+                        bottom: 80,
+                        left: 30,
+                        right: 30,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(children: [
+                              GestureDetector(
+                                child: Container(
+                                  width: 60,
+                                  height: 60,
+                                  padding: EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    color: _localUserJoined
+                                        ? AppColors.primaryElementBg
+                                        : AppColors.primaryElementStatus,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30)),
+                                  ),
+                                  child: _localUserJoined
+                                      ? Image.asset("assets/icons/a_phone.png")
+                                      : Image.asset(
+                                          "assets/icons/a_telephone.png"),
+                                ),
+                                onTap: _localUserJoined
+                                    ? () {
+                                        BlocProvider.of<AgoraVideoCubit>(
+                                                context)
+                                            .leaveChannel();
+                                        context.pop();
+                                      }
+                                    : () {},
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: Text(
+                                  _localUserJoined ? "Disconnect" : "Connected",
+                                  style: TextStyle(
+                                    color: AppColors.primaryElementText,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                              ),
+                            ]),
+                            Column(children: [
+                              GestureDetector(
+                                  child: Container(
+                                    width: 60,
+                                    height: 60,
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      color: switchCamera
+                                          ? AppColors.primaryElementText
+                                          : AppColors.primaryText,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(30)),
+                                    ),
+                                    child: switchCamera
+                                        ? Image.asset(
+                                            "assets/icons/b_photo.png")
+                                        : Image.asset(
+                                            "assets/icons/a_photo.png"),
+                                  ),
+                                  onTap: () {
+                                    BlocProvider.of<AgoraVideoCubit>(context)
+                                        .switchCameraa();
+                                    setState(() {
+                                      switchCamera = !switchCamera;
+                                    });
+                                  }),
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: Text(
+                                  "switchCamera",
+                                  style: TextStyle(
+                                    color: AppColors.primaryElementText,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                              )
+                            ]),
+                          ],
+                        ))
+                  ],
+                )),
+    );
   }
-  }
+}
 
-  // 生成远端视频
-
+// 生成远端视频
